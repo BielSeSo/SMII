@@ -1,34 +1,36 @@
 CC = g++
-OPENGL_FLAGS = -lglut -lGL -lGLU -lassimp -ldl
+OPENGL_FLAGS = -lglut -lGLU -lGL -lX11 -lm
+OPENCV_FLAGS = $(shell pkg-config --cflags --libs opencv4)
+OPENAL_FLAGS = -lopenal -lalut
 CXXFLAGS = -Wall -O2
 
+TARGET= bin/proyecto
 
-TARGET = bin/proyecto
+SRC_INTERFACE = code/interface.cpp
+SRC_GAME = code/game/load_minimap.cpp code/game/load_obj.cpp code/game/player.cpp
+SRC_MAIN = code/main.cpp
 
-
-SRC = code/main.cpp \
-	code/load_obj.cpp \
-	code/player.cpp \
-	code/load_minimap.cpp
-
-
-OBJ = $(SRC:code/%.cpp=exec/%.o)
+OBJ_INTERFACE = exec/interface.o
+OBJ_GAME = $(SRC_GAME:code/game/%.cpp = exec/game/%.o)
+OBJ_MAIN = exec/main.o
 
 
 # Compile all
-all: test_map
+all: $(OBJ_INTERFACE) $(OBJ_GAME)
+	mkdir -p bin	
+	$(CC) $(OBJ_INTERFACE) $(OBJ_GAME) -o $(OPENCV_FLAGS) $(OPENGL_FLAGS)
 
-
-# Test map compilation
-test_map: $(OBJ)
-	mkdir -p bin
-	$(CC) $(OBJ) -o $(TARGET) $(OPENGL_FLAGS)
-
-exec/%.o: code/%.cpp
+# Interface compilation
+$(OBJ_INTERFACE): $(SRC_INTERFACE)
 	mkdir -p exec
-	$(CC) $(CXXFLAGS) -c $< -o $@
+	$(CC) $(CXXFLAGS) -c $(SRC_INTERFACE) -o $(OBJ_INTERFACE) $(OPENCV_FLAGS)
 
+# Game compilation
+exec/game/%.o: code/game/%.c
+	mkdir -p exec
+	mkdir -p exec/game
+	$(CC) $(CXXFLAGS) -c $< -o $@
 
 # Clean everything
 clean:
-	rm -r bin exec
+	rm -r bin exec 
