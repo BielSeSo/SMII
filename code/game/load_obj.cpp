@@ -2,17 +2,29 @@
 #include <string>
 using namespace std;
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include <GL/glut.h>
 #include <GL/glu.h>
 
 #include "load_obj.hpp"
 
 Loader::Loader()
-{}
+{
+
+}
+
+void Loader::computeBounds() 
+{
+    minV = aiVector3D( 1e10f,  1e10f,  1e10f);
+    maxV = aiVector3D(-1e10f, -1e10f, -1e10f);
+    for (unsigned int m = 0; m < gScene->mNumMeshes; ++m) {
+        const aiMesh* mesh = gScene->mMeshes[m];
+        for (unsigned int v = 0; v < mesh->mNumVertices; ++v) {
+            const aiVector3D& p = mesh->mVertices[v];
+            minV.x = std::min(minV.x, p.x); minV.y = std::min(minV.y, p.y); minV.z = std::min(minV.z, p.z);
+            maxV.x = std::max(maxV.x, p.x); maxV.y = std::max(maxV.y, p.y); maxV.z = std::max(maxV.z, p.z);
+        }
+    }
+}
 
 void Loader::load_model(string path)
 {
@@ -68,18 +80,4 @@ void Loader::load_model(string path)
     glEndList();
 
     glCallList(gListId);
-}
-
-void Loader::computeBounds() 
-{
-    minV = aiVector3D( 1e10f,  1e10f,  1e10f);
-    maxV = aiVector3D(-1e10f, -1e10f, -1e10f);
-    for (unsigned int m = 0; m < gScene->mNumMeshes; ++m) {
-        const aiMesh* mesh = gScene->mMeshes[m];
-        for (unsigned int v = 0; v < mesh->mNumVertices; ++v) {
-            const aiVector3D& p = mesh->mVertices[v];
-            minV.x = std::min(minV.x, p.x); minV.y = std::min(minV.y, p.y); minV.z = std::min(minV.z, p.z);
-            maxV.x = std::max(maxV.x, p.x); maxV.y = std::max(maxV.y, p.y); maxV.z = std::max(maxV.z, p.z);
-        }
-    }
 }

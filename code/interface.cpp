@@ -132,8 +132,37 @@ void dibujarTexto(float x, float y, std::string texto) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
     }
 }
-// --- EVENTOS Y LÓGICA ---
 
+void ejecutarAccion(int id) {
+    switch(id){
+	case 0:
+	    std::cout << "Cambiando a ventana de juego..." << std::endl;
+            ventana = 2; // Cambiamos el estado
+	    break;
+
+	case 1:
+            std::cout << "Saliendo del juego..." << std::endl;
+            exit(0);
+	    break;
+
+	case 2:
+            std::cout << "DESARROLLADO POR: TU NOMBRE" << std::endl;
+	    break;
+
+	case 3:
+	    std::cout << "MAPA 1 SELECCIONADO" << std::endl;
+	    exit(0);
+	    break;
+
+	case 4:
+	    std::cout << "MAPA 2 SELECCIONADO" << std::endl;
+	    exit(0);
+	    break;
+    }
+}
+
+// --- EVENTOS Y LÓGICA ---
+/*
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
@@ -179,35 +208,6 @@ void display() {
     glutSwapBuffers();
 }
 
-void ejecutarAccion(int id) {
-    switch(id){
-	case 0:
-	    std::cout << "Cambiando a ventana de juego..." << std::endl;
-            ventana = 2; // Cambiamos el estado
-	    break;
-
-	case 1:
-            std::cout << "Saliendo del juego..." << std::endl;
-            exit(0);
-	    break;
-
-	case 2:
-            std::cout << "DESARROLLADO POR: TU NOMBRE" << std::endl;
-	    break;
-
-	case 3:
-	    std::cout << "MAPA 1 SELECCIONADO" << std::endl;
-	    exit(0);
-	    break;
-
-	case 4:
-	    std::cout << "MAPA 2 SELECCIONADO" << std::endl;
-	    exit(0);
-	    break;
-    }
-    
-    glutPostRedisplay(); // ¡CRUCIAL! Indica a GLUT que debe volver a dibujar la pantalla
-}
 
 void keyboard(unsigned char key, int x, int y) {
     if (key == 27) exit(0); // ESC
@@ -238,39 +238,4 @@ void keyboard(unsigned char key, int x, int y) {
         }
     }
 }
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    float aspect = (float)w / (float)h;
-    if (w >= h) gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
-    else gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
-    glMatrixMode(GL_MODELVIEW);
-}
-
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(800, 600);
-    glutCreateWindow("Mario Kart Interface");
-    glutFullScreen();
-    
-    // Inicializar texturas antes de entrar al loop
-    crearTexturaBoton(0, "START");
-    crearTexturaBoton(1, "EXIT");
-    crearTexturaBoton(2, "CREDITS");
-    crearTexturaBoton(3, "MAP1");
-    crearTexturaBoton(4, "MAP2");
-    crearTexturaBoton(5, "MAP3");
-    crearTexturaBoton(6, "Back");
-    cargarFondoInicio("../Images/SMII.png");
-
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyboard);
-
-    std::cout << "Interfaz cargada. Presiona ESC para salir." << std::endl;
-    glutMainLoop();
-    return 0;
-}
+*/

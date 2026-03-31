@@ -3,10 +3,11 @@
 #include <GL/glu.h>
 
 #include "load_minimap.hpp"
-#include "load_obj.hpp"
-//#include "codebase.h"
 
-Loader loader_map;
+Map::Map()
+{
+    this->selectedMap = 0;
+}
 
 void Map::selectMap(int selectedMap)
 {
@@ -35,7 +36,7 @@ void Map::load_map()
     switch(selectedMap)
     {
         case 1:
-            loader_map.load_model("assets/Track_1.obj");
+            this->loader_map.load_model("assets/Track_1.obj");
             break;
 
         default: break;

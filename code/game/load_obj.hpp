@@ -1,12 +1,13 @@
 #ifndef LOAD_OBJ_HPP
 #define LOAD_OBJ_HPP
 
-#include <string>
-using namespace std;
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+
+#include <string>
+
+using namespace std;
 
 class Loader
 {   
@@ -18,7 +19,7 @@ class Loader
     public:
         Loader();
         void load_model(string path);
-        void get_hitbox(aiVector3D& minV, aiVector3D& maxV);
+        void get_hitbox();
 };
 
 #endif

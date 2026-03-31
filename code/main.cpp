@@ -19,9 +19,10 @@
 #include <vector>
 #include <cmath>
 
-#include "load_obj.hpp"
-#include "load_minimap.hpp"
-#include "player.hpp"
+#include "game/load_obj.hpp"
+#include "game/load_minimap.hpp"
+#include "game/player.hpp"
+#include "interface.hpp"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ int radio = 6;
 
 Player player1(0, 0 ,0);
 Loader loader_kart;
-Map map;
+Map map_loader;
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -39,8 +40,8 @@ void display() {
 
     gluLookAt(player1.get_pos().x, player1.get_pos().y + 6, 8,   player1.get_pos().x , player1.get_pos().y, 0.5,   0.0, 0.0, 1.0);
     
-    map.selectMap(1);
-    map.load_map();
+    map_loader.selectMap(1);
+    map_loader.load_map();
 
     // Rotación y translacion del kart
     glTranslatef(player1.get_pos().x, player1.get_pos().y, 0);
@@ -51,11 +52,12 @@ void display() {
 }
 
 void reshape(int w, int h) {
-    if (h == 0) h = 1;
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, double(w)/double(h), 0.01, 1000.0);
+    float aspect = (float)w / (float)h;
+    if (w >= h) gluOrtho2D(-1.0 * aspect, 1.0 * aspect, -1.0, 1.0);
+    else gluOrtho2D(-1.0, 1.0, -1.0 / aspect, 1.0 / aspect);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -96,23 +98,37 @@ void keyboard(unsigned char key, int, int) {
 }
 
 int main(int argc, char** argv) {
-    // Inicializar GLUT/OpenGL
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    glutInitWindowSize(960, 640);
-    glutCreateWindow("MarioKart");
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize(800, 600);
+    glutCreateWindow("Mario Kart Interface");
+    glutFullScreen();
+    
+    if (argv[1] == "1")
+    {
+        // Inicializar texturas antes de entrar al loop
+        crearTexturaBoton(0, "START");
+        crearTexturaBoton(1, "EXIT");
+        crearTexturaBoton(2, "CREDITS");
+        crearTexturaBoton(3, "map_loader1");
+        crearTexturaBoton(4, "map_loader2");
+        crearTexturaBoton(5, "map_loader3");
+        crearTexturaBoton(6, "Back");
+        cargarFondoInicio("../Images/SMII.png");
+    }
+    else if (argv[1] == "2")
+    {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+        map_loader.setupLights();
+    }
 
-    map.setupLights();
-
-    // Callbacks
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
-    glutIdleFunc(idle);
     glutKeyboardFunc(keyboard);
 
+    std::cout << "Interfaz cargada. Presiona ESC para salir." << std::endl;
     glutMainLoop();
     return 0;
 }
