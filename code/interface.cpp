@@ -4,21 +4,19 @@
 #include <vector>
 #include <string>
 
+#include "interface.h"
+
 using namespace cv;
 
-// --- ESTRUCTURAS Y GLOBALES ---
-struct ButtonArea {
-    float x1, x2, y1, y2;
-};
-
-ButtonArea buttonAreas[5]; // Para START, EXIT, CREDITS
+// Definicion variables
+ButtonArea buttonAreas[5];
 GLuint buttonTextures[5];
 GLuint fondoTexture;
 
-int botonSeleccionado = -1; // 0: START, 1: EXIT, 2: CREDITS
-bool usandoTeclado = false; // Para saber si mostrar el resaltado
-
+int botonSeleccionado = -1;
+bool usandoTeclado = false;
 int ventana = 0;
+
 
 // --- FUNCIONES DE OPENCV (Lógica de Imagen) ---
 
@@ -161,54 +159,9 @@ void ejecutarAccion(int id) {
     }
 }
 
-// --- EVENTOS Y LÓGICA ---
+
+   
 /*
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glLoadIdentity();
-
-    // Resetear áreas para evitar clics fantasma de ventanas anteriores
-    for(int i=0; i<5; i++) buttonAreas[i] = {0.0f, 0.0f, 0.0f, 0.0f};
-
-    if (ventana == 0){
-	    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, fondoTexture);
-        glBegin(GL_QUADS);
-
-        glTexCoord2f(0, 0); glVertex2f(-2.0f, -1.0f);
-        glTexCoord2f(1, 0); glVertex2f( 2.0f, -1.0f);
-        glTexCoord2f(1, 1); glVertex2f( 2.0f,  1.0f);
-        glTexCoord2f(0, 1); glVertex2f(-2.0f,  1.0f);
-        glEnd();
-        glDisable(GL_TEXTURE_2D);
-
-        dibujarTexto(-0.35f, -0.8f, "PRESIONE CUALQUIER TECLA PARA CONTINUAR");
-    } else if (ventana == 1){
-        float anchoBoton = 0.8f; 
-        drawButton(0.0f,  0.5f, anchoBoton, 0); // START
-        drawButton(0.0f,  0.1f, anchoBoton, 1); // EXIT
-        drawButton(0.0f, -0.3f, anchoBoton, 2); // CREDITS
-        std::cout << "Ventana 1" << std::endl;
-    } else if (ventana == 2){
-        float anchoBoton = 0.8f; 
-        // Mostrar los distintos mapas
-        drawButton(0.0f,  0.5f, anchoBoton, 3); // MAPS SELECTOR
-        drawButton(0.0f,  0.1f, anchoBoton, 4); // MAPS SELECTOR(?)
-        std::cout << "Ventana 2" << std::endl;
-    } else if (ventana == 3){
-	//TODO
-	std::cout << "Ventana 3" << std::endl;
-    } else if (ventana == 4){
-	//TODO
-	std::cout << "Ventana 4" << std::endl;
-    }
-
-    glutSwapBuffers();
-}
-
-
 void keyboard(unsigned char key, int x, int y) {
     if (key == 27) exit(0); // ESC
 

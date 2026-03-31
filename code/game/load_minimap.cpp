@@ -2,7 +2,7 @@
 #include <GL/glut.h>
 #include <GL/glu.h>
 
-#include "load_minimap.hpp"
+#include "load_minimap.h"
 
 Map::Map()
 {

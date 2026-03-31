@@ -1,5 +1,5 @@
 #include <cmath>
-#include "player.hpp"
+#include "player.h"
 
 Player::Player(int x, int y, int z)
 {
