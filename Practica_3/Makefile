@@ -1,5 +1,6 @@
 CC = gcc
 OPENAL_FLAGS = -lopenal -lalut
+OPENGL_FLAGS = -lglut -lGLU -lGL -lX11 -lm
 CXXFLAGS = -Wall -O2
 
 
@@ -7,23 +8,34 @@ TARGET_1 = bin/ejercicio_1
 TARGET_2 = bin/ejercicio_2
 TARGET_3 = bin/ejercicio_5
 TARGET_4 = bin/ejercicio_9
+TARGET_5 = bin/ejercicio_11
+TARGET_7 = bin/ejercicio_15
+TARGET_8 = bin/ejercicio_17
 
 
 SRC_1 = code/openal_info.c
 SRC_2 = code/helloWorld_ALUT.c
 SRC_3 = code/openal_senyals.c
 SRC_4 = code/openal_fitxer.c
+SRC_5 = code/pige.c
+SRC_7 = code/al_simple.c
+SRC_8 = code/al_hrtf_loopback_wav.c
 
 
 OBJ_1  = exec/openal_info.o
 OBJ_2 = exec/helloWorld_ALUT.o
 OBJ_3 = exec/openal_senyals.o
 OBJ_4 = exec/openal_fitxer.o
+OBJ_5 = exec/pige.o
+OBJ_7 = exec/al_simple.o
+OBJ_8 = exec/al_hrtf_loopback_wav.o
 
 
 # Compilate all
 all: ejercicio_1 ejercicio_2 \
-    ejercicio_5 ejercicio_9
+    ejercicio_5 ejercicio_9 \
+	ejercicio_11  \
+	ejercicio_15 ejercicio_17 \
 
 
 # Ejercicio 1 compilation
@@ -64,6 +76,36 @@ ejercicio_9: $(OBJ_4)
 $(OBJ_4): $(SRC_4)
 	mkdir -p exec
 	$(CC) $(CXXFLAGS) -c $(SRC_4) -o $(OBJ_4)
+
+
+# Ejercicio 11 compilation
+ejercicio_11: $(OBJ_5)
+	mkdir -p bin
+	$(CC) $(OBJ_5) -o $(TARGET_5) $(OPENAL_FLAGS) $(OPENGL_FLAGS)
+
+$(OBJ_5): $(SRC_5)
+	mkdir -p exec
+	$(CC) $(CXXFLAGS) -c $(SRC_5) -o $(OBJ_5)
+
+
+# Ejercicio 15 compilation
+ejercicio_15: $(OBJ_7)
+	mkdir -p bin
+	$(CC) $(OBJ_7) -o $(TARGET_7) $(OPENAL_FLAGS) -lm
+
+$(OBJ_7): $(SRC_7)
+	mkdir -p exec
+	$(CC) $(CXXFLAGS) -c $(SRC_7) -o $(OBJ_7)
+
+
+# Ejercicio 17 compilation
+ejercicio_17: $(OBJ_8)
+	mkdir -p bin
+	$(CC) $(OBJ_8) -o $(TARGET_8) $(OPENAL_FLAGS) -lm
+
+$(OBJ_8): $(SRC_8)
+	mkdir -p exec
+	$(CC) $(CXXFLAGS) -c $(SRC_8) -o $(OBJ_8)
 
 
 # Clean everything	
