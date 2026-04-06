@@ -42,16 +42,18 @@
 #include "AL/alc.h"
 #include "AL/alext.h" 
 
+const char *saveRute = "bin/E18_audio/hrtf_output.wav";
+
+// DEBUG TERMINAL
+void DebugTerminal(void) {int value = system("stty sane"); (void)value;}
+
 /* FUNCTION_CAST: workaround para castear void* a puntero a función en C99.
  * Los ejemplos de OpenAL Soft la definen localmente porque no está en alext.h.
  * Fuente: https://github.com/kcat/openal-soft/blob/master/utils/openal-info.c
  * está en alhelpers
  */
-#if __STDC_VERSION__ >= 199901L
-#define FUNCTION_CAST(T, ptr) (union{void *p; T f;}){ptr}.f
-#else
+
 #define FUNCTION_CAST(T, ptr) (T)(ptr)
-#endif
 
 /* ------------------------------------------------------------------ */
 /* Punteros a funciones de extensiones                                  */
@@ -250,6 +252,7 @@ static int enable_hrtf(ALCdevice *dev, const char *hrtf_name)
         printf("  Advertencia: HRTF no se activó.\n");
 
     alcMakeContextCurrent(ctx_prev);  /* restaurar siempre al salir */
+    return 0;
 }
 
 /* ------------------------------------------------------------------ */
@@ -272,10 +275,6 @@ static void term_raw(void)
     tcsetattr(STDIN_FILENO, TCSANOW, &r);
     g_raw = 1;
 }
-static void term_restore(void)
-{
-    if(g_raw) { tcsetattr(STDIN_FILENO, TCSANOW, &g_old_term); g_raw = 0; }
-}
 static void sleep_10ms(void)
 {
     struct timespec ts = {0, 10000000};
@@ -287,15 +286,12 @@ static int key_pressed(void)
     FD_ZERO(&fds); FD_SET(STDIN_FILENO, &fds);
     return select(STDIN_FILENO+1, &fds, NULL, NULL, &tv) > 0;
 }
-static void consume_key(void) { char c; (void)read(STDIN_FILENO, &c, 1); }
-
 
 /* ------------------------------------------------------------------ */
 /* main                                                                 */
 /* ------------------------------------------------------------------ */
 int main(int argc, char *argv[])
 { 
-    const char *saveRute = "bin/ejercicio_17_audio/hrtf_output.wav";
     const char *hrtf_name = NULL;
     double      duration  = 5.0;
 
@@ -493,9 +489,8 @@ int main(int argc, char *argv[])
     alcMakeContextCurrent(ctx_lb);
     alSourcePlay(src_lb);
 
-    #ifndef _WIN32
+    
     term_raw();
-    #endif
     printf("\nReproduciendo en tiempo real Y grabando en '%s'\n", saveRute);
     printf("Duración máxima: %.1f s — pulsa cualquier tecla para detener.\n\n", duration);
     fflush(stdout);
@@ -513,11 +508,12 @@ int main(int argc, char *argv[])
     int    rendered      = 0;
     double angle         = 0.0;
     int    stopped_early = 0;
+    double var           = 0.0;
 
     /* El contexto activo al entrar al bucle es ctx_lb */
     while(rendered < total_frames)
     {
-        if(key_pressed()) { consume_key(); stopped_early = 1; break; }
+        if(key_pressed()) { stopped_early = 1; break; }
 
         int frames_now = CHUNK_FRAMES;
         if(rendered + frames_now > total_frames)
@@ -555,9 +551,10 @@ int main(int argc, char *argv[])
         alcMakeContextCurrent(ctx_lb);
 
         rendered += frames_now;
+        var = (double)(rendered / SAMPLE_RATE);
 
         printf("\r  %.1f / %.1f s  (ángulo: %+.0f°)   ",
-               rendered / (double)SAMPLE_RATE, duration,
+               var, duration,
                angle * 180.0 / M_PI);
         fflush(stdout);
 
@@ -594,6 +591,8 @@ int main(int argc, char *argv[])
     alcCloseDevice(dev_out);
 
     printf("WAV guardado: %s  (%.1f s, %d Hz, estéreo Float32)\n",
-           saveRute, rendered / (double)SAMPLE_RATE, SAMPLE_RATE);
+           saveRute, var, SAMPLE_RATE);
+
+    DebugTerminal();
     return 0;
 }
