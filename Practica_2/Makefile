@@ -94,10 +94,10 @@ $(OBJ_4_1): $(SRC_4_1)
 
 
 # Ejercicio 4 compilation
-ejercicio_4: $(SRC_4_2)
+ejercicio_4: $(OBJ_4_2)
 	mkdir -p bin
 	mkdir -p bin/ejercicio_4_img
-	$(CC) $(SRC_4_2) -o $(TARGET_4_2) $(OPENCV_FLAGS)
+	$(CC) $(OBJ_4_2) -o $(TARGET_4_2) $(OPENCV_FLAGS)
 
 $(OBJ_4_2): $(SRC_4_2)
 	mkdir -p exec

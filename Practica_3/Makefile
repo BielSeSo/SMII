@@ -101,6 +101,7 @@ $(OBJ_7): $(SRC_7)
 # Ejercicio 17 compilation
 ejercicio_17: $(OBJ_8)
 	mkdir -p bin
+	mkdir -p bin/ejercicio_17_audio
 	$(CC) $(OBJ_8) -o $(TARGET_8) $(OPENAL_FLAGS) -lm
 
 $(OBJ_8): $(SRC_8)

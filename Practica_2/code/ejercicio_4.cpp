@@ -18,6 +18,8 @@
 
 #include "comun.h"
 
+using namespace cv;
+
 Mat image;
 int tecla = 0,
     cont = 0;

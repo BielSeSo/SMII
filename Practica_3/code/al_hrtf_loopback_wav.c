@@ -40,7 +40,7 @@
 
 #include "AL/al.h"
 #include "AL/alc.h"
-#include "AL/alext.h"
+#include "AL/alext.h" 
 
 /* FUNCTION_CAST: workaround para castear void* a puntero a función en C99.
  * Los ejemplos de OpenAL Soft la definen localmente porque no está en alext.h.
@@ -255,13 +255,7 @@ static int enable_hrtf(ALCdevice *dev, const char *hrtf_name)
 /* ------------------------------------------------------------------ */
 /* Teclado sin bloqueo — multiplataforma                                */
 /* ------------------------------------------------------------------ */
-#ifdef _WIN32
-#include <conio.h>
-#include <windows.h>
-static void sleep_10ms(void)  { Sleep(10); }
-static int  key_pressed(void) { return _kbhit(); }
-static void consume_key(void) { _getch(); }
-#else
+
 #include <termios.h>
 #include <unistd.h>
 #include <sys/select.h>
@@ -294,14 +288,14 @@ static int key_pressed(void)
     return select(STDIN_FILENO+1, &fds, NULL, NULL, &tv) > 0;
 }
 static void consume_key(void) { char c; (void)read(STDIN_FILENO, &c, 1); }
-#endif
+
 
 /* ------------------------------------------------------------------ */
 /* main                                                                 */
 /* ------------------------------------------------------------------ */
 int main(int argc, char *argv[])
-{
-    const char *out_path  = "hrtf_output.wav";
+{ 
+    const char *saveRute = "bin/ejercicio_17_audio/hrtf_output.wav";
     const char *hrtf_name = NULL;
     double      duration  = 5.0;
 
@@ -309,7 +303,7 @@ int main(int argc, char *argv[])
     {
         if     (strcmp(argv[i], "-hrtf")==0 && i+1<argc) hrtf_name = argv[++i];
         else if(strcmp(argv[i], "-dur") ==0 && i+1<argc) duration  = atof(argv[++i]);
-        else if(argv[i][0] != '-') out_path = argv[i];
+        else if(argv[i][0] != '-') saveRute = argv[i];
     }
 
     /* ---- Verificar extensión loopback ---- */
@@ -485,7 +479,7 @@ int main(int argc, char *argv[])
      * Abrir WAV y buffer de chunk
      * ================================================================== */
     WavWriter wav;
-    if(!wav_open(&wav, out_path, SAMPLE_RATE, NUM_CHANNELS, 32))
+    if(!wav_open(&wav, saveRute, SAMPLE_RATE, NUM_CHANNELS, 32))
         goto cleanup_B;
 
     float *chunk = malloc((size_t)(CHUNK_FRAMES * NUM_CHANNELS * BYTES_PER_SAMPLE));
@@ -502,7 +496,7 @@ int main(int argc, char *argv[])
     #ifndef _WIN32
     term_raw();
     #endif
-    printf("\nReproduciendo en tiempo real Y grabando en '%s'\n", out_path);
+    printf("\nReproduciendo en tiempo real Y grabando en '%s'\n", saveRute);
     printf("Duración máxima: %.1f s — pulsa cualquier tecla para detener.\n\n", duration);
     fflush(stdout);
 
@@ -576,9 +570,6 @@ int main(int argc, char *argv[])
     /* ==================================================================
      * Limpieza ordenada
      * ================================================================== */
-    #ifndef _WIN32
-    term_restore();
-    #endif
     free(chunk);
     wav_close(&wav, NUM_CHANNELS);
 
@@ -603,6 +594,6 @@ int main(int argc, char *argv[])
     alcCloseDevice(dev_out);
 
     printf("WAV guardado: %s  (%.1f s, %d Hz, estéreo Float32)\n",
-           out_path, rendered / (double)SAMPLE_RATE, SAMPLE_RATE);
+           saveRute, rendered / (double)SAMPLE_RATE, SAMPLE_RATE);
     return 0;
 }
