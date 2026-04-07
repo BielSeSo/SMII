@@ -23,7 +23,7 @@ SRC_5 = code/pige.c
 SRC_7 = code/al_simple.c
 SRC_8 = code/al_hrtf_loopback_wav.c
 SRC_9 = code/actividad_1.c
-SRC_10 = code/actividad_2/actividad_1_2.c code/actividad_2/actividad_2.c
+SRC_10 = code/actividad_2.c
 
 
 OBJ_1  = exec/openal_info.o
@@ -34,7 +34,7 @@ OBJ_5 = exec/pige.o
 OBJ_7 = exec/al_simple.o
 OBJ_8 = exec/al_hrtf_loopback_wav.o
 OBJ_9 = exec/actividad_1.o
-OBJ_10 = $(SRC_10:code/actividad_2/%.c=exec/actividad_2/%.o)
+OBJ_10 = exec/actividad_2.o
 
 
 # Compilate all
@@ -132,10 +132,9 @@ actividad_2: $(OBJ_10)
 	mkdir -p bin/A2_audio
 	$(CC) $(OBJ_10) -o $(TARGET_10) $(OPENAL_FLAGS) $(OPENGL_FLAGS)
 
-exec/actividad_2/%.o: code/actividad_2/%.c
+$(OBJ_10): $(SRC_10)
 	mkdir -p exec
-	mkdir -p exec/actividad_2
-	$(CC) $(CXXFLAGS) -c $< -o $@
+	$(CC) $(CXXFLAGS) -c $(SRC_10) -o $(OBJ_10)
 
 
 # Clean everything	
