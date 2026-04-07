@@ -7,6 +7,10 @@
 //  - Calcula bounding box para centrar y escalar a la vista.
 //  - Rotación automática para ver el modelo.
 //  - Teclas: [+] y [-] zoom, [ESC] salir.
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <string>
 
 #include <GL/glut.h>
 #include <GL/glu.h>
@@ -15,46 +19,84 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <iostream>
-#include <vector>
-#include <cmath>
-
 #include "game/load_obj.h"
 #include "game/load_minimap.h"
 #include "game/player.h"
 #include "interface.h"
 
+string ruteFotoInicio = "images/SMII.png";
+
 using namespace std;
 
 // Variables globales
-bool isGame = false;
-String op1 = "1", op2 = "2";
+bool isGame = false, firstTime = true;
 int radio = 6;
 
 Player player1(0, 0 ,0);
 Loader loader_kart;
 Map map_loader;
 
-void display() {
-    if(isGame){
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+// ================ FUNCTIONS PROTOTYPE ===================
+void init(void);
+void display(void);
+void reshape(int w, int h);
+void keyboard(unsigned char key, int, int);
 
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
 
-        gluLookAt(player1.get_pos().x, player1.get_pos().y + 6, 8,   player1.get_pos().x , player1.get_pos().y, 0.5,   0.0, 0.0, 1.0);
-        
-        map_loader.selectMap(1);
-        map_loader.load_map();
-
-        // Rotación y translacion del kart
-        glTranslatef(player1.get_pos().x, player1.get_pos().y, 0);
-        glRotatef(player1.grados, 0.0, 0.0, 1.0);
-        loader_kart.load_model("assets/Kart_1.obj");    // Dibujar
-
-        glutSwapBuffers();
+int main(int argc, char **argv) {
+    if(argc == 2)
+    {
+        if(string(argv[1]) == "2") isGame = true;
     }
     else
+    {
+        cout << "Forma de uso: ./bin/proyecto <Tipo de inicio> " << endl;
+        cout << "1 - Forma HUD" << endl << "2 - Juego carrera" << endl;
+        return -1;
+    }
+
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize(800, 600);
+    glutCreateWindow("Mario Kart Interface");
+    glutFullScreen();
+
+    init();
+
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutKeyboardFunc(keyboard);
+
+    cout << "Presiona ESC para salir" << endl;
+    glutMainLoop();
+    return 0;
+}
+
+void init(void)
+{
+    if(!isGame)
+    {
+        // Inicializar texturas antes de entrar al loop
+        crearTexturaBoton(0, "START");
+        crearTexturaBoton(1, "EXIT");
+        crearTexturaBoton(2, "CREDITS");
+        crearTexturaBoton(3, "map_loader1");
+        crearTexturaBoton(4, "map_loader2");
+        crearTexturaBoton(5, "map_loader3");
+        crearTexturaBoton(6, "Back");
+        cargarFondoInicio(ruteFotoInicio);
+
+        cout << "Interfaz cargada" << endl;
+    }
+    else
+    {
+        cout << "Mapa cargado" << endl;
+        map_loader.setupLights();
+    }
+}
+
+void display(void) {
+    if (!isGame)
     {
         glClear(GL_COLOR_BUFFER_BIT);
         glLoadIdentity();
@@ -82,23 +124,44 @@ void display() {
             drawButton(0.0f,  0.5f, anchoBoton, 0); // START
             drawButton(0.0f,  0.1f, anchoBoton, 1); // EXIT
             drawButton(0.0f, -0.3f, anchoBoton, 2); // CREDITS
-            std::cout << "Ventana 1" << std::endl;
+            //cout << "Ventana 1" << endl;
         } else if (ventana == 2){
             float anchoBoton = 0.8f; 
             // Mostrar los distintos mapas
             drawButton(0.0f,  0.5f, anchoBoton, 3); // MAPS SELECTOR
             drawButton(0.0f,  0.1f, anchoBoton, 4); // MAPS SELECTOR(?)
-            std::cout << "Ventana 2" << std::endl;
+            //cout << "Ventana 2" << endl;
         } else if (ventana == 3){
-        //TODO
-        std::cout << "Ventana 3" << std::endl;
+            //TODO
+            //cout << "Ventana 3" << endl;
         } else if (ventana == 4){
-        //TODO
-        std::cout << "Ventana 4" << std::endl;
+            //TODO
+            //cout << "Ventana 4" << endl;
         }
+    }
+    else
+    {
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
 
-        glutSwapBuffers();
-    }   
+        gluLookAt(player1.get_pos().x, player1.get_pos().y + 6, 8,   player1.get_pos().x , player1.get_pos().y, 0.5,   0.0, 0.0, 1.0);
+        
+        map_loader.selectMap(1);
+        map_loader.load_map();
+
+        // Rotación y translacion del kart
+        glTranslatef(player1.get_pos().x, player1.get_pos().y, 0);
+        glRotatef(player1.grados, 0.0, 0.0, 1.0);
+        loader_kart.load_model("assets/Kart_1.obj");    // Dibujar
+        player1.move();
+    }
+    
+    glutSwapBuffers();
+    glutPostRedisplay();
 }
 
 void reshape(int w, int h) {
@@ -111,15 +174,10 @@ void reshape(int w, int h) {
     glMatrixMode(GL_MODELVIEW);
 }
 
-void idle() {
-    player1.move();
-    glutPostRedisplay();
-}
-
 void keyboard(unsigned char key, int, int) {
     switch (key) {
         case 27: // ESC
-            printf("Hasta la próxima");
+            cout << "Hasta la proxima" << endl;
             exit(0);
             break;
 
@@ -143,51 +201,24 @@ void keyboard(unsigned char key, int, int) {
             player1.grados -= 5;
             break;
 
-        default: break;
+        default:
+            if(firstTime)
+            {
+               ventana = 1; 
+            }
+            break;
     }
+
+	if (ventana == 1){
+            botonSeleccionado = (botonSeleccionado + 1) % 3; // Ciclar entre 0, 1, 2
+            // Forzar redibujado para ver el cambio
+	}
+	else if (ventana == 2)
+    {
+	    if (botonSeleccionado < 3 || botonSeleccionado >= 4) botonSeleccionado = 3;
+	    else botonSeleccionado = 4;
+	}
+    
+    glutPostRedisplay();
 }
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(800, 600);
-    glutCreateWindow("Mario Kart Interface");
-    glutFullScreen();
-
-    if (argc == 2)
-    {
-        if (argv[1] == op1)
-        {
-            // Inicializar texturas antes de entrar al loop
-            crearTexturaBoton(0, "START");
-            crearTexturaBoton(1, "EXIT");
-            crearTexturaBoton(2, "CREDITS");
-            crearTexturaBoton(3, "map_loader1");
-            crearTexturaBoton(4, "map_loader2");
-            crearTexturaBoton(5, "map_loader3");
-            crearTexturaBoton(6, "Back");
-            cargarFondoInicio("code/Images/SMII.png");
-        }
-        else if (argv[1] == op2)
-        {
-            isGame = true;
-            glEnable(GL_DEPTH_TEST);
-            glDepthFunc(GL_LESS);
-
-            map_loader.setupLights();
-        }
-    }
-    else
-    {
-        cout << "Formato ejecucion: ./bin/proyecto <Tipo ejecución>" << endl;
-        return -1;
-    }
-
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutKeyboardFunc(keyboard);
-
-    std::cout << "Interfaz cargada. Presiona ESC para salir." << std::endl;
-    glutMainLoop();
-    return 0;
-}

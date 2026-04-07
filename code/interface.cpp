@@ -1,16 +1,18 @@
-#include <GL/glut.h>
-#include <opencv2/opencv.hpp>
 #include <iostream>
 #include <vector>
 #include <string>
 
+#include <GL/glut.h>
+#include <opencv2/opencv.hpp>
+
 #include "interface.h"
 
+using namespace std;
 using namespace cv;
 
 // Definicion variables
 ButtonArea buttonAreas[5];
-GLuint buttonTextures[5];
+GLuint buttonTextures[7];
 GLuint fondoTexture;
 
 int botonSeleccionado = -1;
@@ -42,7 +44,7 @@ int inicializarImgRGB(Mat *imgOrg, int option) {
     return 0;
 }
 
-void ponerTextoBoton(Mat &img, std::string texto) {
+void ponerTextoBoton(Mat &img, string texto) {
     int fontFace = FONT_HERSHEY_SIMPLEX;
     double fontScale = 1.2;
     int thickness = 3;
@@ -56,15 +58,17 @@ void ponerTextoBoton(Mat &img, std::string texto) {
 
 // --- FUNCIONES DE OPENGL (Dibujado y Texturas) ---
 //La funció que converteix de Mat a textura d'OpenGl
-void cargarFondoInicio(const std::string& ruta) {
-    cv::Mat imagen = cv::imread(ruta);
+void cargarFondoInicio(string ruta) {
+    Mat imagen = imread(ruta);
     if (imagen.empty()) {
-        std::cerr << "Error: No se pudo cargar la imagen " << ruta << std::endl;
+        cerr << "Error: No se pudo cargar la imagen " << ruta << endl;
         return;
     }
+    cout << "Cargando imagen: " << ruta << endl;
+
     // IMPORTANTE: Para que no salga al revés y tenga colores correctos
-    cv::cvtColor(imagen, imagen, cv::COLOR_BGR2RGB);
-    cv::flip(imagen, imagen, 0); 
+    cvtColor(imagen, imagen, COLOR_BGR2RGB);
+    flip(imagen, imagen, 0); 
 
     glGenTextures(1, &fondoTexture);
     glBindTexture(GL_TEXTURE_2D, fondoTexture);
@@ -74,7 +78,7 @@ void cargarFondoInicio(const std::string& ruta) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imagen.cols, imagen.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, imagen.data);
 }
 
-void crearTexturaBoton(int id, std::string texto) {
+void crearTexturaBoton(int id, string texto) {
     Mat img(200, 600, CV_8UC3);
     inicializarImgRGB(&img, 0);
     ponerTextoBoton(img, texto);
@@ -118,7 +122,7 @@ void drawButton(float x, float y, float ancho, int id) {
     glDisable(GL_TEXTURE_2D);
 }
 
-void dibujarTexto(float x, float y, std::string texto) {
+void dibujarTexto(float x, float y, string texto) {
     // Desactivar texturas para que el texto sea de un color sólido
     glDisable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f); // Color Blanco
@@ -134,26 +138,26 @@ void dibujarTexto(float x, float y, std::string texto) {
 void ejecutarAccion(int id) {
     switch(id){
 	case 0:
-	    std::cout << "Cambiando a ventana de juego..." << std::endl;
+	    cout << "Cambiando a ventana de juego..." << endl;
             ventana = 2; // Cambiamos el estado
 	    break;
 
 	case 1:
-            std::cout << "Saliendo del juego..." << std::endl;
+            cout << "Saliendo del juego..." << endl;
             exit(0);
 	    break;
 
 	case 2:
-            std::cout << "DESARROLLADO POR: TU NOMBRE" << std::endl;
+            cout << "DESARROLLADO POR: TU NOMBRE" << endl;
 	    break;
 
 	case 3:
-	    std::cout << "MAPA 1 SELECCIONADO" << std::endl;
+	    cout << "MAPA 1 SELECCIONADO" << endl;
 	    exit(0);
 	    break;
 
 	case 4:
-	    std::cout << "MAPA 2 SELECCIONADO" << std::endl;
+	    cout << "MAPA 2 SELECCIONADO" << endl;
 	    exit(0);
 	    break;
     }

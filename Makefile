@@ -3,7 +3,7 @@ OPENGL_FLAGS = -lglut -lGLU -lGL -lX11
 OPENCV_FLAGS = $(shell pkg-config --cflags --libs opencv4)
 OPENAL_FLAGS = -lopenal -lalut
 FREE_FLAGS = -lm -lassimp
-CXXFLAGS = -Wall -O2
+CXXFLAGS = -Wall -O2 -w
 
 TARGET= bin/proyecto
 
