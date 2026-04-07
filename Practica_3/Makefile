@@ -9,6 +9,7 @@ TARGET_2 = bin/ejercicio_2
 TARGET_3 = bin/ejercicio_5
 TARGET_4 = bin/ejercicio_9
 TARGET_5 = bin/ejercicio_11
+TARGET_6 = bin/ejercicio_14
 TARGET_7 = bin/ejercicio_15
 TARGET_8 = bin/ejercicio_18
 TARGET_9 = bin/actividad_1
@@ -20,6 +21,7 @@ SRC_2 = code/helloWorld_ALUT.c
 SRC_3 = code/openal_senyals.c
 SRC_4 = code/openal_fitxer.c
 SRC_5 = code/pige.c
+SRC_6 = code/openal_stream_wave.c
 SRC_7 = code/al_simple.c
 SRC_8 = code/al_hrtf_loopback_wav.c
 SRC_9 = code/actividad_1.c
@@ -31,6 +33,7 @@ OBJ_2 = exec/helloWorld_ALUT.o
 OBJ_3 = exec/openal_senyals.o
 OBJ_4 = exec/openal_fitxer.o
 OBJ_5 = exec/pige.o
+OBJ_6 = exec/openal_stream_wave.o
 OBJ_7 = exec/al_simple.o
 OBJ_8 = exec/al_hrtf_loopback_wav.o
 OBJ_9 = exec/actividad_1.o
@@ -38,9 +41,9 @@ OBJ_10 = exec/actividad_2.o
 
 
 # Compilate all
-all: ejercicio_1 ejercicio_2 \
-    ejercicio_5 ejercicio_9 \
-	ejercicio_11  \
+all: ejercicio_1 ejercicio_2  \
+    ejercicio_5 ejercicio_9   \
+	ejercicio_11 ejercicio_14 \
 	ejercicio_15 ejercicio_18 \
 	actividad_1 actividad_2
 
@@ -94,6 +97,16 @@ $(OBJ_5): $(SRC_5)
 	mkdir -p exec
 	$(CC) $(CXXFLAGS) -c $(SRC_5) -o $(OBJ_5)
 
+
+# Ejercicio 14 compilation
+ejercicio_14: $(OBJ_6)
+	mkdir -p bin
+	$(CC) $(OBJ_6) -o $(TARGET_6) -lsndfile $(OPENAL_FLAGS)
+
+$(OBJ_6): $(SRC_6)
+	mkdir -p exec
+	$(CC) $(CXXFLAGS) -c $(SRC_6) -o $(OBJ_6)
+# To compile use: sudo apt install libsndfile-dev
 
 # Ejercicio 15 compilation
 ejercicio_15: $(OBJ_7)

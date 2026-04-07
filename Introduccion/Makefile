@@ -2,7 +2,7 @@ CC = g++
 OPENGL_FLAGS = -lglut -lGLU -lGL -lX11 -lm
 OPENCV_FLAGS = $(shell pkg-config --cflags --libs opencv4)
 OPENAL_FLAGS = -lopenal -lalut
-CXXFLAGS = -Wall -O2
+CXXFLAGS = -Wall -O2 -w
 
 
 TARGET_1 = bin/pruebaGL
