@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
-#include <unistd.h>
 #include <sys/select.h>
 #include <time.h>
 
@@ -53,12 +52,6 @@ void DebugTerminal() {
     system("stty sane");
 }
 
-// ========= THREAD FUNCTION ===========
-void* save_audio_thread(void* arg) {
-    save_audio();
-    return NULL;
-}
-
 
 // =====================================================
 // MAIN
@@ -90,57 +83,7 @@ int main(int argc, char **argv)
 void init(void)
 {
     alutInit(NULL, NULL);
-
-    if(initContexts() == -1)
-    {
-        printf("Error creating context");
-    }   
-
-    alListenerfv(AL_POSITION, player.position);
-    alListenerfv(AL_VELOCITY, player.velocity);
-    alListenerfv(AL_ORIENTATION, player.listenerOrientation);
-
-    alGenBuffers(NUM_SOURCES, buffer);
-
-    printf("===========================================================\n");
-    for (int i = 0; i < NUM_SOURCES; i++) {
-        char fullPath[256];
-        snprintf(fullPath, sizeof(fullPath), "%s%s", directoryMother, sourceRute[i]);
-        printf("Cargando archivo: %s\n", fullPath);
-        buffer[i] = alutCreateBufferFromFile(fullPath);
-    }
-    printf("===========================================================\n");
-
-    // =================================
-    //      Sources Contexto A
-    // =================================
-    alGenSources(NUM_SOURCES, source_out);
-
-    for (int i = 0; i < NUM_SOURCES; i++) {
-        alSourcef(source_out[i], AL_PITCH, 1.0f);
-        alSourcef(source_out[i], AL_GAIN, 1.0f);
-        alSourcefv(source_out[i], AL_POSITION, sourcePos[i]);
-        alSourcefv(source_out[i], AL_VELOCITY, sourceVel[i]);
-        alSourcei(source_out[i], AL_BUFFER, buffer[i]);
-        alSourcei(source_out[i], AL_LOOPING, AL_TRUE);
-    }
-
-    // =====================================
-    //          Sources Contexto B
-    // =====================================
-    alGenSources(NUM_SOURCES, source_lb);
-
-    for (int i = 0; i < NUM_SOURCES; i++) {
-        alSourcef(source_lb[i], AL_PITCH, 1.0f);
-        alSourcef(source_lb[i], AL_GAIN, 1.0f);
-        alSourcefv(source_lb[i], AL_POSITION, sourcePos[i]);
-        alSourcefv(source_lb[i], AL_VELOCITY, sourceVel[i]);
-        alSourcei(source_lb[i], AL_BUFFER, buffer[i]);
-        alSourcei(source_lb[i], AL_LOOPING, AL_TRUE);
-    }
-
-    // Grabacion del audio
-    pthread_create(&thread_audio, NULL, save_audio_thread, NULL);
+    initContexts();
 
     // Posiciones aleatorias
     srand(time(NULL));
@@ -153,6 +96,65 @@ void init(void)
     sourcePos[3][0] = 0.0f;
     sourcePos[3][1] = 0.0f;
     sourcePos[3][2] = -4.0f;
+
+    // =====================================
+    //         Preparar Contexto A
+    // =====================================
+    alcMakeContextCurrent(ctx_out);
+
+    alListenerfv(AL_POSITION, player.position);
+    alListenerfv(AL_VELOCITY, player.velocity);
+    alListenerfv(AL_ORIENTATION, player.listenerOrientation);
+
+    alGenBuffers(NUM_SOURCES, buffer_lb);
+    printf("===========================================================\n");
+    printf("               Preparando buffers contexto A               \n\n");
+    for (int i = 0; i < NUM_SOURCES; i++) {
+        char fullPath[256];
+        snprintf(fullPath, sizeof(fullPath), "%s%s", directoryMother, sourceRute[i]);
+        printf("Cargando archivo: %s\n", fullPath);
+        buffer_lb[i] = alutCreateBufferFromFile(fullPath);
+    }
+    alGenSources(NUM_SOURCES, source_out);
+    for (int i = 0; i < NUM_SOURCES; i++) {
+        alSourcef(source_out[i], AL_PITCH, 1.0f);
+        alSourcef(source_out[i], AL_GAIN, 1.0f);
+        alSourcefv(source_out[i], AL_POSITION, sourcePos[i]);
+        alSourcefv(source_out[i], AL_VELOCITY, sourceVel[i]);
+        alSourcei(source_out[i], AL_BUFFER, buffer_lb[i]);
+        alSourcei(source_out[i], AL_LOOPING, AL_TRUE);
+    }
+
+
+    // =====================================
+    //         Preparar Contexto B
+    // =====================================
+    alcMakeContextCurrent(ctx_lb);
+
+    alListenerfv(AL_POSITION, player.position);
+    alListenerfv(AL_VELOCITY, player.velocity);
+    alListenerfv(AL_ORIENTATION, player.listenerOrientation);
+
+    alGenBuffers(NUM_SOURCES, buffer_out);
+    printf("===========================================================\n");
+    printf("               Preparando buffers contexto B               \n\n");
+    for (int i = 0; i < NUM_SOURCES; i++) {
+        char fullPath[256];
+        snprintf(fullPath, sizeof(fullPath), "%s%s", directoryMother, sourceRute[i]);
+        printf("Cargando archivo: %s\n", fullPath);
+        buffer_out[i] = alutCreateBufferFromFile(fullPath);
+    }
+    printf("===========================================================\n");
+
+    alGenSources(NUM_SOURCES, source_lb);
+    for (int i = 0; i < NUM_SOURCES; i++) {
+        alSourcef(source_lb[i], AL_PITCH, 1.0f);
+        alSourcef(source_lb[i], AL_GAIN, 1.0f);
+        alSourcefv(source_lb[i], AL_POSITION, sourcePos[i]);
+        alSourcefv(source_lb[i], AL_VELOCITY, sourceVel[i]);
+        alSourcei(source_lb[i], AL_BUFFER, buffer_out[i]);
+        alSourcei(source_lb[i], AL_LOOPING, AL_TRUE);
+    }
 }
 
 // =====================================================
@@ -160,6 +162,8 @@ void init(void)
 // =====================================================
 void display(void)
 {
+    clock_t start = clock();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPushMatrix();
     glRotatef(20.0, 1.0, 1.0, 0.0);
@@ -185,6 +189,13 @@ void display(void)
     glColor3f(1,1,1);
     glutWireCube(0.5);
     glPopMatrix();
+
+    // Guardamos el audio
+    save_audio();
+
+    clock_t end = clock();
+    double seconds = (double)(end - start) / CLOCKS_PER_SEC;
+    duration += seconds;
 
     glPopMatrix();
     glutSwapBuffers();
@@ -226,6 +237,12 @@ void comprobatePlayerPosition(void)
         player.position[0] = -3.5f;
         player.velocity[0] = 0.0f;
     }
+    
+    alcMakeContextCurrent(ctx_lb);
+    alListenerfv(AL_POSITION, player.position);
+
+    alcMakeContextCurrent(ctx_out);
+    alListenerfv(AL_POSITION, player.position);
 }
 
 // =====================================================
@@ -266,25 +283,22 @@ void keyboard(unsigned char key, int x, int y)
     case 'a':
     case 'A':
         player.velocity[0] -= deltaVel;
-        alListenerfv(AL_POSITION, player.position);
+        
         break;
 
     case 's':
     case 'S':
         player.velocity[0] += deltaVel;
-        alListenerfv(AL_POSITION, player.position);
         break;
 
     case 'q':
     case 'Q':
         player.velocity[2] -= deltaVel;
-        alListenerfv(AL_POSITION, player.position);
         break;
 
     case 'z':
     case 'Z':
         player.velocity[2] += deltaVel;
-        alListenerfv(AL_POSITION, player.position);
         break;
 
     // --- Doppler Factor ---
@@ -347,9 +361,16 @@ void keyboard(unsigned char key, int x, int y)
         {
             stopSource(i);
         }
-        isExit = 1;
+        printf("Deteniendo grabacion.\n");
+   
+        free(chunk);
+        wav_close(&wav, NUM_CHANNELS);
 
-        pthread_join(thread_audio, NULL);
+        cleanContextA();
+        cleanContextB();
+        alutExit();
+    
+        printf("WAV guardado: %s  (%.1f s, %d Hz, estereo Float32)\n", saveRute, duration, SAMPLE_RATE);
 
         glutDestroyWindow(GLwin);
         exit(0);
@@ -382,7 +403,6 @@ void specialKeys(int key, int x, int y)
         break;
     }
 
-    alListenerfv(AL_POSITION, player.position);
     glutPostRedisplay();
 }
 
@@ -413,20 +433,20 @@ void comprobateSound(void)
 
 void playSource(int num)
 {
-    alcMakeContextCurrent(ctx_out);
-    alSourcePlay(source_out[num]);
-
     alcMakeContextCurrent(ctx_lb);
     alSourcePlay(source_lb[num]);
+
+    alcMakeContextCurrent(ctx_out);
+    alSourcePlay(source_out[num]);
 }
 
 void stopSource(int num)
 {
-    alcMakeContextCurrent(ctx_out);
-    alSourceStop(source_out[num]);
-
     alcMakeContextCurrent(ctx_lb);
     alSourceStop(source_lb[num]);
+
+    alcMakeContextCurrent(ctx_out);
+    alSourceStop(source_out[num]);
 }
 
 // =============================================================
@@ -603,72 +623,38 @@ int initContexts(void)
         printf("HRTF no activo en loopback\n");
         return -1;
     }
-
-    /* Restaurar explícitamente ctx_lb como contexto activo antes de continuar */
-    alcMakeContextCurrent(ctx_lb);
-    return 0;
-}
-
-int save_audio(void)
-{ 
-    float duration = 0.0f;
+    
     // ==================================================================
     //                   Abrir WAV y buffer de chunk
     // ================================================================== 
-    WavWriter wav;
+
     if(!wav_open(&wav, saveRute, SAMPLE_RATE, NUM_CHANNELS, 32))
     {
+        cleanContextA();
         cleanContextB();
         return -1;
     }
 
     chunk = malloc(sizeof(float) * CHUNK_FRAMES * NUM_CHANNELS);
-    int frames_now = CHUNK_FRAMES;
 
     printf("Grabando a tiempo real en '%s'\n", saveRute);
     printf("Pulsa Esc para detener.\n");
-    printf("===========================================================\n");
     fflush(stdout);
+    return 0;
+}
 
-    /* ==================================================================
-     * Bucle principal
-     *
-     * Orden de operaciones por iteración:
-     *   1. Actualizar posición en loopback (ctx_lb) y capturar chunk
-     *   2. Escribir chunk al WAV
-     *   3. Cambiar a ctx_out y actualizar la misma posición
-     *   4. Volver a ctx_lb para la próxima iteración
-     * ================================================================== */
+int save_audio(void)
+{ 
+    //  1. CONTEXTO B (loopback) → capturar al WAV 
+    alcMakeContextCurrent(ctx_lb);
+    alcProcessContext(ctx_lb);
 
-    /* El contexto activo al entrar al bucle es ctx_lb */
-    while (isExit == 0)
-    {
-        //  1. CONTEXTO B (loopback) → capturar al WAV 
-        alcMakeContextCurrent(ctx_lb);
-        alcProcessContext(ctx_lb);
+    alcRenderSamplesSOFT(dev_lb, chunk, frames_now);
+    wav_write(&wav, chunk, frames_now, NUM_CHANNELS);
 
-        alcRenderSamplesSOFT(dev_lb, chunk, frames_now);
-        wav_write(&wav, chunk, frames_now, NUM_CHANNELS);
-
-        //  2. CONTEXTO A (salida real) → reproducir sonido 
-        alcMakeContextCurrent(ctx_out);
-        alcProcessContext(ctx_out);
-
-
-        //  3. Pausa entre iteraciones
-        usleep(10000); // 10 ms aprox
-        duration += 0.01f;
-    }
-    printf("Deteniendo grabacion.\n");
-   
-    free(chunk);
-    wav_close(&wav, NUM_CHANNELS);
-
-    cleanContextA();
-    cleanContextB();
-    alutExit();
-   
-    printf("WAV guardado: %s  (%.1f s, %d Hz, estereo Float32)\n", saveRute, duration, SAMPLE_RATE);
+    //  2. CONTEXTO A (salida real) → reproducir sonido 
+    alcMakeContextCurrent(ctx_out);
+    alcProcessContext(ctx_out);
 
     return 0;
 }

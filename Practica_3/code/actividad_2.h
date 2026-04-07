@@ -43,8 +43,6 @@ ALfloat sourceVel[NUM_SOURCES][3] = {
     {0.0,0.0,0.0}
 };
 
-ALuint buffer[NUM_SOURCES];
-
 char directoryMother[256] = "code/audios/actividad_1/";
 
 char sourceRute[NUM_SOURCES][128] = {
@@ -73,11 +71,14 @@ typedef struct {
     FILE    *fp;
     uint32_t data_bytes;
 } WavWriter;
+WavWriter wav;
 
 // ====== GLOBAL VARIABLES =======
-int isExit = 0;
 ALuint source_out[NUM_SOURCES];
 ALuint source_lb[NUM_SOURCES];
+
+ALuint buffer_out[NUM_SOURCES];
+ALuint buffer_lb[NUM_SOURCES];
 
 static LPALCLOOPBACKOPENDEVICESOFT      alcLoopbackOpenDeviceSOFT;
 static LPALCISRENDERFORMATSUPPORTEDSOFT alcIsRenderFormatSupportedSOFT;
@@ -92,8 +93,7 @@ ALCdevice *dev_out, *dev_lb;
 ALCcontext  *ctx_out, *ctx_lb; 
 
 const float *chunk;
-
-// Hilo para paralelismo de grabacion
-pthread_t thread_audio;
+int frames_now = CHUNK_FRAMES;
+double duration = 0.0;
 
 #endif
