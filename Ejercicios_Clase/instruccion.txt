@@ -1,0 +1,16 @@
+El propósito de esta actividad es experimentar con un caso práctico de otras dos tecnologías que describen la asignatura: en este caso es un ejemplo de Integración de procesado de imagen de mundo real con síntesis de audio.
+
+La primera de estas tecnologías la desarrollamos bajo el API de OpenCV y, para la segunda, con el de OpenAL.
+
+El documento "Interacción con OpenCV: detección de movimiento para realizar un instrumento virtual con OpenCV + OpenAL" <https://riunet.upv.es/handle/10251/12684> expone las ideas hasta llegar a la realización de dos ejemplos: "discoCam" y "pianoCam" cuyo código completo se adjunta en el fichero.
+
+Tened cuidado con el uso de OpenCV, puesto que, cuando se redactó el documento, la versión de OpenCV no era la que estamos utilizando este año en prácticas. Las ideas del documento siguen siendo válidas. Vamos a trabajar sobre el discoCam, solamente, del que tenéis una versión en CPP (discoCam.cpp) que se puede utilizar con la configuración actual del laboratorio de OpenCV.
+
+ 
+
+Como respuesta a esta tarea se deberá adjuntar un documento:
+
+En versión PDF de, como mucho, dos páginas de extensión.
+Que describa el funcionamiento de la aplicación "discoCam",  acompañándolo de capturas de la ejecución.
+Que explique ¿qué representan "NUM_COL" y "NUM_FIL"? Asumiendo que tomen el mismo valor ¿cuáles podrían ser sus valores mínimos y máximos?
+Que explique ¿qué son los valores "Umbral de movimiento" y "Cantidad de movimiento" que el interfaz permite variar?

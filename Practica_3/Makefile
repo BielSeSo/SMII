@@ -12,6 +12,7 @@ TARGET_5 = bin/ejercicio_11
 TARGET_7 = bin/ejercicio_15
 TARGET_8 = bin/ejercicio_18
 TARGET_9 = bin/actividad_1
+TARGET_10 = bin/actividad_2
 
 
 SRC_1 = code/openal_info.c
@@ -21,7 +22,8 @@ SRC_4 = code/openal_fitxer.c
 SRC_5 = code/pige.c
 SRC_7 = code/al_simple.c
 SRC_8 = code/al_hrtf_loopback_wav.c
-SRC_9 = code/actividad_1.cpp
+SRC_9 = code/actividad_1.c
+SRC_10 = code/actividad_2/actividad_1_2.c code/actividad_2/actividad_2.c
 
 
 OBJ_1  = exec/openal_info.o
@@ -32,6 +34,7 @@ OBJ_5 = exec/pige.o
 OBJ_7 = exec/al_simple.o
 OBJ_8 = exec/al_hrtf_loopback_wav.o
 OBJ_9 = exec/actividad_1.o
+OBJ_10 = $(SRC_10:code/actividad_2/%.c=exec/actividad_2/%.o)
 
 
 # Compilate all
@@ -116,11 +119,23 @@ $(OBJ_8): $(SRC_8)
 # Actividad 1 compilation
 actividad_1: $(OBJ_9)
 	mkdir -p bin
-	g++ $(OBJ_9) -o $(TARGET_9) $(OPENAL_FLAGS) $(OPENGL_FLAGS)
+	$(CC) $(OBJ_9) -o $(TARGET_9) $(OPENAL_FLAGS) $(OPENGL_FLAGS)
 
 $(OBJ_9): $(SRC_9)
 	mkdir -p exec
-	g++ $(CXXFLAGS) -c $(SRC_9) -o $(OBJ_9)
+	$(CC) $(CXXFLAGS) -c $(SRC_9) -o $(OBJ_9)
+
+
+# Actividad 2 compilation
+actividad_2: $(OBJ_10)
+	mkdir -p bin
+	mkdir -p bin/A2_audio
+	$(CC) $(OBJ_10) -o $(TARGET_10) $(OPENAL_FLAGS) $(OPENGL_FLAGS)
+
+exec/actividad_2/%.o: code/actividad_2/%.c
+	mkdir -p exec
+	mkdir -p exec/actividad_2
+	$(CC) $(CXXFLAGS) -c $< -o $@
 
 
 # Clean everything	
