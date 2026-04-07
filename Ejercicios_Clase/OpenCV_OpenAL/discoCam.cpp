@@ -124,8 +124,8 @@ void inicializarAudio(){
                 }
 
             } // if ( (y != 0) AND (x != 0) ) {
-        }// for(x=-4; x <= 4; x+= 2
-    }
+        }// for(x=-4; x <= 4; x+= 2)
+    }// for(y=NUM_FIL; y >= -NUM_FIL; y-= 2)
 } // Fi de inicializarAudio
 
 
@@ -247,43 +247,42 @@ int main( int argc, char** argv )
 	        } // for(j=0;j<NUM_COL;j++)
         } //for(i=0;i<NUM_FIL;i++){
 
-    //      frame.roi( rectGeneral );
-    imshow( FPPAL , frame );
+        //      frame.roi( rectGeneral );
+        imshow( FPPAL , frame );
 
-    // guardar el cuadro que acaba de processar-se
-    lastImage = image.clone();
+        // guardar el cuadro que acaba de processar-se
+        lastImage = image.clone();
 
-    if (mostrarImatge == 'b') imshow( FDEBUG, bitImage);
-    else imshow( FDEBUG, diffImage);
+        if (mostrarImatge == 'b') imshow( FDEBUG, bitImage);
+        else imshow( FDEBUG, diffImage);
 
-    tecla = waitKey(25) & 255;  // Espera una tecla los milisegundos que haga falta
-    switch ( tecla )
-	{
-        case ESC:
-        case 'q':
-        case 'Q':    // Si 'ESC', q ó Q, ¡acabar!
-            salir = TRUE;
-            break;
+        tecla = waitKey(25) & 255;  // Espera una tecla los milisegundos que haga falta
+        switch ( tecla )
+        {
+            case ESC:
+            case 'q':
+            case 'Q':    // Si 'ESC', q ó Q, ¡acabar!
+                salir = TRUE;
+                break;
 
-        case 'b':    
-            mostrarImatge = 'b';
-            break;
+            case 'b':    
+                mostrarImatge = 'b';
+                break;
+            
+            case 'd':    
+                mostrarImatge = 'd';
+                break;
         
-        case 'd':    
-            mostrarImatge = 'd';
-            break;
-    
-        case 'f':
-            fullScreenMode = !fullScreenMode;
-            if ( fullScreenMode )
-                setWindowProperty( FPPAL, WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);
+            case 'f':
+                fullScreenMode = !fullScreenMode;
+                if ( fullScreenMode )
+                    setWindowProperty( FPPAL, WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);
+                else
+                    setWindowProperty( FPPAL, WND_PROP_FULLSCREEN, WINDOW_NORMAL);       
+                break;
 
-	        else
-                setWindowProperty( FPPAL, WND_PROP_FULLSCREEN, WINDOW_NORMAL);       
-	        break;
-
-	    default: break;    
-	} // Fin de "switch ( tecla )"  
+            default: break;    
+        } // Fin de "switch ( tecla )"  
 
     } // while ( !salir )
 
