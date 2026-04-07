@@ -144,10 +144,6 @@ int main( int argc, char* argv[] )
 } // Fi de "main( ..."
 
 
-
-
-
-
 void save_image(char tecla)
 {
   char nomDst[100];

@@ -34,13 +34,13 @@ ALfloat sourceVel[NUM_SOURCES][3] = {
 ALuint buffer[NUM_SOURCES];
 ALuint source[NUM_SOURCES];
 
-char directoryMother[256] = "code/audios/actividad_1/";
+char directoryMother[256] = "code/audios/A1/";
 
 char sourceRute[NUM_SOURCES][128] = {
-    "BasketBall.wav",
-    "BasketBall.wav",
-    "Public.wav",
-    "Ambulance.wav"
+    "BASKETB1.wav",
+    "BASKETB2.wav",
+    "PUBLIC.wav",
+    "ambulancia.wav"
 };
 
 int GLwin;

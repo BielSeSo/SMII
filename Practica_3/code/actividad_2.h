@@ -4,8 +4,6 @@
 #include "AL/alc.h"
 #include "AL/alext.h" 
 
-#include <pthread.h>
-
 // ============== DEFINITIONS ================
 #define NUM_SOURCES 4
 #define NUM_ENVIRONMENTS 1
@@ -43,13 +41,13 @@ ALfloat sourceVel[NUM_SOURCES][3] = {
     {0.0,0.0,0.0}
 };
 
-char directoryMother[256] = "code/audios/actividad_1/";
+char directoryMother[256] = "code/audios/A1/";
 
 char sourceRute[NUM_SOURCES][128] = {
-    "BasketBall.wav",
-    "BasketBall.wav",
-    "Public.wav",
-    "Ambulance.wav"
+    "BASKETB1.wav",
+    "BASKETB2.wav",
+    "PUBLIC.wav",
+    "ambulancia.wav"
 };
 
 int GLwin;
