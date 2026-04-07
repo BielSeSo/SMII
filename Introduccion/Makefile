@@ -21,7 +21,7 @@ OBJ_3 = exec/pruebaAL.o
 
 
 # Compile all
-all: pruebaGL
+all: pruebaGL pruebaCV pruebaAL
 
 # Prueba GL compilation
 pruebaGL: $(OBJ_1)
