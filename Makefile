@@ -8,7 +8,7 @@ CXXFLAGS = -Wall -O2 -w
 TARGET= bin/proyecto
 
 SRC_INTERFACE = code/interface.cpp
-SRC_GAME = code/game/load_minimap.cpp code/game/load_obj.cpp code/game/player.cpp
+SRC_GAME = code/game/load_map.cpp code/game/load_obj.cpp code/game/player.cpp
 SRC_MAIN = code/main.cpp
 
 OBJ_INTERFACE = exec/interface.o

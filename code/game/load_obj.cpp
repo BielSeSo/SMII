@@ -1,19 +1,19 @@
 #include <iostream>
 #include <string>
-using namespace std;
+#include <algorithm>
 
 #include <GL/glut.h>
 #include <GL/glu.h>
 
 #include "load_obj.h"
 
-Loader::Loader()
-{
+using namespace std;
 
-}
-
-void Loader::computeBounds() 
+/*
+void computeBounds() 
 {
+    aiVector3D minV, maxV;
+
     minV = aiVector3D( 1e10f,  1e10f,  1e10f);
     maxV = aiVector3D(-1e10f, -1e10f, -1e10f);
     for (unsigned int m = 0; m < gScene->mNumMeshes; ++m) {
@@ -25,12 +25,13 @@ void Loader::computeBounds()
         }
     }
 }
+*/
 
-void Loader::load_model(string path)
+GLuint load_obj(string path)
 {
     static Assimp::Importer gImporter;
 
-    gScene = gImporter.ReadFile(path,
+    const aiScene* gScene = gImporter.ReadFile(path,
         aiProcess_Triangulate |
         aiProcess_GenNormals |
         aiProcess_JoinIdenticalVertices |
@@ -40,6 +41,7 @@ void Loader::load_model(string path)
 
     if (!gScene) {
         std::cerr << "Error cargando modelo: " << gImporter.GetErrorString() << "\n";
+        return 0;
     }
     
     GLuint gListId = glGenLists(1);
@@ -79,5 +81,5 @@ void Loader::load_model(string path)
 
     glEndList();
 
-    glCallList(gListId);
+    return gListId;
 }

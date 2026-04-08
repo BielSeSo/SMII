@@ -1,27 +1,31 @@
 #include <cmath>
 #include "player.h"
 
-Player::Player(int x, int y, int z)
+Player::Player(float x, float y, float z)
 {
     pos.x = x;
     pos.y = y;
     pos.z = z;
+
+    velocidad = 0.0f; 
+    grados = 0.0f;
+
+    hitbox[0] = 0.5f;
+    hitbox[1] = 0.5f;
 }
 
-Vec3 Player::get_pos()
+Vec3 Player::get_pos() const
 {
     return pos;
 }
 
 void Player::move()
-{   
-    if(grados >= 360 || grados <=-360)
+{
+    if (grados >= 360.0f || grados <= -360.0f)
     {
-        grados = 0;
+        grados = 0.0f;
     }
 
     pos.x -= velocidad * sinf(rad(grados));
-	pos.y += velocidad * cosf(rad(grados));
+    pos.y += velocidad * cosf(rad(grados));
 }
-
-

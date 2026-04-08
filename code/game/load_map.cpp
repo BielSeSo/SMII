@@ -2,11 +2,12 @@
 #include <GL/glut.h>
 #include <GL/glu.h>
 
-#include "load_minimap.h"
+#include "load_map.h"
 
 Map::Map()
 {
-    this->selectedMap = 0;
+    selectedMap = 0;
+    mapList = 0;
 }
 
 void Map::selectMap(int selectedMap)
@@ -18,10 +19,12 @@ void Map::setupLights()
 {
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
-    GLfloat pos[]  = {1.0f, 1.0f, 2.0f, 0.0f}; // direccional
-    GLfloat diff[] = {0.9f, 0.9f, 0.9f, 1.0f};
+
+    GLfloat pos[]  = { 1.0f, 1.0f, 2.0f, 0.0f }; // direccional  
+    GLfloat diff[] = { 0.9f, 0.9f, 0.9f, 1.0f };
     GLfloat amb[]  = {0.2f, 0.2f, 0.2f, 1.0f};
     GLfloat spec[] = {0.1f, 0.1f, 0.1f, 1.0f};
+    
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
     glLightfv(GL_LIGHT0, GL_DIFFUSE,  diff);
     glLightfv(GL_LIGHT0, GL_AMBIENT,  amb);
@@ -31,15 +34,18 @@ void Map::setupLights()
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 }
 
-void Map::load_map()
+GLuint Map::load_map(void)
 {   
     switch(selectedMap)
     {
         case 1:
-            this->loader_map.load_model("assets/Track_1.obj");
+            mapList = load_obj("assets/Track_1.obj");
             break;
 
-        default: break;
+        default: 
+            mapList = 0;    
+            break;
     }
     
+    return mapList;
 }

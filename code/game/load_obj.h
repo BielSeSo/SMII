@@ -1,25 +1,16 @@
-#ifndef LOAD_OBJ_HPP
-#define LOAD_OBJ_HPP
+#ifndef LOAD_OBJ_H
+#define LOAD_OBJ_H
 
-    #include <assimp/Importer.hpp>
-    #include <assimp/scene.h>
-    #include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
-    #include <string>
+#include <GL/gl.h> 
 
-    using namespace std;
+#include <string>
 
-    class Loader
-    {   
-        private:
-            aiVector3D minV, maxV;
-            const aiScene* gScene;
-            void computeBounds();
-
-        public:
-            Loader();
-            void load_model(string path);
-            void get_hitbox();
-    };
+GLuint load_obj(std::string path);
+void computeBounds();
+void get_hitbox();
 
 #endif

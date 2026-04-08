@@ -6,9 +6,6 @@
 #include <GL/glut.h>
 #include <opencv2/opencv.hpp>
 
-using namespace std;
-using namespace cv;
-
 // Variables globales
 struct ButtonArea {
     float x1, x2, y1, y2;
@@ -22,12 +19,12 @@ extern int botonSeleccionado; // 0: START, 1: EXIT, 2: CREDITS
 extern bool usandoTeclado; // Para saber si mostrar el resaltado
 extern int ventana;
 
-int inicializarImgRGB(Mat *imgOrg, int option);
-void ponerTextoBoton(Mat &img, string texto);
-void cargarFondoInicio(string ruta);
-void crearTexturaBoton(int id, string texto);
+int inicializarImgRGB(cv::Mat *imgOrg, int option);
+void ponerTextoBoton(cv::Mat &img, std::string texto);
+void cargarFondoInicio(std::string ruta);
+void crearTexturaBoton(int id, std::string texto);
 void drawButton(float x, float y, float ancho, int id);
-void dibujarTexto(float x, float y, string texto);
+void dibujarTexto(float x, float y, std::string texto);
 void ejecutarAccion(int id);
 
 #endif
