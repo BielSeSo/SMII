@@ -15,13 +15,7 @@ ButtonArea buttonAreas[5];
 GLuint buttonTextures[7];
 GLuint fondoTexture;
 
-int botonSeleccionado = -1;
-bool usandoTeclado = false;
-int ventana = 0;
-
-
 // --- FUNCIONES DE OPENCV (Lógica de Imagen) ---
-
 int inicializarImgRGB(Mat *imgOrg, int option) {
     int x, y;
     const int TAM_BLOQUE = 20;
@@ -97,19 +91,32 @@ void crearTexturaBoton(int id, string texto) {
 void drawButton(float x, float y, float ancho, int id) {
     float alto = 0.25f;
     buttonAreas[id] = {x - ancho/2, x + ancho/2, y - alto/2, y + alto/2};
+   
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, buttonTextures[id]);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(x - ancho/2, y - alto/2);
+        glTexCoord2f(1, 0); glVertex2f(x + ancho/2, y - alto/2);
+        glTexCoord2f(1, 1); glVertex2f(x + ancho/2, y + alto/2);
+        glTexCoord2f(0, 1); glVertex2f(x - ancho/2, y + alto/2);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+}
+
+void drawSelectedButton(float x, float y, float ancho, int id)
+{
+    float alto = 0.25f;
 
     // Si el botón está seleccionado por teclado, dibujamos un recuadro de enfoque
-    if (usandoTeclado && botonSeleccionado == id) {
-        glColor3f(1.0f, 1.0f, 0.0f); // Amarillo para el "foco"
-        glLineWidth(5.0f);
-        glBegin(GL_LINE_LOOP);
-            glVertex2f(x - ancho/2 - 0.02f, y - alto/2 - 0.02f);
-            glVertex2f(x + ancho/2 + 0.02f, y - alto/2 - 0.02f);
-            glVertex2f(x + ancho/2 + 0.02f, y + alto/2 + 0.02f);
-            glVertex2f(x - ancho/2 - 0.02f, y + alto/2 + 0.02f);
-        glEnd();
-        glColor3f(1.0f, 1.0f, 1.0f); // Resetear a blanco para la textura
-    }
+    glColor3f(1.0f, 1.0f, 0.0f); // Amarillo para el "foco"
+    glLineWidth(5.0f);
+    glBegin(GL_LINE_LOOP);
+        glVertex2f(x - ancho/2 - 0.02f, y - alto/2 - 0.02f);
+        glVertex2f(x + ancho/2 + 0.02f, y - alto/2 - 0.02f);
+        glVertex2f(x + ancho/2 + 0.02f, y + alto/2 + 0.02f);
+        glVertex2f(x - ancho/2 - 0.02f, y + alto/2 + 0.02f);
+    glEnd();
+    glColor3f(1.0f, 1.0f, 1.0f); // Resetear a blanco para la textura
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, buttonTextures[id]);
@@ -120,6 +127,19 @@ void drawButton(float x, float y, float ancho, int id) {
         glTexCoord2f(0, 1); glVertex2f(x - ancho/2, y + alto/2);
     glEnd();
     glDisable(GL_TEXTURE_2D);
+}
+
+int areaButtonId(int x, int y)
+{
+    for(int id=0; id<3 ; id++)
+    {
+        cout << "x1: " << buttonAreas[id].x1 << " x2: " << buttonAreas[id].x2 << endl;
+        cout << "y1: " << buttonAreas[id].y1 << " y2: " << buttonAreas[id].y2 << endl;
+
+        if (((x > buttonAreas[id].x1) && (x < buttonAreas[id].x1)) && \
+        ((y > buttonAreas[id].y1) && (y < buttonAreas[id].y2))) return id;
+    }  
+    return -1; 
 }
 
 void dibujarTexto(float x, float y, string texto) {
@@ -135,64 +155,36 @@ void dibujarTexto(float x, float y, string texto) {
     }
 }
 
-void ejecutarAccion(int id) {
-    switch(id){
-	case 0:
-	    cout << "Cambiando a ventana de juego..." << endl;
+int ejecutarAccion(int id) 
+{
+    int ventana;
+
+    switch(id)
+    {
+        case 0:
+            cout << "Cambiando a ventana de juego..." << endl;
             ventana = 2; // Cambiamos el estado
-	    break;
+            break;
 
-	case 1:
+        case 1:
             cout << "Saliendo del juego..." << endl;
-            exit(0);
-	    break;
+            ventana = -1;
+            break;
 
-	case 2:
-            cout << "DESARROLLADO POR: TU NOMBRE" << endl;
-	    break;
+        case 2:
+            cout << "===========================================" << endl;
+            cout << "       Desarrollado por:" << endl;
+            cout << "- Marco Robert Valverde" << endl << "- Biel Selma Solans" << endl;
+            cout << "===========================================" << endl;
+            break;
 
-	case 3:
-	    cout << "MAPA 1 SELECCIONADO" << endl;
-	    exit(0);
-	    break;
+        case 3:
+        case 4:
+        case 5:
+            cout << "MAPA " << id-2 << " SELECCIONADO" << endl;
+            ventana = 3;
+            break;
 
-	case 4:
-	    cout << "MAPA 2 SELECCIONADO" << endl;
-	    exit(0);
-	    break;
+        default: break;
     }
 }
-
-
-   
-/*
-void keyboard(unsigned char key, int x, int y) {
-    if (key == 27) exit(0); // ESC
-
-    if (ventana == 0) {
-	ventana = 1; // Saltar al menú principal
-	glutPostRedisplay();
-        return;
-    }
-
-    if (key == 9) { // Tecla TAB
-        usandoTeclado = true;
-
-	if (ventana == 1){
-            botonSeleccionado = (botonSeleccionado + 1) % 3; // Ciclar entre 0, 1, 2
-            glutPostRedisplay(); // Forzar redibujado para ver el cambio
-	}
-	else if (ventana == 2){
-	    if (botonSeleccionado < 3 || botonSeleccionado >= 4) botonSeleccionado = 3;
-	    else botonSeleccionado = 4;
-            glutPostRedisplay(); // Forzar redibujado para ver el cambio
-	}
-    }
-
-    if (key == 13) { // Tecla ENTER
-        if (usandoTeclado) {
-            ejecutarAccion(botonSeleccionado);
-        }
-    }
-}
-*/

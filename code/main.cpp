@@ -23,8 +23,13 @@ GLuint kartList = 0;
 bool isGame   = false;
 bool firstTime = true;
 
+int ventana = 0;
+int id = -1;
+
 Player player1(0.0f, 0.0f, 0.0f);
 Map map_render;
+
+float coordinatesButtons1 [3][2] = {{0.0f, 0.5f}, {0.0f, 0.1f}, {0.0f, -0.3f}};
 
 /* =================== PROTOTIPOS =================== */
 
@@ -32,6 +37,7 @@ bool init();
 void display();
 void reshape(int w, int h);
 void keyboard(unsigned char key, int, int);
+void mouse(int button, int state, int x, int y);
 
 /* =================== MAIN =================== */
 
@@ -61,6 +67,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
 
     cout << "Presiona ESC para salir\n";
     glutMainLoop();
@@ -116,13 +123,9 @@ void display()
     {
         glDisable(GL_DEPTH_TEST);
 
-        for (int i = 0; i < 5; i++)
-            buttonAreas[i] = {0, 0, 0, 0};
-
         if (ventana == 0)
         {
             glEnable(GL_TEXTURE_2D);
-            glBindTexture(GL_TEXTURE_2D, fondoTexture);
 
             glBegin(GL_QUADS);
             glTexCoord2f(0, 0); glVertex2f(-2, -1);
@@ -137,10 +140,15 @@ void display()
         else if (ventana == 1)
         {
             float ancho = 0.8f;
-            drawButton(0.0f,  0.5f, ancho, 0);
-            drawButton(0.0f,  0.1f, ancho, 1);
-            drawButton(0.0f, -0.3f, ancho, 2);
+
+            for(int i=0; i<3; i++)
+                drawButton(coordinatesButtons1[i][0], coordinatesButtons1[i][1], ancho, i);
+            if(id != -1)
+            {
+                drawSelectedButton(coordinatesButtons1[id][0], coordinatesButtons1[id][1], ancho, id);
+            }
         }
+        else if(ventana == -1) exit(0);
     }
     else
     {
@@ -228,4 +236,43 @@ void keyboard(unsigned char key, int, int)
         }
         break;
     }
+}
+
+
+void mouse(int button, int state, int x, int y) 
+{
+    switch (button)
+    {
+        case GLUT_LEFT_BUTTON:
+            if (firstTime)
+            {
+                ventana = 1;
+                firstTime = false;
+            }
+            else
+            {
+                cout << "x: " << x << " y: " << y << endl << endl;
+                id = areaButtonId(x, y);
+                cout << id << endl;
+                if(id != -1)
+                {
+                    ventana = ejecutarAccion(id);
+                    id = -1;
+                }
+            }
+            break;
+
+        case GLUT_RIGHT_BUTTON:
+         if (firstTime)
+            {
+                ventana = 1;
+                firstTime = false;
+            }
+            break;
+
+        default:
+            break;
+    }
+
+   
 }
