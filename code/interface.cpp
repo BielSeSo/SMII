@@ -133,8 +133,9 @@ int areaButtonId(int x, int y)
 {
     for(int id=0; id<3 ; id++)
     {
-        cout << "x1: " << buttonAreas[id].x1 << " x2: " << buttonAreas[id].x2 << endl;
-        cout << "y1: " << buttonAreas[id].y1 << " y2: " << buttonAreas[id].y2 << endl;
+        // Comprobar que medidas cogen los botones
+        // cout << "x1: " << buttonAreas[id].x1 << " x2: " << buttonAreas[id].x2 << endl;
+        // cout << "y1: " << buttonAreas[id].y1 << " y2: " << buttonAreas[id].y2 << endl;
 
         if (((x > buttonAreas[id].x1) && (x < buttonAreas[id].x1)) && \
         ((y > buttonAreas[id].y1) && (y < buttonAreas[id].y2))) return id;
@@ -172,6 +173,7 @@ int ejecutarAccion(int id)
             break;
 
         case 2:
+            ventana = 1; // Mantenemos ventana de momento
             cout << "===========================================" << endl;
             cout << "       Desarrollado por:" << endl;
             cout << "- Marco Robert Valverde" << endl << "- Biel Selma Solans" << endl;
@@ -181,10 +183,12 @@ int ejecutarAccion(int id)
         case 3:
         case 4:
         case 5:
-            cout << "MAPA " << id-2 << " SELECCIONADO" << endl;
+            cout << "Mapa " << id-2 << " Seleccionado" << endl;
             ventana = 3;
             break;
 
         default: break;
     }
+
+    return ventana;
 }

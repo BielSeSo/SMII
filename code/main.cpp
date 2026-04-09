@@ -31,6 +31,10 @@ Map map_render;
 
 float coordinatesButtons1 [3][2] = {{0.0f, 0.5f}, {0.0f, 0.1f}, {0.0f, -0.3f}};
 
+int windowedWidth = 400, windowedHeight = 400;
+int windowedPosX = 100, windowedPosY = 100;
+int isFullscreen = 0;
+
 /* =================== PROTOTIPOS =================== */
 
 bool init();
@@ -57,9 +61,8 @@ int main(int argc, char** argv)
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(400, 300);
     glutCreateWindow("Mario Kart Interface");
-    glutFullScreen();
 
     if (!init())
         return -1;
@@ -208,33 +211,63 @@ void keyboard(unsigned char key, int, int)
 {
     switch (key)
     {
-    case 27:
-        exit(0);
-        break;
+        case 27:
+            exit(0);
+            break;
 
-    case 'w': case 'W':
-        player1.velocidad = max(player1.velocidad - 0.05f, -1.5f);
-        break;
+        case 'w': case 'W':
+            player1.velocidad = max(player1.velocidad - 0.05f, -1.5f);
+            break;
 
-    case 's': case 'S':
-        player1.velocidad = min(player1.velocidad + 0.05f,  1.5f);
-        break;
+        case 's': case 'S':
+            player1.velocidad = min(player1.velocidad + 0.05f,  1.5f);
+            break;
 
-    case 'a': case 'A':
-        player1.grados += 5.0f;
-        break;
+        case 'a': case 'A':
+            player1.grados += 5.0f;
+            break;
 
-    case 'd': case 'D':
-        player1.grados -= 5.0f;
-        break;
+        case 'd': case 'D':
+            player1.grados -= 5.0f;
+            break;
 
-    default:
-        if (firstTime)
-        {
-            ventana = 1;
-            firstTime = false;
-        }
-        break;
+        // --- Pantalla completa ---
+        case 'f':
+        case 'F':
+            if (!isFullscreen) {
+                windowedWidth  = glutGet(GLUT_WINDOW_WIDTH);
+                windowedHeight = glutGet(GLUT_WINDOW_HEIGHT);
+                windowedPosX   = glutGet(GLUT_WINDOW_X);
+                windowedPosY   = glutGet(GLUT_WINDOW_Y);
+                glutFullScreen();
+                isFullscreen = 1;
+            } else {
+                glutReshapeWindow(windowedWidth, windowedHeight);
+                glutPositionWindow(windowedPosX, windowedPosY);
+                isFullscreen = 0;
+            }
+            break;
+
+        // First options
+        case '1':
+            ventana = ejecutarAccion(0);
+            break;
+
+        case '2':
+            ventana = ejecutarAccion(1);
+            break;
+
+        case '3':
+            ventana = ejecutarAccion(2);
+            break;
+
+        default:
+            if (firstTime)
+            {
+                ventana = 1;
+                firstTime = false;
+            }
+            break;
     }
 }
 
@@ -250,10 +283,13 @@ void mouse(int button, int state, int x, int y)
                 firstTime = false;
             }
             else
-            {
-                cout << "x: " << x << " y: " << y << endl << endl;
+            {   
                 id = areaButtonId(x, y);
-                cout << id << endl;
+
+                // DEBUG
+                // cout << "x: " << x << " y: " << y << endl << endl;
+                // cout << "ID: " id << endl;
+
                 if(id != -1)
                 {
                     ventana = ejecutarAccion(id);
