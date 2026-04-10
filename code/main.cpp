@@ -9,13 +9,14 @@
 #include "game/load_map.h"
 #include "game/player.h"
 #include "interface.h"
+#include "sound_maker.h"
 
 using namespace std;
 
 /* =================== VARIABLES GLOBALES =================== */
 
-string routeFotoInicio = "images/Mario_kart.jpg";
-string routeKart1      = "assets/Kart_1.obj";
+string routeFotoInicio = "sources/images/Mario_kart.jpg";
+string routeKart1      = "sources/assets/Kart_1.obj";
 
 GLuint mapList  = 0;
 GLuint kartList = 0;
@@ -81,7 +82,10 @@ int main(int argc, char** argv)
 
 bool init()
 {
+    alutInit(NULL, NULL);
     glEnable(GL_DEPTH_TEST);
+
+    intSoundsMenu();
 
     if (!isGame)
     {

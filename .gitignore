@@ -1,3 +1,8 @@
+# Carpetas temporales del make
 bin/
 exec/
-images/
+
+# Carpetas de recursos (Ocupan mucho espacio)
+sources/images/
+sources/assets/
+sources/audios/

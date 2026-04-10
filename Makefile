@@ -8,24 +8,30 @@ CXXFLAGS = -Wall -O2 -w
 TARGET= bin/proyecto
 
 SRC_INTERFACE = code/interface.cpp
+SRC_SOUND = code/sound_maker.cpp
 SRC_GAME = code/game/load_map.cpp code/game/load_obj.cpp code/game/player.cpp
 SRC_MAIN = code/main.cpp
 
 OBJ_INTERFACE = exec/interface.o
+OBJ_SOUND = exec/sound_maker.o
 OBJ_GAME = $(SRC_GAME:code/game/%.cpp=exec/game/%.o)
 OBJ_MAIN = exec/main.o
 
 
 # Compile all
-all: $(OBJ_INTERFACE) $(OBJ_GAME) $(OBJ_MAIN)
+all: $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN)
 	mkdir -p bin	
-	$(CC) $(OBJ_INTERFACE) $(OBJ_GAME) $(OBJ_MAIN) -o $(TARGET) \
+	$(CC) $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN) -o $(TARGET) \
 	$(OPENCV_FLAGS) $(OPENGL_FLAGS) $(OPENAL_FLAGS) $(FREE_FLAGS)
 
 # Interface compilation
 $(OBJ_INTERFACE): $(SRC_INTERFACE)
 	mkdir -p exec
 	$(CC) $(CXXFLAGS) -c $(SRC_INTERFACE) -o $(OBJ_INTERFACE) $(OPENCV_FLAGS)
+
+# Sound maker compilation
+$(OBJ_SOUND): $(SRC_SOUND)
+	$(CC) $(CXXFLAGS) -c $(SRC_SOUND) -o $(OBJ_SOUND)
 
 # Game compilation
 exec/game/%.o: code/game/%.cpp
