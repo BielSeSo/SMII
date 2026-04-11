@@ -8,5 +8,9 @@
 
 void intSoundsMenu(void);
 void initSoundsGame(void);
+void playMenuSound(int id);
+void stopMenuSound(int id);
+void playGameSound(int id);
+void stopGameSound(int id);
 
 #endif

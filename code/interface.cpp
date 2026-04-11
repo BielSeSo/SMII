@@ -11,12 +11,18 @@ using namespace std;
 using namespace cv;
 
 // Definicion variables
+const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP;
+
 ButtonArea buttonAreas[5];
-GLuint buttonTextures[7];
+GLuint buttonTextures[total];
 GLuint fondoTexture;
 
-// --- FUNCIONES DE OPENCV (Lógica de Imagen) ---
-int inicializarImgRGB(Mat *imgOrg, int option) {
+float alto = 0.25f;
+
+
+// --- FUNCIONES DE OPENCV (Lógica de img) ---
+int inicializarImgRGB(Mat *imgOrg, int option) 
+{
     int x, y;
     const int TAM_BLOQUE = 20;
     if (imgOrg->channels() != 3) return 1;
@@ -38,7 +44,8 @@ int inicializarImgRGB(Mat *imgOrg, int option) {
     return 0;
 }
 
-void ponerTextoBoton(Mat &img, string texto) {
+void putTextButton(Mat &img, string texto) 
+{
     int fontFace = FONT_HERSHEY_SIMPLEX;
     double fontScale = 1.2;
     int thickness = 3;
@@ -52,30 +59,30 @@ void ponerTextoBoton(Mat &img, string texto) {
 
 // --- FUNCIONES DE OPENGL (Dibujado y Texturas) ---
 //La funció que converteix de Mat a textura d'OpenGl
-void cargarFondoInicio(string ruta) {
-    Mat imagen = imread(ruta);
-    if (imagen.empty()) {
-        cerr << "Error: No se pudo cargar la imagen " << ruta << endl;
-        return;
+void loadImage(string ruta) 
+{
+    Mat img = imread(ruta);
+    if (img.empty()) {
+        cerr << "Error: No se pudo cargar la img " << ruta << endl;
     }
-    cout << "Cargando imagen: " << ruta << endl;
+    cout << "Cargando img: " << ruta << endl;
 
     // IMPORTANTE: Para que no salga al revés y tenga colores correctos
-    cvtColor(imagen, imagen, COLOR_BGR2RGB);
-    flip(imagen, imagen, 0); 
+    cvtColor(img, img, COLOR_BGR2RGB);
+    flip(img, img, 0); 
 
     glGenTextures(1, &fondoTexture);
     glBindTexture(GL_TEXTURE_2D, fondoTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.cols, img.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imagen.cols, imagen.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, imagen.data);
 }
 
-void crearTexturaBoton(int id, string texto) {
+void createButtonTexture(int id, string text) 
+{
     Mat img(200, 600, CV_8UC3);
     inicializarImgRGB(&img, 0);
-    ponerTextoBoton(img, texto);
+    putTextButton(img, text);
 
     // Convertir BGR (OpenCV) a RGB (OpenGL)
     cvtColor(img, img, COLOR_BGR2RGB);
@@ -88,25 +95,47 @@ void crearTexturaBoton(int id, string texto) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-void drawButton(float x, float y, float ancho, int id) {
-    float alto = 0.25f;
+GLuint drawImage()
+{
+    GLuint imageList = glGenLists(1);
+    glNewList(imageList, GL_COMPILE);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, fondoTexture);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2f(-2, -1);
+    glTexCoord2f(1, 0); glVertex2f( 2, -1);
+    glTexCoord2f(1, 1); glVertex2f( 2,  1);
+    glTexCoord2f(0, 1); glVertex2f(-2,  1);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+
+    glEndList();
+
+    return imageList;
+}
+
+void drawButton(float x, float y, float ancho, int id) 
+{
     buttonAreas[id] = {x - ancho/2, x + ancho/2, y - alto/2, y + alto/2};
    
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, buttonTextures[id]);
+
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex2f(x - ancho/2, y - alto/2);
         glTexCoord2f(1, 0); glVertex2f(x + ancho/2, y - alto/2);
         glTexCoord2f(1, 1); glVertex2f(x + ancho/2, y + alto/2);
         glTexCoord2f(0, 1); glVertex2f(x - ancho/2, y + alto/2);
     glEnd();
+
     glDisable(GL_TEXTURE_2D);
 }
 
 void drawSelectedButton(float x, float y, float ancho, int id)
 {
-    float alto = 0.25f;
-
     // Si el botón está seleccionado por teclado, dibujamos un recuadro de enfoque
     glColor3f(1.0f, 1.0f, 0.0f); // Amarillo para el "foco"
     glLineWidth(5.0f);
@@ -117,16 +146,6 @@ void drawSelectedButton(float x, float y, float ancho, int id)
         glVertex2f(x - ancho/2 - 0.02f, y + alto/2 + 0.02f);
     glEnd();
     glColor3f(1.0f, 1.0f, 1.0f); // Resetear a blanco para la textura
-
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, buttonTextures[id]);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(x - ancho/2, y - alto/2);
-        glTexCoord2f(1, 0); glVertex2f(x + ancho/2, y - alto/2);
-        glTexCoord2f(1, 1); glVertex2f(x + ancho/2, y + alto/2);
-        glTexCoord2f(0, 1); glVertex2f(x - ancho/2, y + alto/2);
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
 }
 
 int areaButtonId(int x, int y)
@@ -143,9 +162,9 @@ int areaButtonId(int x, int y)
     return -1; 
 }
 
-void dibujarTexto(float x, float y, string texto) {
+void drawText(float x, float y, string texto)
+{
     // Desactivar texturas para que el texto sea de un color sólido
-    glDisable(GL_TEXTURE_2D);
     glColor3f(1.0f, 1.0f, 1.0f); // Color Blanco
 
     // Posicionar el "cursor" de dibujo
@@ -156,39 +175,40 @@ void dibujarTexto(float x, float y, string texto) {
     }
 }
 
-int ejecutarAccion(int id) 
+void ejecutarAccion(int id, int *ventana) 
 {
-    int ventana;
-
     switch(id)
     {
         case 0:
+            *ventana = 2; // Cambiamos el estado
             cout << "Cambiando a ventana de juego..." << endl;
-            ventana = 2; // Cambiamos el estado
             break;
 
         case 1:
-            cout << "Saliendo del juego..." << endl;
-            ventana = -1;
-            break;
-
-        case 2:
-            ventana = 1; // Mantenemos ventana de momento
+            *ventana =5;
             cout << "===========================================" << endl;
             cout << "       Desarrollado por:" << endl;
             cout << "- Marco Robert Valverde" << endl << "- Biel Selma Solans" << endl;
             cout << "===========================================" << endl;
             break;
 
+        case 2:
+            *ventana = -1;
+            cout << "Saliendo del juego..." << endl;
+            break;
+
         case 3:
         case 4:
         case 5:
+            *ventana = 3;
             cout << "Mapa " << id-2 << " Seleccionado" << endl;
-            ventana = 3;
             break;
 
-        default: break;
+        // Logic of back button
+        default: 
+            if(*ventana == 2) *ventana = 1;
+            if(*ventana == 3) *ventana = 2;
+            if(*ventana == 5) *ventana = 1;
+            break;
     }
-
-    return ventana;
 }

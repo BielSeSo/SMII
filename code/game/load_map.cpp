@@ -39,7 +39,15 @@ GLuint Map::load_map(void)
     switch(selectedMap)
     {
         case 1:
-            mapList = load_obj("sources/assets/Track_1.obj");
+            mapList = load_obj("sources/assets/Kart_1.obj");
+            break;
+
+        case 2:
+            mapList = load_obj("sources/assets/Track_2.obj");
+            break;
+
+        case 3:
+            mapList = load_obj("sources/assets/Track_3.obj");
             break;
 
         default: 

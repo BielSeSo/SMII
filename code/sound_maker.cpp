@@ -13,8 +13,8 @@ ALuint buffersGame[NUM_SOUNDS_GAME];
 ALuint sourcesMenu[NUM_SOUNDS_MENU];
 ALuint soucesGame[NUM_SOUNDS_GAME];
 
-const char *routesBuffersMenu[NUM_SOUNDS_MENU] = {"sources/audios/pop.wav"};
-const char *routesBuffersGame[NUM_SOUNDS_GAME] = {"sources/audios/brom.wav", \
+const char *routesBuffersMenu[NUM_SOUNDS_MENU] = {"sources/audios/Clic.wav"};
+const char *routesBuffersGame[NUM_SOUNDS_GAME] = {"sources/audios/Broom.wav", \
                                                   "sources/audios/chillido_rueda.wav"};
 
 // ============ FUNCTIONS =============== //
@@ -55,4 +55,14 @@ void playMenuSound(int id)
 void stopMenuSound(int id)
 {
     alSourceStop(sourcesMenu[id]);
+}
+
+void playGameSound(int id)
+{
+    alSourcePlay(soucesGame[id]);
+}
+
+void stopGameSound(int id)
+{
+    alSourcePlay(soucesGame[id]);
 }

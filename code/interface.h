@@ -6,19 +6,24 @@
 #include <GL/glut.h>
 #include <opencv2/opencv.hpp>
 
+#define NUM_MENUS 4
+#define NUM_BUTONS_INIT 3
+#define NUM_BUTONS_MAP 3
+
 // Variables globales
 struct ButtonArea {
     float x1, x2, y1, y2;
 };
 
 int inicializarImgRGB(cv::Mat *imgOrg, int option);
-void ponerTextoBoton(cv::Mat &img, std::string texto);
-void cargarFondoInicio(std::string ruta);
-void crearTexturaBoton(int id, std::string texto);
+void putTextButton(cv::Mat &img, std::string texto);
+void loadImage(std::string ruta);
+void createButtonTexture(int id, std::string text);
+GLuint drawImage();
 void drawButton(float x, float y, float ancho, int id);
 void drawSelectedButton(float x, float y, float ancho, int id);
-void dibujarTexto(float x, float y, std::string texto);
-int ejecutarAccion(int id);
 int areaButtonId(int x, int y);
+void drawText(float x, float y, std::string texto);
+void ejecutarAccion(int id, int *ventana);
 
 #endif
