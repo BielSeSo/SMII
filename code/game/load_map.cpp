@@ -3,6 +3,7 @@
 #include <GL/glu.h>
 
 #include "load_map.h"
+#include "load_obj.h"
 
 Map::Map()
 {
@@ -34,20 +35,20 @@ void Map::setupLights()
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 }
 
-GLuint Map::load_map(void)
+GLuint Map::loadMap(void)
 {   
     switch(selectedMap)
     {
         case 1:
-            mapList = load_obj("sources/assets/Kart_1.obj");
+            mapList = loadObj(ROUTE_1);
             break;
 
         case 2:
-            mapList = load_obj("sources/assets/Track_2.obj");
+            mapList = loadObj(ROUTE_2);
             break;
 
         case 3:
-            mapList = load_obj("sources/assets/Track_3.obj");
+            mapList = loadObj(ROUTE_3);
             break;
 
         default: 

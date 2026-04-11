@@ -181,33 +181,34 @@ void ejecutarAccion(int id, int *ventana)
     {
         case 0:
             *ventana = 2; // Cambiamos el estado
-            cout << "Cambiando a ventana de juego..." << endl;
             break;
 
         case 1:
-            *ventana =5;
-            cout << "===========================================" << endl;
-            cout << "       Desarrollado por:" << endl;
-            cout << "- Marco Robert Valverde" << endl << "- Biel Selma Solans" << endl;
-            cout << "===========================================" << endl;
+            *ventana = 5;
             break;
 
         case 2:
-            *ventana = -1;
             cout << "Saliendo del juego..." << endl;
+            *ventana = -1;
             break;
 
         case 3:
         case 4:
         case 5:
             *ventana = 3;
-            cout << "Mapa " << id-2 << " Seleccionado" << endl;
+            break;
+
+        case 6:
+        case 7:
+        case 8:
+            *ventana = 4;
             break;
 
         // Logic of back button
         default: 
             if(*ventana == 2) *ventana = 1;
             if(*ventana == 3) *ventana = 2;
+            if(*ventana == 4) *ventana = 3;
             if(*ventana == 5) *ventana = 1;
             break;
     }

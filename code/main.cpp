@@ -17,33 +17,37 @@ using namespace std;
 /* =================== VARIABLES GLOBALES =================== */
 
 string routeFotoInicio  = "sources/images/Mario_kart.jpg",
-       routeKart1       = "sources/assets/Kart_1.obj",
        routeFotoCredits = "sources/images/Creditos.png";
 
-GLuint imgList = 0,
+GLuint imgList  = 0,
        mapList  = 0,
        kartList = 0;
 
 bool firstTime = true, 
      startGame = false, 
-     isGame = false;
-bool isMenu[NUM_MENUS];
+     isGame    = false;
 
-int ventana = 0,
-    id = -1,
-    map_selected = 0;
+bool loadedImg1 = false,
+     loadedImg2 = false;
+
+int ventana          = 0,
+    id               = -1,
+    map_selected     = 0,
+    vehicle_selected = 0;
 
 float ancho = 0.8f;
 
 Player player1(0.0f, 0.0f, 0.0f);
 Map map_render;
 
-string textOptions[] = {"START", "CREDITS", "EXIT", \
-                        "MAP 1", "MAP 2", "MAP 3"};
+const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE;
+string textOptions[total] = {"START", "CREDITS", "EXIT", \
+                        "MAP 1", "MAP 2", "MAP 3", \
+                        "Vehicle 1", "Vehicle 2", "Vehicle 3"};
 
 float coordinatesButtons [3][2] = {{0.0f, 0.5f}, {0.0f, 0.1f}, {0.0f, -0.3f}};
 
-int windowedWidth = 400, windowedHeight = 400;
+int windowedWidth = 800, windowedHeight = 600;
 int windowedPosX = 100, windowedPosY = 100;
 int isFullscreen = 0;
 
@@ -57,8 +61,6 @@ void mouse(int button, int state, int x, int y);
 void loadGame(void);
 void startWindow(void);
 void selectButton(void);
-void drawMenu1(void);
-void drawMenu2(void);
 
 /* =================== MAIN =================== */
 
@@ -85,37 +87,37 @@ int main(int argc, char** argv)
 /* =================== INIT =================== */
 
 void init(void)
-{
-    alutInit(NULL, NULL);
-    glEnable(GL_DEPTH_TEST);
-
-    intSoundsMenu();                
+{   
+    // Initialize sounds
+    //alutInit(NULL, NULL);
+    //intSoundsMenu();   
     
-    // Initalize bool of menus
-    for(int i=0; i<NUM_MENUS; i++)
-        isMenu[i] = false;
+    // Initialize all buttons
+    for(int i=0; i<total; i++)
+    {
+        createButtonTexture(i, textOptions[i]);
+    }
+    createButtonTexture(10, "Back");
 }
 
 void loadGame(void)
 {
-    kartList = load_obj(routeKart1);
+    player1.selectKart(vehicle_selected);
+    kartList = player1.loadVehicle();
     if (kartList == 0)
     {
         cout << "Fallo al cargar el kart" << endl;
-        exit(0);
     }
 
     map_render.selectMap(map_selected);
-    mapList = map_render.load_map();
+    mapList = map_render.loadMap();
     if (mapList == 0)
     {
         cout << "Fallo al cargar el mapa" << endl;
-        exit(0);
     }
 
     map_render.setupLights();
-
-    cout << "Juego cargado correctamente\n";
+    cout << "Juego cargado correctamente" << endl;
 }
 
 /* =================== DISPLAY =================== */
@@ -130,24 +132,38 @@ void display(void)
     if(ventana == -1) exit(0);
     else if (ventana == 0)
     {
-        if(!isMenu[0])
+        if(!loadedImg1)
         {
             loadImage(routeFotoInicio);
-            isMenu[0] = !isMenu[0];
+            loadedImg1 = true;
         }
-        
         glCallList(drawImage());
         drawText(-0.35f, -0.8f, "Presione cualquier tecla para continuar");
     }
     else if (ventana == 1)
     {
-        drawMenu1();
+        for(int i=0; i<3; i++)
+        {
+            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i);
+        }
     }
     else if(ventana == 2)
     {
-        drawMenu2();
+        for(int i=0; i<3; i++)
+        {
+            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+3);
+        }
     }
     else if(ventana == 3)
+    {
+        for(int i=0; i<3; i++)
+        {
+            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+6);
+        }
+        startGame = false;
+        isGame = false;
+    }
+    else if(ventana == 4)
     {
         glEnable(GL_DEPTH_TEST);
         glMatrixMode(GL_MODELVIEW);
@@ -155,41 +171,42 @@ void display(void)
 
         if(!startGame)
         {
-            createButtonTexture(6, "Back");
-            loadGame();
-
-            startGame = !startGame;
-            isGame = !isGame;
+            //loadGame();
+            startGame = true;
+            isGame = true;
+            cout << "Juego inicializado" << endl;
         }
+       
+        glCallList(mapList);
 
-        Vec3 p = player1.get_pos();
+        Vec3 p = player1.getPos();
+        float rad = player1.grados * M_PI / 180.0f;
+
+        // Camara detras del kart
+        float camX = p.x - sin(rad) * 10.0f;
+        float camY = p.y - cos(rad) * 10.0f;
+        float camZ = p.z + 5.0f;
 
         gluLookAt(
-            p.x, p.y - 8.0f, 6.0f,
-            p.x, p.y,        0.0f,
-            0.0f, 0.0f,      1.0f
+            camX, camY, camZ,
+            p.x, p.y, p.z,
+            0.0f, 0.0f, 1.0f
         );
-
-        glCallList(mapList);
 
         glTranslatef(p.x, p.y, 0.0f);
         glRotatef(player1.grados, 0, 0, 1);
         glCallList(kartList);
         player1.move();
-
-        drawButton(0.0f, 0.0f, 0.5f, 6);
     }
     else if(ventana == 5)
     {
-        if(!isMenu[3])
+        if(!loadedImg2)
         {
             loadImage(routeFotoCredits);
-            createButtonTexture(6, "Back");
-            isMenu[3] = !isMenu[3];
+            loadedImg2 = true;
         }
-
         glCallList(drawImage());
-        drawButton(coordinatesButtons[2][0], coordinatesButtons[2][1], 0.5f, 6);
+        drawButton(coordinatesButtons[2][0], coordinatesButtons[2][1], 0.5f, 10);
     }
 
     glutSwapBuffers();
@@ -206,14 +223,16 @@ void reshape(int w, int h)
 
     float aspect = (float)w / (float)h;
 
-    gluOrtho2D(-aspect, aspect, -1, 1);
-    //gluOrtho2D(-1, 1, -1 / aspect, 1 / aspect);
-    
-    /*if (w >= h)
+    if (!isGame)
+    {
         gluOrtho2D(-aspect, aspect, -1, 1);
+    }
     else
-        gluOrtho2D(-1, 1, -1 / aspect, 1 / aspect);*/
+    {
+        gluPerspective(60.0, aspect, 0.1, 500.0);
+    }
 
+    glMatrixMode(GL_MODELVIEW);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -277,32 +296,23 @@ void keyboard(unsigned char key, int, int)
         case '1':
             if(!firstTime)
                 if(ventana == 1) id = 0;
-                else if (ventana == 2)
-                {
-                    map_selected = 1;
-                    id = 3;
-                }
-                else if(ventana == 5) id = 6;
+                else if(ventana == 2) id = 3, map_selected = 1;
+                else if(ventana == 3) id = 6, vehicle_selected = 1;
+                else if(ventana == 5) id = 10;
             break;
 
         case '2': 
             if(!firstTime)
                 if(ventana == 1) id = 1;
-                else if (ventana == 2)
-                {
-                    map_selected = 2;
-                    id = 4;
-                }
+                else if(ventana == 2) id = 4, map_selected = 2;
+                else if(ventana == 3) id = 7, vehicle_selected = 2;
             break;
 
         case '3':
             if(!firstTime)
                 if(ventana == 1) id = 2;
-                else if (ventana == 2) 
-                {
-                    map_selected = 3;
-                    id = 5;
-                }
+                else if(ventana == 2) id = 5, map_selected = 3;
+                else if(ventana == 3) id = 8, vehicle_selected = 3; 
             break;
 
         default: break;
@@ -317,9 +327,11 @@ void mouse(int button, int state, int x, int y)
     switch (button)
     {
         case GLUT_LEFT_BUTTON:
-            if(state == GLUT_UP)
+            if(state == GLUT_DOWN)
             {
                 id = areaButtonId(x, y);  
+                if(ventana == 2) map_selected = id-3;
+                else if(ventana == 3) vehicle_selected = id-6;
 
                 // DEBUG
                 // cout << "x: " << x << " y: " << y << endl << endl;
@@ -330,8 +342,7 @@ void mouse(int button, int state, int x, int y)
         case GLUT_RIGHT_BUTTON:
             if(state == GLUT_UP)
             {
-                if(ventana == 2) ventana = 1;
-                else if(ventana == 5) ventana = 1;
+                id = 10;
             }
             break;
 
@@ -354,43 +365,20 @@ void startWindow(void)
 void selectButton(void)
 {
     if(!firstTime && id != -1)
-    {
-        drawSelectedButton(coordinatesButtons[id][0], coordinatesButtons[id][1], ancho, id);
+    {   
+        if(id % 2 == 0)
+        {
+            drawSelectedButton(coordinatesButtons[1][0], coordinatesButtons[1][1], ancho, id);
+        }
+        else if(id % 3 == 0)
+        {
+            drawSelectedButton(coordinatesButtons[2][0], coordinatesButtons[2][1], ancho, id);
+        }
+        else
+        {
+            drawSelectedButton(coordinatesButtons[0][0], coordinatesButtons[0][1], ancho, id);
+        }
         ejecutarAccion(id, &ventana);
         id = -1;
-    }
-}
-
-void drawMenu1(void)
-{
-    if(!isMenu[1])
-    {
-        for(int i=0; i<3; i++)
-        {
-            createButtonTexture(i, textOptions[i]);
-        }            
-        isMenu[1] = !isMenu[1];
-    }
-
-    for(int i=0; i<3; i++)
-    {
-        drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i);
-    }
-}
-
-void drawMenu2(void)
-{
-    if(!isMenu[2])
-    {
-        for(int i=3; i<6; i++)
-        {
-            createButtonTexture(i, textOptions[i]);
-        }
-        isMenu[2] = !isMenu[2];
-    }
-    
-    for(int i=0; i<3; i++)
-    {
-        drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+3);
     }
 }

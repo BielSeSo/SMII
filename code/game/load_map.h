@@ -3,7 +3,9 @@
 
 #include <GL/gl.h>
 
-#include "load_obj.h"
+#define ROUTE_1 "sources/assets/Track_1.obj"
+#define ROUTE_2 "sources/assets/Track_2.obj"
+#define ROUTE_3 "sources/assets/Track_3.obj"
 
 class Map
 {
@@ -15,7 +17,7 @@ class Map
         Map();
         void selectMap(int selectedMap);
         void setupLights();
-        GLuint load_map(void);
+        GLuint loadMap(void);
 };
 
 #endif

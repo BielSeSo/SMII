@@ -6,9 +6,9 @@
 #include <GL/glut.h>
 #include <opencv2/opencv.hpp>
 
-#define NUM_MENUS 4
 #define NUM_BUTONS_INIT 3
 #define NUM_BUTONS_MAP 3
+#define NUM_BUTONS_VEHICLE 3
 
 // Variables globales
 struct ButtonArea {

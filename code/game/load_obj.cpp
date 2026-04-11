@@ -27,7 +27,7 @@ void computeBounds()
 }
 */
 
-GLuint load_obj(string path)
+GLuint loadObj(string path)
 {
     static Assimp::Importer gImporter;
 

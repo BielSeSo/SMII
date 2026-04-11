@@ -9,8 +9,8 @@
 
 #include <string>
 
-GLuint load_obj(std::string path);
+GLuint loadObj(std::string path);
 void computeBounds();
-void get_hitbox();
+void getHitbox();
 
 #endif
