@@ -22,7 +22,7 @@ void createButtonTexture(int id, std::string text);
 GLuint drawImage();
 void drawButton(float x, float y, float ancho, int id);
 void drawSelectedButton(float x, float y, float ancho, int id);
-int areaButtonId(int x, int y);
+int areaButtonId(int x, int y, int ventana);
 void drawText(float x, float y, std::string texto);
 void ejecutarAccion(int id, int *ventana);
 

@@ -12,5 +12,7 @@ void playMenuSound(int id);
 void stopMenuSound(int id);
 void playGameSound(int id);
 void stopGameSound(int id);
+void destroySoundsMenu(void);
+void destroySoundsGame(void);
 
 #endif

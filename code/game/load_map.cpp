@@ -18,18 +18,18 @@ void Map::selectMap(int selectedMap)
 
 void Map::setupLights() 
 {
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT1);
 
     GLfloat pos[]  = { 1.0f, 1.0f, 2.0f, 0.0f }; // direccional  
     GLfloat diff[] = { 0.9f, 0.9f, 0.9f, 1.0f };
     GLfloat amb[]  = {0.2f, 0.2f, 0.2f, 1.0f};
     GLfloat spec[] = {0.1f, 0.1f, 0.1f, 1.0f};
     
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE,  diff);
-    glLightfv(GL_LIGHT0, GL_AMBIENT,  amb);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
+    glLightfv(GL_LIGHT1, GL_POSITION, pos);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE,  diff);
+    glLightfv(GL_LIGHT1, GL_AMBIENT,  amb);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, spec);
 
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -51,10 +51,13 @@ GLuint Map::loadMap(void)
             mapList = loadObj(ROUTE_3);
             break;
 
-        default: 
-            mapList = 0;    
-            break;
+        default: break;
     }
     
     return mapList;
+}
+
+void Map::destroyLights(void)
+{
+    glDisable(GL_LIGHT1);
 }

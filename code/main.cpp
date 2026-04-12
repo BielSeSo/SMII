@@ -20,12 +20,13 @@ string routeFotoInicio  = "sources/images/Mario_kart.jpg",
        routeFotoCredits = "sources/images/Creditos.png";
 
 GLuint imgList  = 0,
-       mapList  = 0,
-       kartList = 0;
+       mapList,
+       kartList;
 
 bool firstTime = true, 
      startGame = false, 
-     isGame    = false;
+     isGame    = false,
+     exitGame = false;
 
 bool loadedImg1 = false,
      loadedImg2 = false;
@@ -51,6 +52,8 @@ int windowedWidth = 800, windowedHeight = 600;
 int windowedPosX = 100, windowedPosY = 100;
 int isFullscreen = 0;
 
+int marioWin;
+
 /* =================== PROTOTIPOS =================== */
 
 void init(void);
@@ -61,6 +64,7 @@ void mouse(int button, int state, int x, int y);
 void loadGame(void);
 void startWindow(void);
 void selectButton(void);
+void closeGame(void);
 
 /* =================== MAIN =================== */
 
@@ -70,7 +74,7 @@ int main(int argc, char** argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(400, 300);
-    glutCreateWindow("Mario Kart Interface");
+    marioWin = glutCreateWindow("Mario Kart Interface");
 
     init();
 
@@ -81,6 +85,7 @@ int main(int argc, char** argv)
 
     cout << "Presiona ESC para salir\n";
     glutMainLoop();
+
     return 0;
 }
 
@@ -89,8 +94,9 @@ int main(int argc, char** argv)
 void init(void)
 {   
     // Initialize sounds
-    //alutInit(NULL, NULL);
-    //intSoundsMenu();   
+    alutInit(NULL, NULL);
+    intSoundsMenu();   
+    initSoundsGame();
     
     // Initialize all buttons
     for(int i=0; i<total; i++)
@@ -102,22 +108,19 @@ void init(void)
 
 void loadGame(void)
 {
+    // Change view
+    reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+
+    // Load kart
     player1.selectKart(vehicle_selected);
     kartList = player1.loadVehicle();
-    if (kartList == 0)
-    {
-        cout << "Fallo al cargar el kart" << endl;
-    }
 
+    // Load map
     map_render.selectMap(map_selected);
     mapList = map_render.loadMap();
-    if (mapList == 0)
-    {
-        cout << "Fallo al cargar el mapa" << endl;
-    }
 
+    // Prepare lights
     map_render.setupLights();
-    cout << "Juego cargado correctamente" << endl;
 }
 
 /* =================== DISPLAY =================== */
@@ -129,7 +132,7 @@ void display(void)
 
     glDisable(GL_DEPTH_TEST);
 
-    if(ventana == -1) exit(0);
+    if(ventana == -1) closeGame();
     else if (ventana == 0)
     {
         if(!loadedImg1)
@@ -160,31 +163,23 @@ void display(void)
         {
             drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+6);
         }
-        startGame = false;
-        isGame = false;
     }
     else if(ventana == 4)
     {
         glEnable(GL_DEPTH_TEST);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
 
-        if(!startGame)
+        if (!startGame)
         {
-            //loadGame();
-            startGame = true;
-            isGame = true;
-            cout << "Juego inicializado" << endl;
+            isGame = true; startGame = true;
+            loadGame();
         }
        
-        glCallList(mapList);
-
         Vec3 p = player1.getPos();
         float rad = player1.grados * M_PI / 180.0f;
 
         // Camara detras del kart
         float camX = p.x - sin(rad) * 10.0f;
-        float camY = p.y - cos(rad) * 10.0f;
+        float camY = p.y + cos(rad) * 10.0f;
         float camZ = p.z + 5.0f;
 
         gluLookAt(
@@ -193,10 +188,26 @@ void display(void)
             0.0f, 0.0f, 1.0f
         );
 
+        glCallList(mapList);
+
         glTranslatef(p.x, p.y, 0.0f);
         glRotatef(player1.grados, 0, 0, 1);
         glCallList(kartList);
         player1.move();
+
+        if(exitGame)
+        {
+            map_render.destroyLights();
+            glColor3f(1.0f, 1.0f, 1.0f); // Color Blanco
+
+            startGame = false; isGame = false; exitGame = false;
+
+            // Restart lists
+            mapList = 0; kartList = 0;
+
+            ventana = 3;
+            reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+        }
     }
     else if(ventana == 5)
     {
@@ -233,7 +244,6 @@ void reshape(int w, int h)
     }
 
     glMatrixMode(GL_MODELVIEW);
-    glMatrixMode(GL_MODELVIEW);
 }
 
 /* =================== KEYBOARD =================== */
@@ -243,13 +253,12 @@ void keyboard(unsigned char key, int, int)
     switch (key)
     {
         case 27:
-            exit(0);
+            closeGame();
             break;
 
         case 'w': case 'W':
             if(isGame)
             {
-                cout << "Broom" << endl;
                 player1.velocidad = max(player1.velocidad - 0.05f, -1.5f);
             }
             break;
@@ -329,7 +338,17 @@ void mouse(int button, int state, int x, int y)
         case GLUT_LEFT_BUTTON:
             if(state == GLUT_DOWN)
             {
-                id = areaButtonId(x, y);  
+                // Pasamos a coordenadas OpenGL
+                float w = (float)glutGet(GLUT_WINDOW_WIDTH);
+                float h = (float)glutGet(GLUT_WINDOW_HEIGHT);
+                float aspect = w / h;
+
+                float glX = (x / w) * (2.0f * aspect) - aspect;
+                float glY = 1.0f - (y / h) * 2.0f;
+
+                cout << "[DEBUG] X: " << glX << " Y: " << glY << endl;
+
+                id = areaButtonId(glX, glY, ventana);  
                 if(ventana == 2) map_selected = id-3;
                 else if(ventana == 3) vehicle_selected = id-6;
 
@@ -343,6 +362,7 @@ void mouse(int button, int state, int x, int y)
             if(state == GLUT_UP)
             {
                 id = 10;
+                if(ventana == 4) exitGame = true;
             }
             break;
 
@@ -351,6 +371,26 @@ void mouse(int button, int state, int x, int y)
     }
     startWindow();
     selectButton();
+}
+
+void closeGame(void)
+{
+    // Destroy 3D models
+    imgList  = 0;
+    mapList = 0;
+    kartList = 0;
+
+    map_render.destroyLights();
+
+    // Close sound
+    destroySoundsMenu();
+    destroySoundsGame();
+    alutExit();
+
+    glutDestroyWindow(marioWin);
+
+    cout << "Saliendo del juego..." << endl;
+    exit(0);  
 }
 
 void startWindow(void)
@@ -366,17 +406,17 @@ void selectButton(void)
 {
     if(!firstTime && id != -1)
     {   
-        if(id % 2 == 0)
+        if(ventana == 1)
         {
-            drawSelectedButton(coordinatesButtons[1][0], coordinatesButtons[1][1], ancho, id);
+            drawSelectedButton(coordinatesButtons[id][0], coordinatesButtons[id][1], ancho, id);
         }
-        else if(id % 3 == 0)
+        else if(ventana == 2)
         {
-            drawSelectedButton(coordinatesButtons[2][0], coordinatesButtons[2][1], ancho, id);
+            drawSelectedButton(coordinatesButtons[id-3][0], coordinatesButtons[id-3][1], ancho, id);
         }
-        else
+        else if(ventana == 3)
         {
-            drawSelectedButton(coordinatesButtons[0][0], coordinatesButtons[0][1], ancho, id);
+            drawSelectedButton(coordinatesButtons[id-6][0], coordinatesButtons[id-6][1], ancho, id);
         }
         ejecutarAccion(id, &ventana);
         id = -1;

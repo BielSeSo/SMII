@@ -2,34 +2,19 @@
 #include <string>
 #include <algorithm>
 
-#include <GL/glut.h>
-#include <GL/glu.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+#include <GL/gl.h>
 
 #include "load_obj.h"
 
 using namespace std;
 
-/*
-void computeBounds() 
-{
-    aiVector3D minV, maxV;
-
-    minV = aiVector3D( 1e10f,  1e10f,  1e10f);
-    maxV = aiVector3D(-1e10f, -1e10f, -1e10f);
-    for (unsigned int m = 0; m < gScene->mNumMeshes; ++m) {
-        const aiMesh* mesh = gScene->mMeshes[m];
-        for (unsigned int v = 0; v < mesh->mNumVertices; ++v) {
-            const aiVector3D& p = mesh->mVertices[v];
-            minV.x = std::min(minV.x, p.x); minV.y = std::min(minV.y, p.y); minV.z = std::min(minV.z, p.z);
-            maxV.x = std::max(maxV.x, p.x); maxV.y = std::max(maxV.y, p.y); maxV.z = std::max(maxV.z, p.z);
-        }
-    }
-}
-*/
-
 GLuint loadObj(string path)
 {
-    static Assimp::Importer gImporter;
+    Assimp::Importer gImporter;
 
     const aiScene* gScene = gImporter.ReadFile(path,
         aiProcess_Triangulate |
@@ -38,7 +23,7 @@ GLuint loadObj(string path)
         aiProcess_PreTransformVertices |   // aplica transformaciones de nodos -> mallas ya en espacio global
         aiProcess_SortByPType
     );
-
+    
     if (!gScene) {
         std::cerr << "Error cargando modelo: " << gImporter.GetErrorString() << "\n";
         return 0;
@@ -78,8 +63,25 @@ GLuint loadObj(string path)
         }
         glEnd();
     }
-
     glEndList();
 
     return gListId;
 }
+
+/*
+void computeBounds() 
+{
+    aiVector3D minV, maxV;
+
+    minV = aiVector3D( 1e10f,  1e10f,  1e10f);
+    maxV = aiVector3D(-1e10f, -1e10f, -1e10f);
+    for (unsigned int m = 0; m < gScene->mNumMeshes; ++m) {
+        const aiMesh* mesh = gScene->mMeshes[m];
+        for (unsigned int v = 0; v < mesh->mNumVertices; ++v) {
+            const aiVector3D& p = mesh->mVertices[v];
+            minV.x = std::min(minV.x, p.x); minV.y = std::min(minV.y, p.y); minV.z = std::min(minV.z, p.z);
+            maxV.x = std::max(maxV.x, p.x); maxV.y = std::max(maxV.y, p.y); maxV.z = std::max(maxV.z, p.z);
+        }
+    }
+}
+*/

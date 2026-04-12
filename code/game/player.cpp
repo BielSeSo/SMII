@@ -1,7 +1,16 @@
 #include <cmath>
+#include <iostream>
+#include <ostream>
+#include <string>
 
 #include "player.h"
 #include "load_obj.h"
+
+using namespace std;
+
+static string route1 = "sources/assets/Kart_1.obj";
+static string route2 = "sources/assets/Kart_2.obj";
+static string route3 = "sources/assets/Kart_3.obj";
 
 Player::Player(float x, float y, float z)
 {
@@ -14,6 +23,8 @@ Player::Player(float x, float y, float z)
 
     hitbox[0] = 0.5f;
     hitbox[1] = 0.5f;
+
+    kartList = 0;
 }
 
 Vec3 Player::getPos() const
@@ -23,13 +34,15 @@ Vec3 Player::getPos() const
 
 void Player::move()
 {
+    double rad = grados * M_PI / 180.0;
+
     if (grados >= 360.0f || grados <= -360.0f)
     {
         grados = 0.0f;
     }
 
-    pos.x -= velocidad * sinf(rad(grados));
-    pos.y += velocidad * cosf(rad(grados));
+    pos.x += velocidad * sinf(rad);
+    pos.y += velocidad * cosf(rad);
 }
 
 void Player::selectKart(int selectedKart)
@@ -39,20 +52,18 @@ void Player::selectKart(int selectedKart)
 
 GLuint Player::loadVehicle(void)
 {
-    GLuint kartList = 0;
-
     switch (selectedKart)
     {
         case 1:
-            loadObj(ROUTE_1);
+            kartList = loadObj(route1);
             break;
 
         case 2:
-            loadObj(ROUTE_2);
+            kartList = loadObj(route2);
             break;
 
         case 3:
-            loadObj(ROUTE_3);
+            kartList = loadObj(route3);
             break;
     
         default: break;

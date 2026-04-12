@@ -16,8 +16,9 @@ class Map
     public:
         Map();
         void selectMap(int selectedMap);
-        void setupLights();
+        void setupLights(void);
         GLuint loadMap(void);
+        void destroyLights(void);
 };
 
 #endif

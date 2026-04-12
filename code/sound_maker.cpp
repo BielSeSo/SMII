@@ -66,3 +66,21 @@ void stopGameSound(int id)
 {
     alSourcePlay(soucesGame[id]);
 }
+
+void destroySoundsMenu(void)
+{
+    for(int i=0; i<NUM_SOUNDS_MENU; i++)
+    {
+        alSourceStop(sourcesMenu[i]);
+    }
+    alDeleteSources(NUM_SOUNDS_MENU, sourcesMenu);
+}
+
+void destroySoundsGame(void)
+{
+    for(int i=0; i<NUM_SOUNDS_GAME; i++)
+    {
+        alSourceStop(soucesGame[i]);
+    }
+    alDeleteSources(NUM_SOUNDS_GAME, soucesGame);
+}
