@@ -11,7 +11,8 @@ using namespace std;
 using namespace cv;
 
 // Definicion variables
-const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE;
+const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + \
+                  NUM_BUTONS_VEHICLE + 1;
 
 ButtonArea buttonAreas[total];
 GLuint buttonTextures[total];
@@ -147,44 +148,38 @@ void drawSelectedButton(float x, float y, float ancho, int id)
     glColor3f(1.0f, 1.0f, 1.0f); // Resetear a blanco para la textura
 }
 
-int areaButtonId(int x, int y, int ventana)
+int areaButtonId(float x, float y, int ventana)
 {
     if(ventana == 1)
     {
         for(int i=0; i<3 ; i++)
         {
-            // Comprobar que medidas cogen los botones
-            cout << "[DEBUG] Area boton " << i << " x1: " << buttonAreas[i].x1 << " x2: " << buttonAreas[i].x2;
-            cout << " y1: " << buttonAreas[i].y1 << " y2: " << buttonAreas[i].y2 << endl;
-
-            if (((x > buttonAreas[i].x1) && (x < buttonAreas[i].x1)) && \
-            ((y > buttonAreas[i].y1) && (y < buttonAreas[i].y2))) return i;
+            if (((x >= buttonAreas[i].x1) && (x <= buttonAreas[i].x2)) && \
+            ((y >= buttonAreas[i].y1) && (y <= buttonAreas[i].y2))) return i;
         }  
     }
     else if(ventana == 2)
     {
         for(int i=3; i<6 ; i++)
         {
-            // Comprobar que medidas cogen los botones
-            cout << "[DEBUG] Area boton " << i << " x1: " << buttonAreas[i].x1 << " x2: " << buttonAreas[i].x2;
-            cout << " y1: " << buttonAreas[i].y1 << " y2: " << buttonAreas[i].y2 << endl;
-
-            if (((x > buttonAreas[i].x1) && (x < buttonAreas[i].x1)) && \
-            ((y > buttonAreas[i].y1) && (y < buttonAreas[i].y2))) return i;
+            if (((x >= buttonAreas[i].x1) && (x <= buttonAreas[i].x2)) && \
+            ((y >= buttonAreas[i].y1) && (y <= buttonAreas[i].y2))) return i;
         }  
     }
     else if(ventana == 3)
     {
         for(int i=6; i<9 ; i++)
         {
-            // Comprobar que medidas cogen los botones
-            cout << "[DEBUG] Area boton " << i << " x1: " << buttonAreas[i].x1 << " x2: " << buttonAreas[i].x2;
-            cout << " y1: " << buttonAreas[i].y1 << " y2: " << buttonAreas[i].y2 << endl;
-
-            if (((x > buttonAreas[i].x1) && (x < buttonAreas[i].x1)) && \
-            ((y > buttonAreas[i].y1) && (y < buttonAreas[i].y2))) return i;
+            if (((x >= buttonAreas[i].x1) && (x <= buttonAreas[i].x2)) && \
+            ((y >= buttonAreas[i].y1) && (y <= buttonAreas[i].y2))) return i;
         }  
     }
+    if(ventana == 5 || ventana == 4) 
+    {
+            if (((x >= buttonAreas[total-1].x1) && (x <= buttonAreas[total-1].x2)) && \
+            ((y >= buttonAreas[total-1].y1) && (y <= buttonAreas[total-1].y2))) return total-1;
+    }
+
     return -1; 
 }
 

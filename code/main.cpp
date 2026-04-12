@@ -41,10 +41,11 @@ float ancho = 0.8f;
 Player player1(0.0f, 0.0f, 0.0f);
 Map map_render;
 
-const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE;
+const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE + 1;
 string textOptions[total] = {"START", "CREDITS", "EXIT", \
                         "MAP 1", "MAP 2", "MAP 3", \
-                        "Vehicle 1", "Vehicle 2", "Vehicle 3"};
+                        "Vehicle 1", "Vehicle 2", "Vehicle 3", \
+                        "Back"};
 
 float coordinatesButtons [3][2] = {{0.0f, 0.5f}, {0.0f, 0.1f}, {0.0f, -0.3f}};
 
@@ -103,7 +104,6 @@ void init(void)
     {
         createButtonTexture(i, textOptions[i]);
     }
-    createButtonTexture(10, "Back");
 }
 
 void loadGame(void)
@@ -217,7 +217,7 @@ void display(void)
             loadedImg2 = true;
         }
         glCallList(drawImage());
-        drawButton(coordinatesButtons[2][0], coordinatesButtons[2][1], 0.5f, 10);
+        drawButton(coordinatesButtons[2][0], coordinatesButtons[2][1], 0.5f, total-1);
     }
 
     glutSwapBuffers();
@@ -336,25 +336,26 @@ void mouse(int button, int state, int x, int y)
     switch (button)
     {
         case GLUT_LEFT_BUTTON:
-            if(state == GLUT_DOWN)
-            {
-                // Pasamos a coordenadas OpenGL
+            if(state == GLUT_DOWN && !firstTime)
+            {   
+                // Tamaño de ventana
                 float w = (float)glutGet(GLUT_WINDOW_WIDTH);
                 float h = (float)glutGet(GLUT_WINDOW_HEIGHT);
+
+                // Aspect ratio (mismo que usas en reshape)
                 float aspect = w / h;
 
-                float glX = (x / w) * (2.0f * aspect) - aspect;
-                float glY = 1.0f - (y / h) * 2.0f;
-
-                cout << "[DEBUG] X: " << glX << " Y: " << glY << endl;
+                // Convertir coordenadas del ratón (0..w, 0..h)
+                // a coordenadas OpenGL (-aspect..aspect, -1..1)
+                float glX = ( (float)x / w ) * (2.0f * aspect) - aspect;
+                float glY = 1.0f - ( (float)y / h ) * 2.0f;
 
                 id = areaButtonId(glX, glY, ventana);  
-                if(ventana == 2) map_selected = id-3;
-                else if(ventana == 3) vehicle_selected = id-6;
-
-                // DEBUG
-                // cout << "x: " << x << " y: " << y << endl << endl;
-                // cout << "ID: " id << endl;}
+                if(id != -1)
+                {
+                    if(ventana == 2) map_selected = id-3;
+                    else if(ventana == 3) vehicle_selected = id-6;
+                }
             }
             break;
 

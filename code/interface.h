@@ -11,7 +11,7 @@
 #define NUM_BUTONS_VEHICLE 3
 
 // Variables globales
-struct ButtonArea {
+typedef struct ButtonArea {
     float x1, x2, y1, y2;
 };
 
@@ -22,7 +22,7 @@ void createButtonTexture(int id, std::string text);
 GLuint drawImage();
 void drawButton(float x, float y, float ancho, int id);
 void drawSelectedButton(float x, float y, float ancho, int id);
-int areaButtonId(int x, int y, int ventana);
+int areaButtonId(float x, float y, int ventana);
 void drawText(float x, float y, std::string texto);
 void ejecutarAccion(int id, int *ventana);
 
