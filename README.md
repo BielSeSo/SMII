@@ -7,7 +7,8 @@
 
 3) Una vez el programa haya instalado las líbrerias necesarias se puede o volver a ejecutar el .sh o hacer un "make all".
 
-Formas de uso:
-    Por el momento hay dos, aunque el plan es unificarlo en uno (cosa en la que estoy trabajando).
-        1- Forma HUD
-        2- Ejecutar el juego
+TO DO:
+    - Añadir música contrareloj
+    - Añadir efectos al juego principal
+    - Comprobación del kart en la pista
+    - Hacer un comienzo y un final (Opcional, por el momento)
