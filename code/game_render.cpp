@@ -32,7 +32,11 @@ bool startGame = false,
 bool loadedImg1 = false,
      loadedImg2 = false;
 
-int ventana          = 0,  // Para ahorrrar tiempo empezamos en el juego
+bool isRunning = false,
+     stopRunning = false;
+
+// Para ahorrrar tiempo empezamos en el juego
+int ventana          = 0,  
     id               = -1,
     map_selected     = 0,
     vehicle_selected = 0;
@@ -144,7 +148,8 @@ void renderGame(bool *needReshape, bool *isGame)
         {
             *isGame = true; startGame = true;
             loadGame();
-            stopMenuSound(1);
+            stopMenuSound(1);            
+            playGameSound(1);
             
             *needReshape = true;
         }
@@ -169,6 +174,17 @@ void renderGame(bool *needReshape, bool *isGame)
         glRotatef(player1.grados, 0, 0, 1);
         glCallList(kartList);
         player1.move();
+        
+        if(isRunning)
+        {
+            playGameSound(0);
+            isRunning = false;
+        }
+        if(stopRunning)
+        {
+            stopGameSound(0);
+            stopRunning = false;
+        }
 
         if(exitGame)
         {
@@ -181,6 +197,7 @@ void renderGame(bool *needReshape, bool *isGame)
             mapList = 0; kartList = 0;
 
             ventana = 3;
+            stopGameSound(1);
             playMenuSound(1);
 
             *needReshape = true;
@@ -259,7 +276,8 @@ void keyW(void)
 {
     if(ventana == 4)
     {
-        player1.velocidad = max(player1.velocidad - 0.05f, -1.5f);
+        player1.velocidad = max(player1.velocidad + 0.05f, 0.0f);
+        if(player1.velocidad > 0.0f) isRunning = true;
     }
 }
 
@@ -267,7 +285,9 @@ void keyS(void)
 {
     if(ventana == 4)
     {
-        player1.velocidad = min(player1.velocidad + 0.05f,  1.5f);
+        player1.velocidad = min(player1.velocidad - 0.05f,  0.0f);
+        playGameSound(2);
+        if(player1.velocidad == 0.0f) stopRunning = true;
     }
 }
 

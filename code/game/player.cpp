@@ -63,13 +63,11 @@ void Player::move(void)
 {
     double rad = grados * M_PI / 180.0;
 
-    if (grados >= 360.0f || grados <= -360.0f)
-    {
-        grados = 0.0f;
-    }
+    if (grados >= 360.0f) grados -= 360.0f;    
+    if (grados <= -360.0f) grados += 360.0f;    
 
-    pos.x += velocidad * sinf(rad);
-    pos.y += velocidad * cosf(rad);
+    pos.x += velocidad * sin(rad);
+    pos.y -= velocidad * cos(rad);
 }
 
 

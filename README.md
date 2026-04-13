@@ -11,10 +11,6 @@ Autores:
 
 3) Una vez el programa haya instalado las líbrerias necesarias se puede o volver a ejecutar el .sh o hacer un "make all".
 
-Check var ventana
-    - Modo juego (ventana = 4)
-    - Modo normal (ventana = 0)
-
 TO DO:
     - Añadir música contrareloj
     - Añadir efectos al juego principal

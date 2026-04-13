@@ -84,7 +84,7 @@ void playGameSound(int id)
 
 void stopGameSound(int id)
 {
-    alSourcePlay(soucesGame[id]);
+    alSourceStop(soucesGame[id]);
 }
 
 void destroySoundsMenu(void)
