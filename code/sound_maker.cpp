@@ -19,8 +19,9 @@ const char *routesBuffersMenu[NUM_SOUNDS_MENU] =
              "sources/audios/Pop.wav",
              "sources/audios/Back.wav"};
 const char *routesBuffersGame[NUM_SOUNDS_GAME] = 
-            {"sources/audios/Engine.wav" 
-            };
+            {"sources/audios/Engine.wav",
+             "sources/audios/musicaPista1.wav",
+             "sources/audios/Frenar.wav"};
 
 // ============ FUNCTIONS =============== //
 void intSoundsMenu(void)
@@ -33,12 +34,13 @@ void intSoundsMenu(void)
     
     alGenSources(NUM_SOUNDS_MENU, sourcesMenu);
 
-    // Loop first sound
+    // Loop sound
     for (int i=0; i<2; i++) {
         alSourcei(sourcesMenu[i], AL_BUFFER, buffersMenu[i]);
         alSourcei(sourcesMenu[i], AL_LOOPING, AL_TRUE);
     }
 
+    // Not loop sound
     for (int i=2; i<NUM_SOUNDS_MENU; i++) {
         alSourcei(sourcesMenu[i], AL_BUFFER, buffersMenu[i]);
     }
@@ -52,11 +54,16 @@ void initSoundsGame(void)
         buffersGame[i] = alutCreateBufferFromFile(routesBuffersGame[i]);
     }
 
-    // Loop sounds
+    // Loop sound
     alGenSources(NUM_SOUNDS_GAME, soucesGame);
-    for (int i=0; i<NUM_SOUNDS_GAME; i++) {
+    for (int i=0; i<2; i++) {
         alSourcei(soucesGame[i], AL_BUFFER, buffersGame[i]);
         alSourcei(soucesGame[i], AL_LOOPING, AL_TRUE);
+    }
+
+    // Not loop sound
+    for (int i=2; i<NUM_SOUNDS_GAME; i++) {
+        alSourcei(soucesGame[i], AL_BUFFER, buffersGame[i]);
     }
 }
 

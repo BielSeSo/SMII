@@ -11,53 +11,13 @@
 #include "game/player.h"
 #include "interface.h"
 #include "sound_maker.h"
+#include "global_variables.h"
 
 using namespace std;
-
-/* =================== VARIABLES GLOBALES =================== */
-
-string routeFotoInicio  = "sources/images/Mario_kart.jpg",
-       routeFotoCredits = "sources/images/Creditos.jpg";
-
-GLuint imgList  = 0,
-       mapList,
-       kartList;
-
-bool firstTime = true,
-     exitFirstTime = false;
-
-bool startGame = false, 
-     isGame    = false,
-     exitGame = false;
-
-bool loadedImg1 = false,
-     loadedImg2 = false;
-
-int ventana          = 0,
-    id               = -1,
-    map_selected     = 0,
-    vehicle_selected = 0;
-
-float ancho = 0.8f;
-
-Player player1(0.0f, 0.0f, 0.0f);
-Map map_render;
-
-const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE + 1;
-string textOptions[total] = {"START", "CREDITS", "EXIT", \
-                        "MAP 1", "MAP 2", "MAP 3", \
-                        "Vehicle 1", "Vehicle 2", "Vehicle 3", \
-                        "Back"};
-
-float coordinatesButtons [3][2] = {{0.0f, 0.5f}, 
-                                   {0.0f, 0.1f}, 
-                                   {0.0f, -0.3f}};
 
 int windowedWidth = 800, windowedHeight = 600;
 int windowedPosX = 100, windowedPosY = 100;
 int isFullscreen = 0;
-
-int marioWin;
 
 /* =================== PROTOTIPOS =================== */
 
@@ -94,38 +54,6 @@ int main(int argc, char** argv)
     return 0;
 }
 
-/* =================== INIT =================== */
-
-void init(void)
-{   
-    // Initialize sounds
-    alutInit(NULL, NULL);
-    intSoundsMenu();   
-    initSoundsGame();
-    
-    // Initialize all buttons
-    for(int i=0; i<total; i++)
-    {
-        createButtonTexture(i, textOptions[i]);
-    }
-}
-
-void loadGame(void)
-{
-    // Change view
-    reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-
-    // Load kart
-    player1.selectKart(vehicle_selected);
-    kartList = player1.loadVehicle();
-
-    // Load map
-    map_render.selectMap(map_selected);
-    mapList = map_render.loadMap();
-
-    // Prepare lights
-    map_render.setupLights();
-}
 
 /* =================== DISPLAY =================== */
 
@@ -186,6 +114,9 @@ void display(void)
             isGame = true; startGame = true;
             loadGame();
             stopMenuSound(1);
+            
+            // Change view
+            reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         }
        
         Vec3 p = player1.getPos();
@@ -384,24 +315,19 @@ void mouse(int button, int state, int x, int y)
     selectButton();
 }
 
-void closeGame(void)
-{
-    // Destroy 3D models
-    imgList  = 0;
-    mapList = 0;
-    kartList = 0;
-
-    map_render.destroyLights();
-
-    // Close sound
-    destroySoundsMenu();
-    destroySoundsGame();
-    alutExit();
-
-    glutDestroyWindow(marioWin);
-
-    cout << "Saliendo del juego..." << endl;
-    exit(0);  
+// ==================== CUSTOM FUNCS ================== //
+void init(void)
+{   
+    // Initialize sounds
+    alutInit(NULL, NULL);
+    intSoundsMenu();   
+    initSoundsGame();
+    
+    // Initialize all buttons
+    for(int i=0; i<total; i++)
+    {
+        createButtonTexture(i, textOptions[i]);
+    }
 }
 
 void startWindow(void)
@@ -411,6 +337,20 @@ void startWindow(void)
         ventana = 1;
         firstTime = false;
     }
+}
+
+void loadGame(void)
+{
+    // Load kart
+    player1.selectKart(vehicle_selected);
+    kartList = player1.loadVehicle();
+
+    // Load map
+    map_render.selectMap(map_selected);
+    mapList = map_render.loadMap();
+
+    // Prepare lights
+    map_render.setupLights();
 }
 
 void selectButton(void)
@@ -443,4 +383,24 @@ void selectButton(void)
         ejecutarAccion(id, &ventana);
         id = -1;
     }
+}
+
+void closeGame(void)
+{
+    // Destroy 3D models
+    imgList  = 0;
+    mapList = 0;
+    kartList = 0;
+
+    map_render.destroyLights();
+
+    // Close sound
+    destroySoundsMenu();
+    destroySoundsGame();
+    alutExit();
+
+    glutDestroyWindow(marioWin);
+
+    cout << "Saliendo del juego..." << endl;
+    exit(0);  
 }
