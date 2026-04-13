@@ -21,15 +21,17 @@ int isFullscreen = 0;
 
 /* =================== PROTOTIPOS =================== */
 
-void init(void);
 void display(void);
 void reshape(int w, int h);
 void keyboard(unsigned char key, int, int);
 void mouse(int button, int state, int x, int y);
-void loadGame(void);
+void init(void);
 void startWindow(void);
+void drawMenu(void);
+void loadGame(void);
 void selectButton(void);
 void closeGame(void);
+
 
 /* =================== MAIN =================== */
 
@@ -64,48 +66,8 @@ void display(void)
 
     glDisable(GL_DEPTH_TEST);
 
-    if(ventana == -1) closeGame();
-    else if (ventana == 0)
-    {
-        if(!loadedImg1)
-        {
-            loadImage(routeFotoInicio);
-            loadedImg1 = true;
-            playMenuSound(0);
-        }
-        glCallList(drawImage());
-        drawText(-0.35f, -0.8f, "Presione cualquier tecla para continuar");
-    }
-    else if (ventana == 1)
-    {
-        if(!exitFirstTime)
-        {
-            stopMenuSound(0);
-            exitFirstTime = true;
-            playMenuSound(1);
-
-        }
-
-        for(int i=0; i<3; i++)
-        {
-            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i);
-        }        
-    }
-    else if(ventana == 2)
-    {
-        for(int i=0; i<3; i++)
-        {
-            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+3);
-        }
-    }
-    else if(ventana == 3)
-    {
-        for(int i=0; i<3; i++)
-        {
-            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+6);
-        }
-    }
-    else if(ventana == 4)
+    drawMenu();
+    if(ventana == 4)
     {
         glEnable(GL_DEPTH_TEST);
 
@@ -154,16 +116,6 @@ void display(void)
             reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
             playMenuSound(1);
         }
-    }
-    else if(ventana == 5)
-    {
-        if(!loadedImg2)
-        {
-            loadImage(routeFotoCredits);
-            loadedImg2 = true;
-        }
-        glCallList(drawImage());
-        drawButton(0.0f, -0.7f, 0.5f, total-1);
     }
 
     glutSwapBuffers();
@@ -336,6 +288,60 @@ void startWindow(void)
     {
         ventana = 1;
         firstTime = false;
+    }
+}
+
+void drawMenu(void)
+{
+    if(ventana == -1) closeGame();
+    else if (ventana == 0)
+    {
+        if(!loadedImg1)
+        {
+            loadImage(routeFotoInicio);
+            loadedImg1 = true;
+            playMenuSound(0);
+        }
+        glCallList(drawImage());
+        drawText(-0.35f, -0.8f, "Presione cualquier tecla para continuar");
+    }
+    else if (ventana == 1)
+    {
+        if(!exitFirstTime)
+        {
+            stopMenuSound(0);
+            exitFirstTime = true;
+            playMenuSound(1);
+        }
+
+        for(int i=0; i<3; i++)
+        {
+            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i);
+        }        
+    }
+    else if(ventana == 2)
+    {
+        for(int i=0; i<3; i++)
+        {
+            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+3);
+        }
+    }
+    else if(ventana == 3)
+    {
+        for(int i=0; i<3; i++)
+        {
+            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+6);
+        }
+    }
+    else if(ventana == 5)
+    {
+        if(!loadedImg2)
+        {
+            loadImage(routeFotoCredits);
+            loadedImg2 = true;
+        }
+        glCallList(drawImage());
+        drawButton(0.0f, -0.7f, 0.5f, total-1);
     }
 }
 
