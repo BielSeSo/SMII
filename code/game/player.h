@@ -12,19 +12,21 @@ class Player
 {
     private:
         int selectedKart;
-        Vec3 pos;
-        float hitbox[2];  // por ejemplo: ancho y fondo
         GLuint kartList;
+
+        Vec3 pos;
+        float hitbox[2];
 
     public:
         float velocidad;
         float grados;
+        
 
         Player(float x, float y, float z);
         void selectKart(int selectedKart);
         GLuint loadVehicle(void);
-        Vec3 getPos() const;
-        void move();
+        Vec3 getPos(void);
+        void move(void);
 };
 
 #endif

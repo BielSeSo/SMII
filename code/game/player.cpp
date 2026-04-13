@@ -27,24 +27,6 @@ Player::Player(float x, float y, float z)
     kartList = 0;
 }
 
-Vec3 Player::getPos() const
-{
-    return pos;
-}
-
-void Player::move()
-{
-    double rad = grados * M_PI / 180.0;
-
-    if (grados >= 360.0f || grados <= -360.0f)
-    {
-        grados = 0.0f;
-    }
-
-    pos.x += velocidad * sinf(rad);
-    pos.y += velocidad * cosf(rad);
-}
-
 void Player::selectKart(int selectedKart)
 {
     this->selectedKart = selectedKart;
@@ -71,3 +53,25 @@ GLuint Player::loadVehicle(void)
 
     return kartList;
 }
+
+Vec3 Player::getPos(void)
+{
+    return pos;
+}
+
+void Player::move(void)
+{
+    double rad = grados * M_PI / 180.0;
+
+    if (grados >= 360.0f || grados <= -360.0f)
+    {
+        grados = 0.0f;
+    }
+
+    pos.x += velocidad * sinf(rad);
+    pos.y += velocidad * cosf(rad);
+}
+
+
+
+
