@@ -17,7 +17,7 @@ using namespace std;
 /* =================== VARIABLES GLOBALES =================== */
 
 string routeFotoInicio  = "sources/images/Mario_kart.jpg",
-       routeFotoCredits = "sources/images/Creditos.png";
+       routeFotoCredits = "sources/images/Creditos.jpg";
 
 GLuint imgList  = 0,
        mapList,
@@ -217,7 +217,7 @@ void display(void)
             loadedImg2 = true;
         }
         glCallList(drawImage());
-        drawButton(coordinatesButtons[2][0], coordinatesButtons[2][1], 0.5f, total-1);
+        drawButton(0.0f, -0.7f, 0.5f, total-1);
     }
 
     glutSwapBuffers();
@@ -305,23 +305,23 @@ void keyboard(unsigned char key, int, int)
         case '1':
             if(!firstTime)
                 if(ventana == 1) id = 0;
-                else if(ventana == 2) id = 3, map_selected = 1;
-                else if(ventana == 3) id = 6, vehicle_selected = 1;
+                else if(ventana == 2) id = 3;
+                else if(ventana == 3) id = 6;
                 else if(ventana == 5) id = 10;
             break;
 
         case '2': 
             if(!firstTime)
                 if(ventana == 1) id = 1;
-                else if(ventana == 2) id = 4, map_selected = 2;
-                else if(ventana == 3) id = 7, vehicle_selected = 2;
+                else if(ventana == 2) id = 4;
+                else if(ventana == 3) id = 7;
             break;
 
         case '3':
             if(!firstTime)
                 if(ventana == 1) id = 2;
-                else if(ventana == 2) id = 5, map_selected = 3;
-                else if(ventana == 3) id = 8, vehicle_selected = 3; 
+                else if(ventana == 2) id = 5;
+                else if(ventana == 3) id = 8; 
             break;
 
         default: break;
@@ -351,11 +351,6 @@ void mouse(int button, int state, int x, int y)
                 float glY = 1.0f - ( (float)y / h ) * 2.0f;
 
                 id = areaButtonId(glX, glY, ventana);  
-                if(id != -1)
-                {
-                    if(ventana == 2) map_selected = id-3;
-                    else if(ventana == 3) vehicle_selected = id-6;
-                }
             }
             break;
 
@@ -411,12 +406,14 @@ void selectButton(void)
         {
             drawSelectedButton(coordinatesButtons[id][0], coordinatesButtons[id][1], ancho, id);
         }
-        else if(ventana == 2)
+        if(ventana == 2)
         {
+            map_selected = id-2;
             drawSelectedButton(coordinatesButtons[id-3][0], coordinatesButtons[id-3][1], ancho, id);
         }
-        else if(ventana == 3)
+        if(ventana == 3)
         {
+            vehicle_selected = id-5;
             drawSelectedButton(coordinatesButtons[id-6][0], coordinatesButtons[id-6][1], ancho, id);
         }
         ejecutarAccion(id, &ventana);
