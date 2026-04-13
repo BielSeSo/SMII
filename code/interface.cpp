@@ -119,16 +119,19 @@ GLuint drawImage()
 
 void drawButton(float x, float y, float ancho, int id) 
 {
-    buttonAreas[id] = {x - ancho/2, x + ancho/2, y - alto/2, y + alto/2};
+    float halfWidth = ancho / 2;
+    float halfHeight = alto / 2;
+
+    buttonAreas[id] = {x - halfWidth, x + halfWidth, y-halfHeight, y + halfHeight};
    
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, buttonTextures[id]);
 
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(x - ancho/2, y - alto/2);
-        glTexCoord2f(1, 0); glVertex2f(x + ancho/2, y - alto/2);
-        glTexCoord2f(1, 1); glVertex2f(x + ancho/2, y + alto/2);
-        glTexCoord2f(0, 1); glVertex2f(x - ancho/2, y + alto/2);
+        glTexCoord2f(0, 0); glVertex2f(x - halfWidth, y - halfHeight);
+        glTexCoord2f(1, 0); glVertex2f(x + halfWidth, y - halfHeight);
+        glTexCoord2f(1, 1); glVertex2f(x + halfWidth, y + halfHeight);
+        glTexCoord2f(0, 1); glVertex2f(x - halfWidth, y + halfHeight);
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
@@ -136,14 +139,18 @@ void drawButton(float x, float y, float ancho, int id)
 
 void drawSelectedButton(float x, float y, float ancho, int id)
 {
+    float halfWidth = ancho / 2;
+    float halfHeight = alto / 2;
+    float padding = 0.02f;
+
     // Si el botón está seleccionado por teclado, dibujamos un recuadro de enfoque
     glColor3f(1.0f, 1.0f, 0.0f); // Amarillo para el "foco"
     glLineWidth(5.0f);
     glBegin(GL_LINE_LOOP);
-        glVertex2f(x - ancho/2 - 0.02f, y - alto/2 - 0.02f);
-        glVertex2f(x + ancho/2 + 0.02f, y - alto/2 - 0.02f);
-        glVertex2f(x + ancho/2 + 0.02f, y + alto/2 + 0.02f);
-        glVertex2f(x - ancho/2 - 0.02f, y + alto/2 + 0.02f);
+        glVertex2f(x - halfWidth - padding, y - halfHeight - padding);
+        glVertex2f(x + halfWidth + padding, y - halfHeight - padding);
+        glVertex2f(x + halfWidth + padding, y + halfHeight + padding);
+        glVertex2f(x - halfWidth - padding, y + halfHeight + padding);
     glEnd();
     glColor3f(1.0f, 1.0f, 1.0f); // Resetear a blanco para la textura
 }
@@ -200,24 +207,29 @@ void ejecutarAccion(int id, int *ventana)
 {
     switch(id)
     {
+        // Button start
         case 0:
             *ventana = 2; // Cambiamos el estado
             break;
 
+        // Button credits
         case 1:
             *ventana = 5;
             break;
 
+        // Button exit
         case 2:
             *ventana = -1;
             break;
 
+        // Choose map
         case 3:
         case 4:
         case 5:
             *ventana = 3;
             break;
 
+        // Choose kart
         case 6:
         case 7:
         case 8:

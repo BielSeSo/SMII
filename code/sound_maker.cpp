@@ -13,9 +13,14 @@ ALuint buffersGame[NUM_SOUNDS_GAME];
 ALuint sourcesMenu[NUM_SOUNDS_MENU];
 ALuint soucesGame[NUM_SOUNDS_GAME];
 
-const char *routesBuffersMenu[NUM_SOUNDS_MENU] = {"sources/audios/Clic.wav"};
-const char *routesBuffersGame[NUM_SOUNDS_GAME] = {"sources/audios/Broom.wav", \
-                                                  "sources/audios/chillido_rueda.wav"};
+const char *routesBuffersMenu[NUM_SOUNDS_MENU] = 
+            {"sources/audios/Intro.wav",
+             "sources/audios/musicaFondoMenu.wav",
+             "sources/audios/Pop.wav",
+             "sources/audios/Back.wav"};
+const char *routesBuffersGame[NUM_SOUNDS_GAME] = 
+            {"sources/audios/Engine.wav" 
+            };
 
 // ============ FUNCTIONS =============== //
 void intSoundsMenu(void)
@@ -25,9 +30,16 @@ void intSoundsMenu(void)
     {
         buffersMenu[i] = alutCreateBufferFromFile(routesBuffersMenu[i]);
     }
-
+    
     alGenSources(NUM_SOUNDS_MENU, sourcesMenu);
-    for (int i = 0; i < NUM_SOUNDS_MENU; i++) {
+
+    // Loop first sound
+    for (int i=0; i<2; i++) {
+        alSourcei(sourcesMenu[i], AL_BUFFER, buffersMenu[i]);
+        alSourcei(sourcesMenu[i], AL_LOOPING, AL_TRUE);
+    }
+
+    for (int i=2; i<NUM_SOUNDS_MENU; i++) {
         alSourcei(sourcesMenu[i], AL_BUFFER, buffersMenu[i]);
     }
 }
@@ -40,8 +52,9 @@ void initSoundsGame(void)
         buffersGame[i] = alutCreateBufferFromFile(routesBuffersGame[i]);
     }
 
+    // Loop sounds
     alGenSources(NUM_SOUNDS_GAME, soucesGame);
-    for (int i = 0; i < NUM_SOUNDS_GAME; i++) {
+    for (int i=0; i<NUM_SOUNDS_GAME; i++) {
         alSourcei(soucesGame[i], AL_BUFFER, buffersGame[i]);
         alSourcei(soucesGame[i], AL_LOOPING, AL_TRUE);
     }

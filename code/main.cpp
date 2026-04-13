@@ -23,8 +23,10 @@ GLuint imgList  = 0,
        mapList,
        kartList;
 
-bool firstTime = true, 
-     startGame = false, 
+bool firstTime = true,
+     exitFirstTime = false;
+
+bool startGame = false, 
      isGame    = false,
      exitGame = false;
 
@@ -47,7 +49,9 @@ string textOptions[total] = {"START", "CREDITS", "EXIT", \
                         "Vehicle 1", "Vehicle 2", "Vehicle 3", \
                         "Back"};
 
-float coordinatesButtons [3][2] = {{0.0f, 0.5f}, {0.0f, 0.1f}, {0.0f, -0.3f}};
+float coordinatesButtons [3][2] = {{0.0f, 0.5f}, 
+                                   {0.0f, 0.1f}, 
+                                   {0.0f, -0.3f}};
 
 int windowedWidth = 800, windowedHeight = 600;
 int windowedPosX = 100, windowedPosY = 100;
@@ -139,16 +143,25 @@ void display(void)
         {
             loadImage(routeFotoInicio);
             loadedImg1 = true;
+            playMenuSound(0);
         }
         glCallList(drawImage());
         drawText(-0.35f, -0.8f, "Presione cualquier tecla para continuar");
     }
     else if (ventana == 1)
     {
+        if(!exitFirstTime)
+        {
+            stopMenuSound(0);
+            exitFirstTime = true;
+            playMenuSound(1);
+
+        }
+
         for(int i=0; i<3; i++)
         {
             drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i);
-        }
+        }        
     }
     else if(ventana == 2)
     {
@@ -172,6 +185,7 @@ void display(void)
         {
             isGame = true; startGame = true;
             loadGame();
+            stopMenuSound(1);
         }
        
         Vec3 p = player1.getPos();
@@ -207,6 +221,7 @@ void display(void)
 
             ventana = 3;
             reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+            playMenuSound(1);
         }
     }
     else if(ventana == 5)
@@ -402,20 +417,29 @@ void selectButton(void)
 {
     if(!firstTime && id != -1)
     {   
-        if(ventana == 1)
+        if(ventana == 1 && id != 10)
         {
             drawSelectedButton(coordinatesButtons[id][0], coordinatesButtons[id][1], ancho, id);
         }
-        if(ventana == 2)
+        if(ventana == 2 && id != 10)
         {
             map_selected = id-2;
             drawSelectedButton(coordinatesButtons[id-3][0], coordinatesButtons[id-3][1], ancho, id);
         }
-        if(ventana == 3)
+        if(ventana == 3 && id != 10)
         {
             vehicle_selected = id-5;
             drawSelectedButton(coordinatesButtons[id-6][0], coordinatesButtons[id-6][1], ancho, id);
         }
+
+        if(id != 10) playMenuSound(2);
+        else playMenuSound(3);
+
+        // Dibuja por un segundo
+        glutSwapBuffers();
+        glutPostRedisplay();
+        usleep(100000); // 100 ms
+
         ejecutarAccion(id, &ventana);
         id = -1;
     }
