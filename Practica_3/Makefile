@@ -1,7 +1,7 @@
 CC = gcc
+CXXFLAGS = -Wall -O2 -w
 OPENAL_FLAGS = -lopenal -lalut
 OPENGL_FLAGS = -lglut -lGLU -lGL -lX11 -lm
-CXXFLAGS = -Wall -O2 -w
 
 
 TARGET_1 = bin/ejercicio_1

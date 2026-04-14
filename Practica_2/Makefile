@@ -1,6 +1,6 @@
 CC = g++
-OPENCV_FLAGS = $(shell pkg-config --cflags --libs opencv4)
 CXXFLAGS = -Wall -O2 -w
+OPENCV_FLAGS = $(shell pkg-config --cflags --libs opencv4)
 
 
 TARGET_1 = bin/ejercicio_1

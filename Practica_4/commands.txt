@@ -1,0 +1,6 @@
+# Comando ejercicio 1
+for i in {1..16}; do ./bin/create_marker -d=16 --id=$i bin/marcas/marca_$i.png; done \
+&& python code/show_images_dict.py
+
+# Comando ejercicio 2
+./bin/detect_markers -d=16

@@ -1,6 +1,6 @@
 CC = gcc
-OPENGL_FLAGS = -lglut -lGLU -lGL -lX11 -lm
 CXXFLAGS = -Wall -O2 -w
+OPENGL_FLAGS = -lglut -lGLU -lGL -lX11 -lm
 
 
 TARGET_1 = bin/atlantis
