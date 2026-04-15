@@ -238,7 +238,7 @@ int main(int argc, char *argv[]) {
                 Point(10, 20), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(255, 0, 0), 2);
 
         imshow("out", imageCopy);
-        char key = (char)waitKey(waitTime);
+        char key = (char)waitKey(1); // waitTime
         if(key == 27) break;
         if(key == 'c' && ids.size() > 0) {
             cout << "Frame captured" << endl;
