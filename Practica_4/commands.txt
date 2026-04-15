@@ -3,4 +3,13 @@ for i in {1..16}; do ./bin/create_marker -d=16 --id=$i bin/marcas/marca_$i.png; 
 && python code/show_images_dict.py
 
 # Comando ejercicio 2
-./bin/detect_markers -d=16
+./bin/detect_markers -d=16 -v=<URL AndroidVideo>
+
+# Comando ejercicio 3
+./bin/create_board -d=16 -h=4 -w=4 --si=true --l=100 --s=110 bin/board__DICT_ARUCO_ORIGINAL.png &
+./bin/create_board_charuco -d=16 -h=4 -w=4 --si=true --ml=200 --sl=210 bin/charuco__DICT_ARUCO_ORIGINAL.png &
+./bin/detect_markers -d=16 -v=<URL AndroidVideo>
+
+# Comando apartado 2.3
+./bin/calibrate_camera bin/calibracio_hercules.yml -d=16 -h=4 -w=4 -l=100 -s=110 -v=<URL AndroidVideo> &
+./bin/detect_markers -d=16 -c=bin/calibracio_hercules.yml

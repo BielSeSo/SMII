@@ -190,13 +190,13 @@ int main(int argc, char *argv[]) {
             aruco::estimatePoseSingleMarkers(corners, markerLength, camMatrix, distCoeffs, rvecs,
                                              tvecs);
 
-        double currentTime = ((double)getTickCount() - tick) / getTickFrequency();
+        /*double currentTime = ((double)getTickCount() - tick) / getTickFrequency();
         totalTime += currentTime;
         totalIterations++;
         if(totalIterations % 30 == 0) {
             cout << "Detection Time = " << currentTime * 1000 << " ms "
                  << "(Mean = " << 1000 * totalTime / double(totalIterations) << " ms)" << endl;
-        }
+        }*/
 
         // draw results
         image.copyTo(imageCopy);
@@ -214,7 +214,7 @@ int main(int argc, char *argv[]) {
             aruco::drawDetectedMarkers(imageCopy, rejected, noArray(), Scalar(100, 0, 255));
 
         imshow("out", imageCopy);
-        char key = (char)waitKey(waitTime);
+        char key = (char)waitKey(1);
         if(key == 27) break;
     }
 
