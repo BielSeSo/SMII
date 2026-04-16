@@ -2,16 +2,18 @@
 SMII_Proyecto/
 
 # Practica 1
-Practica_1/exec
-Practica_1/bin
+Practica_1/exec/
+Practica_1/bin/
 
 # Practica 2
-Practica_2/exec
-Practica_2/bin
+Practica_2/exec/
+Practica_2/bin/
 
 # Practica 3
-Practica_3/exec
-Practica_3/bin
+Practica_3/exec/
+Practica_3/bin/
 
 # Practica 4
-Practica_4/bin
+Practica_4/code/images/
+Practica_4/code/videos/
+Practica_4/bin/

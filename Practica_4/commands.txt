@@ -11,10 +11,11 @@ for i in {1..16}; do ./bin/create_marker -d=16 --id=$i bin/marcas/marca_$i.png; 
 ./bin/detect_markers -d=16 -v=<URL AndroidVideo>
 
 # Comandos apartado 2.3
+./bin/create_board -d=16 -h=4 -w=4 --si=true --l=100 --s=110 bin/board__DICT_ARUCO_ORIGINAL.png &
 ./bin/calibrate_camera bin/calibracio_hercules.yml -d=16 -h=4 -w=4 -l=100 -s=110 -v=<URL AndroidVideo>
 ./bin/detect_markers -d=16 -c=bin/calibracio_hercules.yml
 
 # Comando actividad
-./bin/generate_aruko_makers -s=100
-./bin/calibrate_camera -d=16 -h=2 -w=2 -l=100 -s=100 bin/calibracio_hercules.yml -v=<URL AndroidVideo>
+for i in {1..4}; do ./bin/generate_aruko_makers --id=$i bin/marcas/marca_$i.png; done
+# Calibración de camara (Apartado 2.3)
 ./bin/augmented_reality_with_aruco -d=16 --video=<URL AndroidVideo>

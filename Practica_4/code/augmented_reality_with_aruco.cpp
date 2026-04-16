@@ -2,7 +2,9 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/aruco.hpp>
 #include <opencv2/core.hpp>
-
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace cv;
@@ -10,8 +12,8 @@ using namespace cv;
 
 float markerLength = 0.1f;
 Ptr<aruco::DetectorParameters> detectorParams;
-String routeVideo, routeImage;
-VideoCapture inputVideo;
+String routeVideo, routeImage, routeShowedImg, routeShowedVideo;
+VideoCapture inputVideo, outputVideo;
 
 /* dictionary: 
     DICT_4X4_50=0, DICT_4X4_100=1, DICT_4X4_250=2
@@ -27,11 +29,12 @@ Ptr<aruco::Dictionary> dictionary;
 Mat camMatrix, distCoeffs;
 string calibrationRoute = "bin/calibracio_hercules.yml";
 
-Mat image, imageCopy, imageDraw;
+Mat image, imageDraw;
 vector< int > ids;
 vector< vector< Point2f > > corners, rejected;
 vector< Vec3d > rvecs, tvecs;
-bool isVideo = false;
+bool isVideo = false,
+     showVideo = false;
 
 /* Debido a que el trabajo se realiza desde un WSL no puede trabajar con cámaras del equipo
     esto porque no tiene acceso directo a este*/
@@ -130,6 +133,33 @@ bool init(int argc, char *argv[])
         return false;
     }
 
+    if(parser.has("iOverlay"))
+    {
+        routeShowedImg = parser.get<String>("iOverlay");
+    }
+    else
+    {
+        routeShowedImg = "code/images/lorax.png";
+    }
+    
+    if(parser.has("vOverlay"))
+    {
+        routeShowedVideo = parser.get<String>("vOverlay");
+        if (!routeShowedVideo.empty()) {
+            cout << "[DEBUG] Opening video rute: " << routeShowedVideo << endl; 
+            outputVideo.open(routeShowedVideo);
+            showVideo = true;
+        }
+        else
+        {
+            cout << "[DEBUG] Error opening video rute" << endl; 
+        }
+    }
+    else
+    {
+        showVideo = false;
+    }
+
     return true;
 }
 
@@ -139,21 +169,72 @@ void detectMarkers()
     // Detect markers and estimate pose
     aruco::detectMarkers(image, dictionary, corners, ids, detectorParams, rejected);
     if(ids.size() > 0)
-        aruco::estimatePoseSingleMarkers(corners, markerLength, camMatrix, distCoeffs, rvecs,
-                                        tvecs);
-    // draw results
-    image.copyTo(imageCopy);
-    if(ids.size() > 0) {
-        aruco::drawDetectedMarkers(imageCopy, corners, ids);
+        aruco::estimatePoseSingleMarkers(corners, markerLength, camMatrix, distCoeffs, rvecs, tvecs);
 
-        for(unsigned int i = 0; i < ids.size(); i++)
+    image.copyTo(imageDraw);
+
+    if(corners.size() >= 4)
+    {
+        Point2f p1 = corners[1][0];
+        Point2f p2 = corners[corners.size()/2][2];
+
+        float markWide = 100.0f;
+
+        int x1 = cvRound(p1.x);
+        int y1 = cvRound(p1.y + markWide);
+        int x2 = cvRound(p2.x);
+        int y2 = cvRound(p2.y - markWide);
+
+        // Rect válido independientemente del orden
+        int x = min(x1, x2);
+        int y = min(y1, y2);
+        int w = abs(x2 - x1);
+        int h = abs(y2 - y1);
+
+        Rect roi(x, y, w, h);
+
+        Mat overlay;
+        if(showVideo)
         {
-            drawFrameAxes(imageCopy, camMatrix, distCoeffs, rvecs[i], tvecs[i], markerLength * 0.5f);
-            cout << "[DEBUG] tvecs: " << tvecs[i] << endl;
+            // Carga vídeo
+            if(outputVideo.grab())
+            {
+                outputVideo.retrieve(overlay);
+            }
         }
-    }
+        else
+        {
+            // Cargar imagen
+            overlay = imread(routeShowedImg);
+        }
 
-    // TODO: Representar la imagen a partir de las marcas
+        if (overlay.empty()) {
+            cerr << "No se pudo cargar la imagen\n";
+            return;
+        }
+
+        // Redimensionar y copiar
+        Mat overlayResized;
+        resize(overlay, overlayResized, roi.size());
+        overlayResized.copyTo(imageDraw(roi));
+    }
+}
+
+char showFunc()
+{
+    if(isVideo)
+    {
+        imshow("out", image);
+        imshow("draw", imageDraw);
+        char key = waitKey(1);
+        return key;
+    }
+    else
+    {
+        imshow("out", image);
+        imshow("draw", imageDraw);
+        waitKey(0);
+    }
 }
 
 int main(int argc, char *argv[]) {
@@ -165,23 +246,16 @@ int main(int argc, char *argv[]) {
     {
         while(inputVideo.grab()) {
             inputVideo.retrieve(image);
-
             detectMarkers();
-
-            imshow("out", imageCopy);
-            char key = (char)waitKey(1);
+            char key = showFunc();
             if(key == 27) break;
         }
     }
     else
     {
         image = imread(routeImage);
-
         detectMarkers();
-
-        imshow("out", imageCopy);
-        char key = (char)waitKey(0);
-        if(key == 27) return 0;
+        showFunc();
     }
     cout << "[DEBUG] Hasta pronto..." << endl;
 
