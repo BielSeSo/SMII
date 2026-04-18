@@ -23,11 +23,16 @@ GLuint imgList  = 0,
        mapList,
        kartList;
 
+bool waiting = false;
+int t0 = 0;
+
+
 bool firstTime = true,
      exitFirstTime = false;
 
-bool startGame = false, 
-     exitGame = false;
+bool initGame = false, 
+     destroyGame = false,
+     startGame = false;
 
 bool loadedImg1 = false,
      loadedImg2 = false;
@@ -56,6 +61,11 @@ float coordinatesButtons [3][2] = {{0.0f, 0.5f},
                                    {0.0f, 0.1f}, 
                                    {0.0f, -0.3f}};
 
+string ruteSemaphores[4] = {"sources/images/Semaforo_0.png",
+                            "sources/images/Semaforo_1.png",
+                            "sources/images/Semaforo_2.png",
+                            "sources/images/Semaforo_3.png"};
+
 // ================== CUSTOM FUNCS ====================/
 void init(void)
 {   
@@ -80,7 +90,7 @@ void startWindow(void)
     }
 }
 
-void drawMenu(bool *needReshape, bool *isGame, int &marioWin)
+void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin)
 {
     if(ventana == -1) closeGame(marioWin);
     else if (ventana == 0)
@@ -124,7 +134,7 @@ void drawMenu(bool *needReshape, bool *isGame, int &marioWin)
     }
     else if(ventana == 4)
     {
-        renderGame(needReshape, isGame);
+        renderGame(reshape, isGame);
     }
     else if(ventana == 5)
     {
@@ -138,22 +148,25 @@ void drawMenu(bool *needReshape, bool *isGame, int &marioWin)
     }
 }
 
-void renderGame(bool *needReshape, bool *isGame)
+void renderGame(void (*reshape)(int, int), bool *isGame)
 {
     if(ventana == 4)
     {
         glEnable(GL_DEPTH_TEST);
 
-        if (!startGame)
+        if (!initGame)
         {
-            *isGame = true; startGame = true;
+            *isGame = true; 
+            initGame = true;
+            startGame = true;
+
             loadGame();
             stopMenuSound(1);            
             playGameSound(1);
             
-            *needReshape = true;
+            reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         }
-       
+        
         Vec3 p = player1.getPos();
         float rad = player1.grados * M_PI / 180.0f;
 
@@ -173,34 +186,70 @@ void renderGame(bool *needReshape, bool *isGame)
         glTranslatef(p.x, p.y, 0.0f);
         glRotatef(player1.grados, 0, 0, 1);
         glCallList(kartList);
-        player1.move();
-        
-        if(isRunning)
+
+        if(!startGame)
         {
-            playGameSound(0);
-            isRunning = false;
+            player1.move();
+            
+            if(isRunning)
+            {
+                playGameSound(0);
+                isRunning = false;
+            }
+            if(stopRunning)
+            {
+                stopGameSound(0);
+                stopRunning = false;
+            }
         }
-        if(stopRunning)
+        else
         {
-            stopGameSound(0);
-            stopRunning = false;
+            // Guardar matrices
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+            glLoadIdentity();
+            glOrtho(-1, 1, -1, 1, -1, 1);
+
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
+
+            // DESACTIVAR profundidad
+            glDisable(GL_DEPTH_TEST);
+
+            for(int i=0; i<4; i++)
+            {
+                showSemaphore(ruteSemaphores[i]);
+                sleep(1);
+            }
+
+            glEnable(GL_DEPTH_TEST);
+
+            glPopMatrix();
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+            startGame = false;
         }
 
-        if(exitGame)
+        if(destroyGame)
         {
             map_render.destroyLights();
             glColor3f(1.0f, 1.0f, 1.0f); // Color Blanco
 
-            *isGame = false; startGame = false; exitGame = false;
+            *isGame = false; 
+            initGame = false; 
+            destroyGame = false;
 
             // Restart lists
-            mapList = 0; kartList = 0;
+            mapList = 0; 
+            kartList = 0;
 
             ventana = 3;
             stopGameSound(1);
             playMenuSound(1);
 
-            *needReshape = true;
+            reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         }
     }
 }
@@ -336,7 +385,7 @@ void key3(void)
 void rightClick(void)
 {
     id = 10;
-    if(ventana == 4) exitGame = true;
+    if(ventana == 4) destroyGame = true;
 }
 
 void leftClick(float glX, float glY)

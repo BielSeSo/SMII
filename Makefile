@@ -20,8 +20,10 @@ OBJ_GAME = $(SRC_GAME:code/game/%.cpp=exec/game/%.o)
 OBJ_MAIN = exec/main.o
 
 
-# Compile all
-all: $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN_GAME) $(OBJ_MAIN)
+all: bin
+
+# Binary compilation for Ubuntu
+bin: $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN_GAME) $(OBJ_MAIN)
 	mkdir -p bin	
 	$(CC) $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN_GAME) $(OBJ_MAIN) -o $(TARGET) \
 	$(OPENCV_FLAGS) $(OPENGL_FLAGS) $(OPENAL_FLAGS) $(FREE_FLAGS)

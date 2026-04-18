@@ -3,8 +3,8 @@
 
 void init(void);
 void startWindow(void);
-void drawMenu(bool *needReshape, bool *isGame, int &marioWin);
-void renderGame(bool *needReshape, bool *isGame);
+void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin);
+void renderGame(void (*reshape)(int, int), bool *isGame);
 void loadGame(void);
 void selectButton(void);
 void closeGame(int &marioWin);
