@@ -1,5 +1,5 @@
 CC = g++
-CXXFLAGS = -Wall -O2 -w
+CXXFLAGS = -O2 -w
 OPENCV_FLAGS = $(shell pkg-config --cflags --libs opencv4)
 
 

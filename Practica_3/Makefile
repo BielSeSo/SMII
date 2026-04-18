@@ -1,5 +1,5 @@
 CC = gcc
-CXXFLAGS = -Wall -O2 -w
+CXXFLAGS = -O2 -w
 OPENAL_FLAGS = -lopenal -lalut
 OPENGL_FLAGS = -lglut -lGLU -lGL -lX11 -lm
 

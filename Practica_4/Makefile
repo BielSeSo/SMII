@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -O2 -w
+CXXFLAGS = -O2 -w
 OPENCV_FLAGS = $(shell pkg-config --cflags --libs opencv4)
 
 SRC = $(wildcard code/*.cpp)
@@ -8,17 +8,16 @@ BIN = $(patsubst code/%.cpp,bin/%,$(SRC))
 
 .PHONY: all clean carpets
 
-all: $(OBJ)
+all: $(OBJ) $(BIN)
+
+bin/%: $(OBJ)
+	$(CXX) $(CXXFLAGS) $< -o $@ $(OPENCV_FLAGS)
 
 exec/%.o: code/%.cpp | carpets
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(OPENCV_FLAGS)
-
-bin/%: exec/%.o
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(OPENCV_FLAGS)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(OPENCV_FLAGS)
 
 carpets:
-	mkdir -p bin bin/marcas
-	mkdir -p exec
+	mkdir -p bin bin/marcas exec
 
 clean:
 	rm -rf bin exec
