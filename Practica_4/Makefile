@@ -7,10 +7,11 @@ OBJ = $(patsubst code/%.cpp,exec/%.o,$(SRC))
 BIN = $(patsubst code/%.cpp,bin/%,$(SRC))
 
 .PHONY: all clean carpets
+.SECONDARY: $(OBJ)
 
-all: $(OBJ) $(BIN)
+all: $(BIN)
 
-bin/%: $(OBJ)
+bin/%: exec/%.o
 	$(CXX) $(CXXFLAGS) $< -o $@ $(OPENCV_FLAGS)
 
 exec/%.o: code/%.cpp | carpets

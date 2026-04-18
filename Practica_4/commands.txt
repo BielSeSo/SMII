@@ -18,4 +18,4 @@ for i in {1..16}; do ./bin/create_marker -d=16 --id=$i bin/marcas/marca_$i.png; 
 # Comando actividad
 for i in {1..4}; do ./bin/generate_aruko_makers --id=$i bin/marcas/marca_$i.png; done
 # Calibración de camara (Apartado 2.3)
-./bin/augmented_reality_with_aruco -d=16 --video=<URL AndroidVideo>
+./bin/augmented_reality_with_aruco --video=<URL AndroidVideo>
