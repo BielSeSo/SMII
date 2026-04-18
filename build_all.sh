@@ -77,7 +77,7 @@ sleep 5
 # --------------------------
 # Compilar prácticas 1 a 3
 # --------------------------
-for dir in Practica_1 Practica_2 Practica_3; do
+for dir in Practica_1 Practica_2 Practica_3 Practica_4; do
     echo "========================="
     echo "Entrando en $dir ..."
 
