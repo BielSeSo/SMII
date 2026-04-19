@@ -16,16 +16,14 @@ if [ $? -ne 0 ]; then
     echo ""
 
     sudo apt update
-    sudo apt install libassimp-dev
-
-    sudo apt update
-    sudo apt install -y libgl1-mesa-dev libglu1-mesa-dev freeglut3-dev
-           
-    sudo apt update
-    sudo apt install -y libopencv-dev
-    
-    sudo apt update
-    sudo apt install -y libopenal-dev libalut-dev
+    sudo apt install -y \
+        libassimp-dev \
+        libgl1-mesa-dev \
+        libglu1-mesa-dev \
+        freeglut3-dev \
+        libopencv-dev \
+        libopenal-dev \
+        libalut-dev
 
     echo ""
     echo ""

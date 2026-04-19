@@ -25,8 +25,7 @@ int isFullscreen = 0;
 
 int marioWin;
 
-bool needReshape = false,
-     isGame      = false;
+//bool isGame = false;
 
 /* ============= MAIN FUNCS ============*/
 void display(void);
@@ -63,13 +62,7 @@ void display(void)
 
     glDisable(GL_DEPTH_TEST);
 
-    drawMenu(&needReshape, &isGame, marioWin);
-
-    if(needReshape) 
-    {
-        reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-        needReshape = false;
-    }
+    drawMenu(reshape, &isGame, marioWin);
 
     glutSwapBuffers();
     glutPostRedisplay();

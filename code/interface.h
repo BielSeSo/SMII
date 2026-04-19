@@ -25,5 +25,6 @@ void drawSelectedButton(float x, float y, float ancho, int id);
 int areaButtonId(float x, float y, int ventana);
 void drawText(float x, float y, std::string texto);
 void ejecutarAccion(int id, int *ventana);
+void showSemaphore(std::string ruta);
 
 #endif
