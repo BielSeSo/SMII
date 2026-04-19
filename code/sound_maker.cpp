@@ -3,7 +3,7 @@
 #include "sound_maker.h"
 
 #define NUM_SOUNDS_MENU 4
-#define NUM_SOUNDS_GAME 5
+#define NUM_SOUNDS_GAME 6
 
 using namespace std;
 
@@ -25,7 +25,8 @@ const char *routesBuffersGame[NUM_SOUNDS_GAME] =
              "sources/audios/musicaPista1.wav",
              "sources/audios/Frenar.wav",
              "sources/audios/Horn1.wav",
-             "sources/audios/Horn2.wav"};
+             "sources/audios/Horn2.wav",
+            "sources/audios/Warning.wav"};
 
 // ============ FUNCTIONS =============== //
 void intSoundsMenu(void)

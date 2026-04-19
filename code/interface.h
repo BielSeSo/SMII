@@ -27,5 +27,6 @@ void drawText(float x, float y, std::string texto);
 void ejecutarAccion(int id, int *ventana);
 void showSemaphore(std::string ruta);
 void showWarning(std::string ruta);
+void showBackground(std::string ruta);
 
 #endif

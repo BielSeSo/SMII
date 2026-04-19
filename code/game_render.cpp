@@ -28,6 +28,8 @@ string ruteSemaphores[4] = {"sources/images/Semaforo_0.png",
 
 string routeWarning = "sources/images/warningTourtle.png";
 
+string routeSky = "sources/images/Cielo.jpg";
+
 GLuint imgList  = 0,
        mapList,
        kartList;
@@ -195,14 +197,16 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             
             reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         }
+
+        showBackground(routeSky);
         
         Vec3 p = player1.getPos();
         float rad = player1.grados * M_PI / 180.0f;
 
         // Camara detras del kart
-        float camX = p.x - sin(rad) * 10.0f;
-        float camY = p.y + cos(rad) * 10.0f;
-        float camZ = p.z + 5.0f;
+        float camX = p.x - sin(rad) * 5.0f;
+        float camY = p.y + cos(rad) * 5.0f;
+        float camZ = p.z + 2.5f;
 
         gluLookAt(
             camX, camY, camZ,
@@ -325,7 +329,7 @@ void selectButton(void)
 
 void comprobateLimits()
 {
-    
+    // TODO
 }
 
 void closeGame(int &marioWin)

@@ -16,7 +16,7 @@ const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + \
 
 ButtonArea buttonAreas[total];
 GLuint buttonTextures[total];
-GLuint fondoTexture, fondoSemaphore, fondoWarning;
+GLuint fondoTexture, fondoSemaphore, fondoWarning, fondo;
 
 float alto = 0.25f;
 
@@ -289,14 +289,12 @@ void showSemaphore(string ruta)
     glDisable(GL_BLEND);
 }
 
-// TODO: Comprobar si las coordenadas estan bien
 void showWarning(string ruta)
 {
     Mat img = imread(ruta, IMREAD_UNCHANGED);
     if (img.empty()) {
         cerr << "Error: No se pudo cargar la img " << ruta << endl;
     }
-    cout << "Cargando img: " << ruta << endl;
 
     // IMPORTANTE: Para que no salga al revés y tenga colores correctos
     cvtColor(img, img, COLOR_BGRA2RGBA);
@@ -315,12 +313,56 @@ void showWarning(string ruta)
     glBindTexture(GL_TEXTURE_2D, fondoWarning);
     glColor3f(1.0f, 1.0f, 1.0f); // Blanco
     
+    float x = 0.5f;
+    float y = 1.0f; 
+
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(-1.5f, 0.0f);
-        glTexCoord2f(1, 0); glVertex2f(1.5f, 0.0f);
-        glTexCoord2f(1, 1); glVertex2f(1.5f, -1.0f);
-        glTexCoord2f(0, 1); glVertex2f(-1.5f, -1.0f);
+        glTexCoord2f(0, 0); glVertex2f(-x, -0.3f);
+        glTexCoord2f(1, 0); glVertex2f(x, -0.3f);
+        glTexCoord2f(1, 1); glVertex2f(x, y);
+        glTexCoord2f(0, 1); glVertex2f(-x, y);
     glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+}
+
+void showBackground(string ruta)
+{
+    Mat img = imread(ruta, IMREAD_UNCHANGED);
+    if (img.empty()) {
+        cerr << "Error: No se pudo cargar la img " << ruta << endl;
+    }
+
+    // IMPORTANTE: Para que no salga al revés y tenga colores correctos
+    cvtColor(img, img, COLOR_BGRA2RGB);
+    flip(img, img, 0); 
+
+    glGenTextures(1, &fondo);
+    glBindTexture(GL_TEXTURE_2D, fondo);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.cols, img.rows, 
+                 0, GL_RGB, GL_UNSIGNED_BYTE, img.data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    
+    glDisable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, fondo);
+    glColor3f(1.0f, 1.0f, 1.0f); // Blanco
+    
+    float radio = 500.0f;
+
+    GLUquadric* quad = gluNewQuadric();
+    gluQuadricTexture(quad, GL_TRUE);
+    gluQuadricNormals(quad, GLU_NONE);
+
+    glBindTexture(GL_TEXTURE_2D, fondo);
+    gluSphere(quad, radio, 40, 40);
+
+    gluDeleteQuadric(quad);
 
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
