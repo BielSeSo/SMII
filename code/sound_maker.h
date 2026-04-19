@@ -3,9 +3,6 @@
 
 #include <AL/alut.h>
 
-#define NUM_SOUNDS_MENU 4
-#define NUM_SOUNDS_GAME 3
-
 void intSoundsMenu(void);
 void initSoundsGame(void);
 void playMenuSound(int id);

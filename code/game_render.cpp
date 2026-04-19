@@ -12,12 +12,21 @@
 #include "interface.h"
 #include "sound_maker.h"
 
+#define NUM_LUCES_SEM 4
+
 using namespace std;
 
 /* ============== GLOBAL VARIABLES =============== */
 
 string routeFotoInicio  = "sources/images/Mario_kart.jpg",
        routeFotoCredits = "sources/images/Creditos.jpg";
+
+string ruteSemaphores[4] = {"sources/images/Semaforo_0.png",
+                            "sources/images/Semaforo_1.png",
+                            "sources/images/Semaforo_2.png",
+                            "sources/images/Semaforo_3.png"};
+
+string routeWarning = "sources/images/warningTourtle.png";
 
 GLuint imgList  = 0,
        mapList,
@@ -60,11 +69,6 @@ string textOptions[total] = {"START", "CREDITS", "EXIT",
 float coordinatesButtons [3][2] = {{0.0f, 0.5f}, 
                                    {0.0f, 0.1f}, 
                                    {0.0f, -0.3f}};
-
-string ruteSemaphores[4] = {"sources/images/Semaforo_0.png",
-                            "sources/images/Semaforo_1.png",
-                            "sources/images/Semaforo_2.png",
-                            "sources/images/Semaforo_3.png"};
 
 // ================== CUSTOM FUNCS ====================/
 void init(void)
@@ -148,6 +152,32 @@ void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin)
     }
 }
 
+void enableShowImg(void)
+{
+    // Guardar matrices
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(-1, 1, -1, 1, -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    // DESACTIVAR profundidad
+    glDisable(GL_DEPTH_TEST);
+}
+
+void disableShowImg(void)
+{
+    glEnable(GL_DEPTH_TEST);
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
 void renderGame(void (*reshape)(int, int), bool *isGame)
 {
     if(ventana == 4)
@@ -162,7 +192,6 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
 
             loadGame();
             stopMenuSound(1);            
-            playGameSound(1);
             
             reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
         }
@@ -204,32 +233,26 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
         }
         else
         {
-            // Guardar matrices
-            glMatrixMode(GL_PROJECTION);
-            glPushMatrix();
-            glLoadIdentity();
-            glOrtho(-1, 1, -1, 1, -1, 1);
-
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            glLoadIdentity();
-
-            // DESACTIVAR profundidad
-            glDisable(GL_DEPTH_TEST);
-
-            for(int i=0; i<4; i++)
+            enableShowImg();
+            for(int i=0; i<NUM_LUCES_SEM; i++)
             {
                 showSemaphore(ruteSemaphores[i]);
-                sleep(1);
+                
+                if(i != 0)
+                {
+                    if(i == NUM_LUCES_SEM-1) playGameSound(4);
+                    else playGameSound(3);
+                }
+
+                glutSwapBuffers();
+                glutPostRedisplay();
+
+                sleep(1.2);
             }
+            disableShowImg();
 
-            glEnable(GL_DEPTH_TEST);
-
-            glPopMatrix();
-            glMatrixMode(GL_PROJECTION);
-            glPopMatrix();
-            glMatrixMode(GL_MODELVIEW);
             startGame = false;
+            playGameSound(1);
         }
 
         if(destroyGame)
@@ -300,6 +323,11 @@ void selectButton(void)
     }
 }
 
+void comprobateLimits()
+{
+    
+}
+
 void closeGame(int &marioWin)
 {
     // Destroy 3D models
@@ -319,6 +347,7 @@ void closeGame(int &marioWin)
     cout << "Saliendo del juego..." << endl;
     exit(0);  
 }
+
 
 // KEYBOARD FUNCS
 void keyW(void)

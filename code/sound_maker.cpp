@@ -1,8 +1,9 @@
-#include <string>
-
 #include <AL/alut.h>
 
 #include "sound_maker.h"
+
+#define NUM_SOUNDS_MENU 4
+#define NUM_SOUNDS_GAME 5
 
 using namespace std;
 
@@ -18,10 +19,13 @@ const char *routesBuffersMenu[NUM_SOUNDS_MENU] =
              "sources/audios/musicaFondoMenu.wav",
              "sources/audios/Pop.wav",
              "sources/audios/Back.wav"};
+
 const char *routesBuffersGame[NUM_SOUNDS_GAME] = 
             {"sources/audios/Engine.wav",
              "sources/audios/musicaPista1.wav",
-             "sources/audios/Frenar.wav"};
+             "sources/audios/Frenar.wav",
+             "sources/audios/Horn1.wav",
+             "sources/audios/Horn2.wav"};
 
 // ============ FUNCTIONS =============== //
 void intSoundsMenu(void)

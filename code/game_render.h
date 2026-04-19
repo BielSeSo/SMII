@@ -1,6 +1,11 @@
 #ifndef GAME_RENDER_H
 #define GAME_RENDER_H
 
+typedef struct Hitbox
+{
+    float w, h; // Width & Height
+};
+
 void init(void);
 void startWindow(void);
 void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin);

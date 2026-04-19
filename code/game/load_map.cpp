@@ -11,6 +11,11 @@ Map::Map()
     mapList = 0;
 }
 
+void Map::calculateSize(void)
+{
+    // TODO
+}
+
 void Map::selectMap(int selectedMap)
 {
     this->selectedMap = selectedMap;
@@ -60,4 +65,9 @@ GLuint Map::loadMap(void)
 void Map::destroyLights(void)
 {
     glDisable(GL_LIGHT1);
+}
+
+Hitbox Map::getMapSize(void)
+{
+    return mapSize;
 }

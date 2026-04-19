@@ -25,7 +25,7 @@ int isFullscreen = 0;
 
 int marioWin;
 
-//bool isGame = false;
+bool isGame = false;
 
 /* ============= MAIN FUNCS ============*/
 void display(void);

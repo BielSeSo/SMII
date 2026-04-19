@@ -8,10 +8,6 @@
 
 using namespace std;
 
-static string route1 = "sources/assets/Kart_1.obj";
-static string route2 = "sources/assets/Kart_2.obj";
-static string route3 = "sources/assets/Kart_3.obj";
-
 Player::Player(float x, float y, float z)
 {
     pos.x = x;
@@ -20,11 +16,15 @@ Player::Player(float x, float y, float z)
 
     velocidad = 0.0f; 
     grados = 0.0f;
-
-    hitbox[0] = 0.5f;
-    hitbox[1] = 0.5f;
+    
+    calculateSize();
 
     kartList = 0;
+}
+
+void Player::calculateSize(void)
+{
+    // TODO
 }
 
 void Player::selectKart(int selectedKart)
@@ -37,15 +37,15 @@ GLuint Player::loadVehicle(void)
     switch (selectedKart)
     {
         case 1:
-            kartList = loadObj(route1);
+            kartList = loadObj(ROUTE_1);
             break;
 
         case 2:
-            kartList = loadObj(route2);
+            kartList = loadObj(ROUTE_2);
             break;
 
         case 3:
-            kartList = loadObj(route3);
+            kartList = loadObj(ROUTE_3);
             break;
     
         default: break;
@@ -71,5 +71,8 @@ void Player::move(void)
 }
 
 
-
-
+Hitbox Player::getHitbox(void)
+{
+    
+    return kartSize;
+}

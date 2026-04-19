@@ -3,15 +3,22 @@
 
 #include <GL/gl.h>
 
-#define ROUTE_1 "sources/assets/Track_1.obj"
-#define ROUTE_2 "sources/assets/Track_2.obj"
-#define ROUTE_3 "sources/assets/Track_3.obj"
+#include "../game_render.h"
+
+#define ROUTE_1 "sources/assets/maps/Track_1.obj"
+#define ROUTE_2 "sources/assets/maps/Track_2.obj"
+#define ROUTE_3 "sources/assets/maps/Track_3.obj"
+
+#define ROUTE_HITBOX "sources/assets/maps/TrackHitbox.obj"
 
 class Map
 {
     private:
         int selectedMap;
         GLuint mapList;
+        Hitbox mapSize;
+
+        void calculateSize(void);
 
     public:
         Map();
@@ -19,6 +26,7 @@ class Map
         void setupLights(void);
         GLuint loadMap(void);
         void destroyLights(void);
+        Hitbox getMapSize(void);
 };
 
 #endif

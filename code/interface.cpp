@@ -16,7 +16,7 @@ const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + \
 
 ButtonArea buttonAreas[total];
 GLuint buttonTextures[total];
-GLuint fondoTexture, fondoSemaphore;
+GLuint fondoTexture, fondoSemaphore, fondoWarning;
 
 float alto = 0.25f;
 
@@ -247,37 +247,81 @@ void ejecutarAccion(int id, int *ventana)
 
 void showSemaphore(string ruta)
 {
-    Mat img = imread(ruta);
+    Mat img = imread(ruta, IMREAD_UNCHANGED);
     if (img.empty()) {
         cerr << "Error: No se pudo cargar la img " << ruta << endl;
     }
     cout << "Cargando img: " << ruta << endl;
 
     // IMPORTANTE: Para que no salga al revés y tenga colores correctos
-    cvtColor(img, img, COLOR_BGR2RGB);
+    cvtColor(img, img, COLOR_BGRA2RGBA);
     flip(img, img, 0); 
 
     glGenTextures(1, &fondoSemaphore);
     glBindTexture(GL_TEXTURE_2D, fondoSemaphore);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.cols, img.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.cols, img.rows, 
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, img.data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    float x = 0.05f;
-    float y = 0.1f;
-    float halfWidth = 0.25f;
-    float halfHeight = 0.5f;
-
+    float x = -1.25f;
+    float width = 0.5f;
+    float height = 1.0f;
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, fondoSemaphore);
-
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(x - halfWidth, y - halfHeight);
-        glTexCoord2f(1, 0); glVertex2f(x + halfWidth, y - halfHeight);
-        glTexCoord2f(1, 1); glVertex2f(x + halfWidth, y + halfHeight);
-        glTexCoord2f(0, 1); glVertex2f(x - halfWidth, y + halfHeight);
-    glEnd();
-
+    glColor3f(1.0f, 1.0f, 1.0f); // Blanco
+    
+    for(int i=1; i<4; i++)
+    {
+        float padding = width * i;
+        glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2f(x + padding, 0.0f);
+            glTexCoord2f(1, 0); glVertex2f(x + width + padding, 0.0f);
+            glTexCoord2f(1, 1); glVertex2f(x + width + padding, height);
+            glTexCoord2f(0, 1); glVertex2f(x + padding, height);
+        glEnd();
+    }
 
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
+}
+
+// TODO: Comprobar si las coordenadas estan bien
+void showWarning(string ruta)
+{
+    Mat img = imread(ruta, IMREAD_UNCHANGED);
+    if (img.empty()) {
+        cerr << "Error: No se pudo cargar la img " << ruta << endl;
+    }
+    cout << "Cargando img: " << ruta << endl;
+
+    // IMPORTANTE: Para que no salga al revés y tenga colores correctos
+    cvtColor(img, img, COLOR_BGRA2RGBA);
+    flip(img, img, 0); 
+
+    glGenTextures(1, &fondoWarning);
+    glBindTexture(GL_TEXTURE_2D, fondoWarning);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.cols, img.rows, 
+                 0, GL_RGBA, GL_UNSIGNED_BYTE, img.data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, fondoWarning);
+    glColor3f(1.0f, 1.0f, 1.0f); // Blanco
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(-1.5f, 0.0f);
+        glTexCoord2f(1, 0); glVertex2f(1.5f, 0.0f);
+        glTexCoord2f(1, 1); glVertex2f(1.5f, -1.0f);
+        glTexCoord2f(0, 1); glVertex2f(-1.5f, -1.0f);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
 }
