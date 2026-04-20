@@ -36,7 +36,7 @@ echo "         Construyendo directorios"
 echo "============================================"
 echo ""
 
-mkdir -p sources sources/images sources/audios sources/assets sources/assets/maps sources/assets/models
+mkdir -p sources
 
 echo ""
 echo "============================================"
