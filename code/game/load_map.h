@@ -9,14 +9,14 @@
 #define ROUTE_2 "sources/assets/maps/Track_2.obj"
 #define ROUTE_3 "sources/assets/maps/Track_3.obj"
 
-#define ROUTE_HITBOX "sources/assets/maps/TrackHitbox.obj"
+#define ROUTE_HITBOX "sources/assets/maps/Track_Limit.obj"
 
 class Map
 {
     private:
         int selectedMap;
         GLuint mapList;
-        Hitbox mapSize;
+        Coordinates4f mapSize;
 
         void calculateSize(void);
 
@@ -26,7 +26,7 @@ class Map
         void setupLights(void);
         GLuint loadMap(void);
         void destroyLights(void);
-        Hitbox getMapSize(void);
+        Coordinates4f getMapSize(void);
 };
 
 #endif

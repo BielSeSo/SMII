@@ -9,7 +9,7 @@
 #define ROUTE_2 "sources/assets/models/Kart_2.obj"
 #define ROUTE_3 "sources/assets/models/Kart_3.obj"
 
-#define ROUTE_HITBOX "sources/assets/models/KartHitbox.obj"
+#define ROUTE_HITBOX "sources/assets/models/Kart_Limit.obj"
 
 typedef struct Vec3
 {
@@ -34,6 +34,7 @@ class Player
         void selectKart(int selectedKart);
         GLuint loadVehicle(void);
         Vec3 getPos(void);
+        void editPos(Vec3 pos);
         void move(void);
         Hitbox getHitbox(void);
 };

@@ -68,20 +68,73 @@ GLuint loadObj(string path)
     return gListId;
 }
 
-/*
-void computeBounds() 
-{
-    aiVector3D minV, maxV;
 
-    minV = aiVector3D( 1e10f,  1e10f,  1e10f);
-    maxV = aiVector3D(-1e10f, -1e10f, -1e10f);
+void getHitBox(string path, Hitbox *hitBox) 
+{
+    Assimp::Importer gImporter;
+
+    const aiScene *gScene = gImporter.ReadFile(path,
+        aiProcess_Triangulate |
+        aiProcess_GenNormals |
+        aiProcess_JoinIdenticalVertices |
+        aiProcess_PreTransformVertices |   // aplica transformaciones de nodos -> mallas ya en espacio global
+        aiProcess_SortByPType
+    );
+    
+    if (!gScene) {
+        cerr << "Error cargando modelo: " << gImporter.GetErrorString() << "\n";
+        return;
+    }
+
+    float minX = 0.0f, maxX = 0.0f;
+    float minY = 0.0f, maxY = 0.0f;
+
     for (unsigned int m = 0; m < gScene->mNumMeshes; ++m) {
         const aiMesh* mesh = gScene->mMeshes[m];
         for (unsigned int v = 0; v < mesh->mNumVertices; ++v) {
-            const aiVector3D& p = mesh->mVertices[v];
-            minV.x = std::min(minV.x, p.x); minV.y = std::min(minV.y, p.y); minV.z = std::min(minV.z, p.z);
-            maxV.x = std::max(maxV.x, p.x); maxV.y = std::max(maxV.y, p.y); maxV.z = std::max(maxV.z, p.z);
+            const aiVector3D p = mesh->mVertices[v];
+            minX = min(minX, p.x); 
+            maxX = max(maxX, p.x);
+            minY = min(minY, p.y); 
+            maxY = max(maxY, p.y);
         }
     }
+    hitBox->w = maxX - minX;
+    hitBox->h = maxY - minY;
 }
-*/
+
+void getCoordinates(string path, Coordinates4f *coordinates) 
+{
+    Assimp::Importer gImporter;
+
+    const aiScene *gScene = gImporter.ReadFile(path,
+        aiProcess_Triangulate |
+        aiProcess_GenNormals |
+        aiProcess_JoinIdenticalVertices |
+        aiProcess_PreTransformVertices |   // aplica transformaciones de nodos -> mallas ya en espacio global
+        aiProcess_SortByPType
+    );
+    
+    if (!gScene) {
+        cerr << "Error cargando modelo: " << gImporter.GetErrorString() << "\n";
+        return;
+    }
+
+    float minX = 0.0f, maxX = 0.0f;
+    float minY = 0.0f, maxY = 0.0f;
+
+    for (unsigned int m = 0; m < gScene->mNumMeshes; ++m) {
+        const aiMesh* mesh = gScene->mMeshes[m];
+        for (unsigned int v = 0; v < mesh->mNumVertices; ++v) {
+            const aiVector3D p = mesh->mVertices[v];
+            minX = min(minX, p.x); 
+            maxX = max(maxX, p.x);
+            minY = min(minY, p.y); 
+            maxY = max(maxY, p.y);
+        }
+    }
+    coordinates->x1 = minX;
+    coordinates->x2 = maxX;
+    coordinates->y1 = minY;
+    coordinates->y2 = maxY;
+}

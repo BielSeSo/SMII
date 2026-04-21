@@ -216,6 +216,8 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
 
         glCallList(mapList);
 
+        comprobateLimits();
+
         glTranslatef(p.x, p.y, 0.0f);
         glRotatef(player1.grados, 0, 0, 1);
         glCallList(kartList);
@@ -329,7 +331,45 @@ void selectButton(void)
 
 void comprobateLimits()
 {
-    // TODO
+    Coordinates4f mapSize = map_render.getMapSize();
+    Hitbox kartSize = player1.getHitbox();
+    Vec3 p = player1.getPos();
+    bool isTurning = false;
+
+    if(p.x <= mapSize.x1)
+    {
+        player1.velocidad = 0;
+        isTurning = true;
+
+        p.x += 0.1f;
+        player1.editPos(p);
+    }
+    else if(p.x >= mapSize.x2)
+    {
+        player1.velocidad = 0;
+        isTurning = true;
+
+        p.x -= 0.1f;
+        player1.editPos(p);
+    }
+    else if(p.y <= mapSize.y1) 
+    {
+        player1.velocidad = 0;
+        isTurning = true;
+
+        p.y += 0.1f;
+        player1.editPos(p);
+    }
+    else if(p.y >= mapSize.y2) 
+    {
+        player1.velocidad = 0;
+        isTurning = true;
+
+        p.y -= 0.1f;
+        player1.editPos(p);
+    }
+    
+    if(isTurning) player1.grados += 180.0f;
 }
 
 void closeGame(int &marioWin)

@@ -5,8 +5,10 @@
 
 #include <GL/gl.h> 
 
+#include "../game_render.h"
+
 GLuint loadObj(std::string path);
-//void computeBounds();
-//void getHitbox();
+void getHitBox(std::string path, Hitbox *hitBox);
+void getCoordinates(std::string path, Coordinates4f *coordinates);
 
 #endif

@@ -24,7 +24,7 @@ Player::Player(float x, float y, float z)
 
 void Player::calculateSize(void)
 {
-    // TODO
+    getHitBox(ROUTE_HITBOX, &kartSize);
 }
 
 void Player::selectKart(int selectedKart)
@@ -57,6 +57,11 @@ GLuint Player::loadVehicle(void)
 Vec3 Player::getPos(void)
 {
     return pos;
+}
+
+void Player::editPos(Vec3 pos)
+{
+    this->pos = pos;
 }
 
 void Player::move(void)

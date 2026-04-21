@@ -1,15 +1,22 @@
 #ifndef GAME_RENDER_H
 #define GAME_RENDER_H
 
+typedef struct Coordinates4f
+{
+    float x1, x2;
+    float y1, y2; 
+};
+
 typedef struct Hitbox
 {
-    float w, h; // Width & Height
+    float w, h;
 };
 
 void init(void);
 void startWindow(void);
 void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin);
 void renderGame(void (*reshape)(int, int), bool *isGame);
+void comprobateLimits(void);
 void loadGame(void);
 void selectButton(void);
 void closeGame(int &marioWin);

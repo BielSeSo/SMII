@@ -9,11 +9,13 @@ Map::Map()
 {
     selectedMap = 0;
     mapList = 0;
+
+    calculateSize();
 }
 
 void Map::calculateSize(void)
 {
-    // TODO
+    getCoordinates(ROUTE_HITBOX, &mapSize);
 }
 
 void Map::selectMap(int selectedMap)
@@ -67,7 +69,7 @@ void Map::destroyLights(void)
     glDisable(GL_LIGHT1);
 }
 
-Hitbox Map::getMapSize(void)
+Coordinates4f Map::getMapSize(void)
 {
     return mapSize;
 }
