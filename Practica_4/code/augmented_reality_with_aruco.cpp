@@ -114,6 +114,10 @@ bool init(int argc, char *argv[])
             return false;
         }
     }
+    else
+    {
+        inputVideo.open(0);
+    }
 
     if (parser.has("image")) {
         routeImage = parser.get<String>("image");
