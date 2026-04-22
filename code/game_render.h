@@ -1,6 +1,11 @@
 #ifndef GAME_RENDER_H
 #define GAME_RENDER_H
 
+typedef struct Vec3
+{
+    float x, y, z;
+};
+
 typedef struct Coordinates4f
 {
     float x1, x2;
@@ -14,7 +19,9 @@ typedef struct Hitbox
 
 void init(void);
 void startWindow(void);
-void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin);
+void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin, bool *callingMouse);
+void drawMapMenu(void);
+void drawKartMenu(void);
 void renderGame(void (*reshape)(int, int), bool *isGame);
 void comprobateLimits(void);
 void loadGame(void);
@@ -33,5 +40,6 @@ void key3(void);
 // MOUSE FUNCS
 void rightClick(void);
 void leftClick(float glX, float glY);
+void mouseFunc(float glX, float glY);
 
 #endif

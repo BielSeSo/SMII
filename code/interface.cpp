@@ -16,7 +16,7 @@ const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + \
 
 ButtonArea buttonAreas[total];
 GLuint buttonTextures[total];
-GLuint fondoTexture, fondoSemaphore, fondoWarning, fondo;
+GLuint fondoTexture, fondoSemaphore, fondoWarning, fondo, videoTexture;
 
 float alto = 0.25f;
 
@@ -128,29 +128,27 @@ void drawButton(float x, float y, float ancho, int id)
     glBindTexture(GL_TEXTURE_2D, buttonTextures[id]);
 
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(x - halfWidth, y - halfHeight);
-        glTexCoord2f(1, 0); glVertex2f(x + halfWidth, y - halfHeight);
-        glTexCoord2f(1, 1); glVertex2f(x + halfWidth, y + halfHeight);
-        glTexCoord2f(0, 1); glVertex2f(x - halfWidth, y + halfHeight);
+        glTexCoord2f(0, 0); glVertex2f(buttonAreas[id].x1, buttonAreas[id].y1);
+        glTexCoord2f(1, 0); glVertex2f(buttonAreas[id].x2, buttonAreas[id].y1);
+        glTexCoord2f(1, 1); glVertex2f(buttonAreas[id].x2, buttonAreas[id].y2);
+        glTexCoord2f(0, 1); glVertex2f(buttonAreas[id].x1, buttonAreas[id].y2);
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
 }
 
-void drawSelectedButton(float x, float y, float ancho, int id)
+void drawSelectedButton(int id)
 {
-    float halfWidth = ancho / 2;
-    float halfHeight = alto / 2;
     float padding = 0.02f;
 
     // Si el botón está seleccionado por teclado, dibujamos un recuadro de enfoque
     glColor3f(1.0f, 1.0f, 0.0f); // Amarillo para el "foco"
     glLineWidth(5.0f);
     glBegin(GL_LINE_LOOP);
-        glVertex2f(x - halfWidth - padding, y - halfHeight - padding);
-        glVertex2f(x + halfWidth + padding, y - halfHeight - padding);
-        glVertex2f(x + halfWidth + padding, y + halfHeight + padding);
-        glVertex2f(x - halfWidth - padding, y + halfHeight + padding);
+        glVertex2f(buttonAreas[id].x1 - padding, buttonAreas[id].y1 - padding);
+        glVertex2f(buttonAreas[id].x2 + padding, buttonAreas[id].y1 - padding);
+        glVertex2f(buttonAreas[id].x2 + padding, buttonAreas[id].y2 + padding);
+        glVertex2f(buttonAreas[id].x1 - padding, buttonAreas[id].y2 + padding);
     glEnd();
     glColor3f(1.0f, 1.0f, 1.0f); // Resetear a blanco para la textura
 }
@@ -366,4 +364,34 @@ void showBackground(string ruta)
 
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_BLEND);
+}
+
+void showAnimationButton(int id, string ruta) 
+{
+    VideoCapture outputVideo;
+    Mat img;
+
+    outputVideo.open(ruta);
+    outputVideo.read(img);
+    // Convertir BGR (OpenCV) a RGB (OpenGL)
+    cvtColor(img, img, COLOR_BGR2RGB);
+    flip(img, img, 0); // Voltear para que no salga al revés en OpenGL
+
+    glGenTextures(1, &videoTexture);
+    glBindTexture(GL_TEXTURE_2D, videoTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.cols, img.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, videoTexture);
+
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex2f(buttonAreas[id].x1, buttonAreas[id].y1);
+        glTexCoord2f(1, 0); glVertex2f(buttonAreas[id].x2, buttonAreas[id].y1);
+        glTexCoord2f(1, 1); glVertex2f(buttonAreas[id].x2, buttonAreas[id].y2);
+        glTexCoord2f(0, 1); glVertex2f(buttonAreas[id].x1, buttonAreas[id].y2);
+    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
 }

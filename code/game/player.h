@@ -11,11 +11,6 @@
 
 #define ROUTE_HITBOX "sources/assets/models/Kart_Limit.obj"
 
-typedef struct Vec3
-{
-    float x, y, z;
-};
-
 class Player
 {
     private:

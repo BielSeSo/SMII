@@ -16,22 +16,22 @@
 Por el momento, el juego cuenta con una interfaz funcional que se puede interactuar con teclado y ratón, como feedback recibe sonidos y los cambios de pantalla.
 
 - Teclas funcionales interfaz
-    - 1: Selecciona la primera opción de todas las interfaces, incluye el back de los créditos.
-    - 2: Selecciona la segunda opción de todas las interfaces.
-    - 3: Selecciona la tercera opción de todas las interfaces.
+    - **1**: Selecciona la primera opción de todas las interfaces, incluye el back de los créditos.
+    - **2**: Selecciona la segunda opción de todas las interfaces.
+    - **3**: Selecciona la tercera opción de todas las interfaces.
     
 - Teclas funcionales del videojuego
-    - W: Aumenta la velocidad del kart.
-    - S: Disminuye la velocidad del kart.
-    - D: Girar a la derecha el kart.
-    - A: Girar a la izquierda el kart.
+    - **W**: Aumenta la velocidad del kart.
+    - **S**: Disminuye la velocidad del kart.
+    - **D**: Girar a la derecha el kart.
+    - **A**: Girar a la izquierda el kart.
 
 - Teclas genéricas
-    - F: Alterna la pantalla completa y el modo ventana.
+    - **F**: Alterna la pantalla completa y el modo ventana.
 
 - Botones del ratón:
-    - Botón izquierdo: Sirve para seleccionar los botones de la interfaz, el el juego por el momento no tiene ninguna.
-    - Botón dercho: Sirve para volver al menú de atrás, por le momento para volver solo está implementado en el ratón.
+    - **Botón izquierdo**: Sirve para seleccionar los botones de la interfaz, el el juego por el momento no tiene ninguna.
+    - **Botón dercho**: Sirve para volver al menú de atrás, por le momento para volver solo está implementado en el ratón.
 
 ### Programas
 

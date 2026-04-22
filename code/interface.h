@@ -21,12 +21,13 @@ void loadImage(std::string ruta);
 void createButtonTexture(int id, std::string text);
 GLuint drawImage();
 void drawButton(float x, float y, float ancho, int id);
-void drawSelectedButton(float x, float y, float ancho, int id);
+void drawSelectedButton(int id);
 int areaButtonId(float x, float y, int ventana);
 void drawText(float x, float y, std::string texto);
 void ejecutarAccion(int id, int *ventana);
 void showSemaphore(std::string ruta);
 void showWarning(std::string ruta);
 void showBackground(std::string ruta);
+void showAnimationButton(int id, std::string ruta);
 
 #endif

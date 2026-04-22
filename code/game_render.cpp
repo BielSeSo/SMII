@@ -30,6 +30,8 @@ string routeWarning = "sources/images/warningTourtle.png";
 
 string routeSky = "sources/images/Cielo.jpg";
 
+string routeVideo1 = "sources/videos/VideoMapa1.mp4";
+
 GLuint imgList  = 0,
        mapList,
        kartList;
@@ -54,6 +56,7 @@ bool isRunning = false,
 // Para ahorrrar tiempo empezamos en el juego
 int ventana          = 0,  
     id               = -1,
+    show_id          = -1,
     map_selected     = 0,
     vehicle_selected = 0;
 
@@ -96,7 +99,7 @@ void startWindow(void)
     }
 }
 
-void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin)
+void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin, bool *callingMouse)
 {
     if(ventana == -1) closeGame(marioWin);
     else if (ventana == 0)
@@ -126,17 +129,13 @@ void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin)
     }
     else if(ventana == 2)
     {
-        for(int i=0; i<3; i++)
-        {
-            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+3);
-        }
+        drawMapMenu();
+        *callingMouse = true;
     }
     else if(ventana == 3)
     {
-        for(int i=0; i<3; i++)
-        {
-            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+6);
-        }
+        *callingMouse = false;
+        drawKartMenu();
     }
     else if(ventana == 4)
     {
@@ -151,6 +150,36 @@ void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin)
         }
         glCallList(drawImage());
         drawButton(0.0f, -0.7f, 0.5f, total-1);
+    }
+}
+
+void drawMapMenu(void)
+{
+    if(show_id == -1)
+    {
+        showAnimationButton(show_id, routeVideo1);
+        for(int i=0; i<3; i++)
+        {
+            if(i != show_id-2)
+            {
+                drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+3);
+            }
+        }
+    }
+    else
+    {
+        for(int i=0; i<3; i++)
+        {
+            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+3);
+        }
+    }
+}
+
+void drawKartMenu(void)
+{
+    for(int i=0; i<3; i++)
+    {
+        drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+6);
     }
 }
 
@@ -279,6 +308,11 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             playMenuSound(1);
 
             reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+
+            // Reset player status
+            Vec3 p; p.x = 0; p.y = 0; p.z = 0;
+            player1.editPos(p);
+            player1.velocidad = 0; player1.grados = 0;
         }
     }
 }
@@ -303,17 +337,17 @@ void selectButton(void)
     {   
         if(ventana == 1 && id != 10)
         {
-            drawSelectedButton(coordinatesButtons[id][0], coordinatesButtons[id][1], ancho, id);
+            drawSelectedButton(id);
         }
         if(ventana == 2 && id != 10)
         {
             map_selected = id-2;
-            drawSelectedButton(coordinatesButtons[id-3][0], coordinatesButtons[id-3][1], ancho, id);
+            drawSelectedButton(id);
         }
         if(ventana == 3 && id != 10)
         {
             vehicle_selected = id-5;
-            drawSelectedButton(coordinatesButtons[id-6][0], coordinatesButtons[id-6][1], ancho, id);
+            drawSelectedButton(id);
         }
 
         if(id != 10) playMenuSound(2);
@@ -336,36 +370,42 @@ void comprobateLimits()
     Vec3 p = player1.getPos();
     bool isTurning = false;
 
-    if(p.x <= mapSize.x1)
+    float wide1 = p.x + kartSize.w/2;
+    float wide2 = p.x - kartSize.w/2;
+
+    float heigth1 = p.y + kartSize.h/2;
+    float heigth2 = p.y + kartSize.h/2;
+
+    if((wide1 <= mapSize.x1) || (wide2 <= mapSize.x1))
     {
         player1.velocidad = 0;
         isTurning = true;
 
-        p.x += 0.1f;
+        p.x += kartSize.h/2;
         player1.editPos(p);
     }
-    else if(p.x >= mapSize.x2)
+    else if((wide1 >= mapSize.x2) || (wide2 >= mapSize.x2))
     {
         player1.velocidad = 0;
         isTurning = true;
 
-        p.x -= 0.1f;
+        p.x -= kartSize.h/2;
         player1.editPos(p);
     }
-    else if(p.y <= mapSize.y1) 
+    else if((heigth1 <= mapSize.y1) || (heigth2 <= mapSize.y1)) 
     {
         player1.velocidad = 0;
         isTurning = true;
 
-        p.y += 0.1f;
+        p.y += kartSize.w/2;
         player1.editPos(p);
     }
-    else if(p.y >= mapSize.y2) 
+    else if((heigth1 >= mapSize.y2) || (heigth2 >= mapSize.y2)) 
     {
         player1.velocidad = 0;
         isTurning = true;
 
-        p.y -= 0.1f;
+        p.y -= kartSize.w/2;
         player1.editPos(p);
     }
     
@@ -464,4 +504,12 @@ void rightClick(void)
 void leftClick(float glX, float glY)
 {
     id = areaButtonId(glX, glY, ventana);
+}
+
+void mouseFunc(float glX, float glY)
+{
+    if(ventana == 2)
+    {
+        show_id = areaButtonId(glX, glY, ventana);
+    }
 }
