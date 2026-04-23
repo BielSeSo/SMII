@@ -26,13 +26,14 @@ int isFullscreen = 0;
 int marioWin;
 float glX, glY;
 
-bool isGame = false, callingMouse = false;
+bool isGame = false;
 
 /* ============= MAIN FUNCS ============*/
 void display(void);
 void reshape(int w, int h);
 void keyboard(unsigned char key, int, int);
 void mouse(int button, int state, int x, int y);
+void mouseMotion(int x, int y);
 
 int main(int argc, char** argv)
 {
@@ -47,6 +48,7 @@ int main(int argc, char** argv)
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
     glutMouseFunc(mouse);
+    glutPassiveMotionFunc(mouseMotion);
 
     cout << "Presiona ESC para salir" << endl;
     glutMainLoop();
@@ -62,12 +64,7 @@ void display(void)
 
     glDisable(GL_DEPTH_TEST);
 
-    drawMenu(reshape, &isGame, marioWin, &callingMouse);
-    if(callingMouse)
-    {
-        // TODO: Como llamar a la funcion raton
-        mouseFunc(glX, glY);
-    }
+    drawMenu(reshape, &isGame, marioWin);
 
     glutSwapBuffers();
     glutPostRedisplay();
@@ -162,18 +159,6 @@ void keyboard(unsigned char key, int, int)
 
 void mouse(int button, int state, int x, int y) 
 {
-    // Tamaño de ventana
-    float w = (float)glutGet(GLUT_WINDOW_WIDTH);
-    float h = (float)glutGet(GLUT_WINDOW_HEIGHT);
-
-    // Aspect ratio (mismo que usas en reshape)
-    float aspect = w / h;
-
-    // Convertir coordenadas del ratón (0..w, 0..h)
-    // a coordenadas OpenGL (-aspect..aspect, -1..1)
-    glX = ( (float)x / w ) * (2.0f * aspect) - aspect;
-    glY = 1.0f - ( (float)y / h ) * 2.0f;
-
     switch (button)
     {
         case GLUT_LEFT_BUTTON:
@@ -195,4 +180,22 @@ void mouse(int button, int state, int x, int y)
     }
     startWindow();
     selectButton();
+}
+
+
+void mouseMotion(int x, int y)
+{
+    // Tamaño de ventana
+    float w = (float)glutGet(GLUT_WINDOW_WIDTH);
+    float h = (float)glutGet(GLUT_WINDOW_HEIGHT);
+
+    // Aspect ratio (mismo que usas en reshape)
+    float aspect = w / h;
+
+    // Convertir coordenadas del ratón (0..w, 0..h)
+    // a coordenadas OpenGL (-aspect..aspect, -1..1)
+    glX = ( (float)x / w ) * (2.0f * aspect) - aspect;
+    glY = 1.0f - ( (float)y / h ) * 2.0f;
+    
+    mouseFunc(glX, glY);
 }

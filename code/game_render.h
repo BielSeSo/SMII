@@ -19,7 +19,7 @@ typedef struct Hitbox
 
 void init(void);
 void startWindow(void);
-void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin, bool *callingMouse);
+void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin);
 void drawMapMenu(void);
 void drawKartMenu(void);
 void renderGame(void (*reshape)(int, int), bool *isGame);

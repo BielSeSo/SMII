@@ -30,7 +30,7 @@ string routeWarning = "sources/images/warningTourtle.png";
 
 string routeSky = "sources/images/Cielo.jpg";
 
-string routeVideo1 = "sources/videos/VideoMapa1.mp4";
+string routeVideo1 = "sources/videos/VideoMapa1.avi";
 
 GLuint imgList  = 0,
        mapList,
@@ -88,6 +88,8 @@ void init(void)
     {
         createButtonTexture(i, textOptions[i]);
     }
+
+    initAnimation(0, routeVideo1);
 }
 
 void startWindow(void)
@@ -99,7 +101,7 @@ void startWindow(void)
     }
 }
 
-void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin, bool *callingMouse)
+void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin)
 {
     if(ventana == -1) closeGame(marioWin);
     else if (ventana == 0)
@@ -130,11 +132,9 @@ void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin, bool *call
     else if(ventana == 2)
     {
         drawMapMenu();
-        *callingMouse = true;
     }
     else if(ventana == 3)
     {
-        *callingMouse = false;
         drawKartMenu();
     }
     else if(ventana == 4)
@@ -155,12 +155,20 @@ void drawMenu(void (*reshape)(int, int), bool *isGame, int &marioWin, bool *call
 
 void drawMapMenu(void)
 {
-    if(show_id == -1)
+    if(show_id != -1)
     {
-        showAnimationButton(show_id, routeVideo1);
+        switch(show_id)
+        {
+            case 3:
+                showAnimationButton(show_id-3);
+                break;
+
+            default: break;
+        }
+        
         for(int i=0; i<3; i++)
         {
-            if(i != show_id-2)
+            if(i != show_id-3)
             {
                 drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+3);
             }

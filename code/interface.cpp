@@ -16,9 +16,13 @@ const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + \
 
 ButtonArea buttonAreas[total];
 GLuint buttonTextures[total];
-GLuint fondoTexture, fondoSemaphore, fondoWarning, fondo, videoTexture;
+GLuint fondoTexture, fondoSemaphore, fondoWarning, fondo, videoTexture[NUM_BUTONS_MAP];
 
 float alto = 0.25f;
+
+VideoCapture outputVideo[NUM_BUTONS_MAP];
+Mat frame;
+bool videoReady[NUM_BUTONS_MAP];
 
 // --- FUNCIONES DE OPENCV (Lógica de img) ---
 int inicializarImgRGB(Mat *imgOrg, int option) 
@@ -366,25 +370,59 @@ void showBackground(string ruta)
     glDisable(GL_BLEND);
 }
 
-void showAnimationButton(int id, string ruta) 
-{
-    VideoCapture outputVideo;
-    Mat img;
+void initAnimation(int id, string ruta)
+{   
+    outputVideo[id].open(ruta);
+    if (!outputVideo[id].isOpened())
+    {
+        cerr << "Error abriendo video" << endl;
+        return;
+    }
 
-    outputVideo.open(ruta);
-    outputVideo.read(img);
-    // Convertir BGR (OpenCV) a RGB (OpenGL)
-    cvtColor(img, img, COLOR_BGR2RGB);
-    flip(img, img, 0); // Voltear para que no salga al revés en OpenGL
+    outputVideo[id].read(frame);
 
-    glGenTextures(1, &videoTexture);
-    glBindTexture(GL_TEXTURE_2D, videoTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.cols, img.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, img.data);
+    cvtColor(frame, frame, cv::COLOR_BGR2RGB);
+    flip(frame, frame, 0);
+
+    glGenTextures(1, &videoTexture[id]);
+    glBindTexture(GL_TEXTURE_2D, videoTexture[id]);
+    glTexImage2D(
+        GL_TEXTURE_2D, 0, GL_RGB,
+        frame.cols, frame.rows,
+        0, GL_RGB, GL_UNSIGNED_BYTE,
+        frame.data
+    );
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    videoReady[id] = true;
+}
+
+void showAnimationButton(int id) 
+{    
+    if(!videoReady[id]) return;
+
+    if (!outputVideo[id].read(frame))
+    {
+        outputVideo[id].set(cv::CAP_PROP_POS_FRAMES, 0); // loop
+        outputVideo[id].read(frame);
+    }
    
+    cvtColor(frame, frame, cv::COLOR_BGR2RGB);
+    flip(frame, frame, 0);
+
+    glBindTexture(GL_TEXTURE_2D, videoTexture[id]);
+    glTexSubImage2D(
+        GL_TEXTURE_2D, 0,
+        0, 0,
+        frame.cols, frame.rows,
+        GL_RGB, GL_UNSIGNED_BYTE,
+        frame.data
+    );
+
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, videoTexture);
+    glBindTexture(GL_TEXTURE_2D, videoTexture[id]);
 
     glBegin(GL_QUADS);
         glTexCoord2f(0, 0); glVertex2f(buttonAreas[id].x1, buttonAreas[id].y1);

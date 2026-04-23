@@ -28,6 +28,7 @@ void ejecutarAccion(int id, int *ventana);
 void showSemaphore(std::string ruta);
 void showWarning(std::string ruta);
 void showBackground(std::string ruta);
-void showAnimationButton(int id, std::string ruta);
+void initAnimation(int id, std::string ruta);
+void showAnimationButton(int id);
 
 #endif
