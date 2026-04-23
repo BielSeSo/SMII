@@ -12,20 +12,22 @@ SRC_SOUND = code/sound_maker.cpp
 SRC_MAIN_GAME = code/game_render.cpp
 SRC_GAME = code/game/load_map.cpp code/game/load_obj.cpp code/game/player.cpp
 SRC_MAIN = code/main.cpp
+SRC_CONTROL = code/control_mando.cpp
 
 OBJ_INTERFACE = exec/interface.o
 OBJ_SOUND = exec/sound_maker.o
 OBJ_MAIN_GAME = exec/game_render.o
 OBJ_GAME = $(SRC_GAME:code/game/%.cpp=exec/game/%.o)
+OBJ_CONTROL = exec/control_mando.o
 OBJ_MAIN = exec/main.o
 
 
 all: bin
 
 # Binary compilation for Ubuntu
-bin: $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN_GAME) $(OBJ_MAIN)
+bin: $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN_GAME) $(OBJ_CONTROL) $(OBJ_MAIN)
 	mkdir -p bin	
-	$(CC) $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN_GAME) $(OBJ_MAIN) -o $(TARGET) \
+	$(CC) $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN_GAME) $(OBJ_CONTROL) $(OBJ_MAIN) -o $(TARGET) \
 	$(OPENCV_FLAGS) $(OPENGL_FLAGS) $(OPENAL_FLAGS) $(FREE_FLAGS)
 
 # Interface compilation

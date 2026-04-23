@@ -46,6 +46,10 @@ Dentro del proyecto hay varias carpetas:
         - `load_map.cpp`: Programa que genera el mapa para el juego.
         - `player.cpp`: Programa que genera el kart y el jugador controlable del juego.
         - `load_obj.cpp`: Programa que carga los elementos .obj y genera una lista para representarse por pantalla o obtiene los hitbox para calcular los diferentes límites.
+    - `control_mando.cpp`: Programa que con vídeo en vivo busca si hay alguna de las marcas de ArUco del diccionario DICT_ARUCO_ORIGINAL con id del 0 al 4 y reaccionar en consecuencia de la función implementada.
+    - `calibracion_camara`:
+        - `calibracion_camara.cpp`: Programa basado en los ejemplos proporcionados por OpenCV para ArUco. Sirve para calibrar la cámara y generar un archivo para obtener la matriz intrínseca de esta.
+        - `calibracion_camara.yml`: Archivo que contiene la matriz intrínseca de la cámara.
 
 - `source/`:
     - `assets/`:
