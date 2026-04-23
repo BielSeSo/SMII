@@ -30,7 +30,9 @@ string routeWarning = "sources/images/warningTourtle.png";
 
 string routeSky = "sources/images/Cielo.jpg";
 
-string routeVideo1 = "sources/videos/VideoMapa1.avi";
+string routeVideos[NUM_BUTONS_MAP] = {"sources/videos/VideoMapa1.avi",
+                                      "sources/videos/VideoMapa2.avi",
+                                      "sources/videos/VideoMapa3.avi"};
 
 GLuint imgList  = 0,
        mapList,
@@ -89,7 +91,11 @@ void init(void)
         createButtonTexture(i, textOptions[i]);
     }
 
-    initAnimation(0, routeVideo1);
+    for(int i=0; i<NUM_BUTONS_MAP; i++)
+    {
+        initAnimation(i, routeVideos[i]);
+    }
+    
 }
 
 void startWindow(void)
@@ -157,15 +163,7 @@ void drawMapMenu(void)
 {
     if(show_id != -1)
     {
-        switch(show_id)
-        {
-            case 3:
-                showAnimationButton(show_id-3);
-                break;
-
-            default: break;
-        }
-        
+        showAnimationButton(show_id-3);
         for(int i=0; i<3; i++)
         {
             if(i != show_id-3)

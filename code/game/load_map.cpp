@@ -15,7 +15,7 @@ Map::Map()
 
 void Map::calculateSize(void)
 {
-    getCoordinates(ROUTE_HITBOX, &mapSize);
+    getCoordinates(ROUTE_MAP_HITBOX, &mapSize);
 }
 
 void Map::selectMap(int selectedMap)
@@ -47,15 +47,15 @@ GLuint Map::loadMap(void)
     switch(selectedMap)
     {
         case 1:
-            mapList = loadObj(ROUTE_1);
+            mapList = loadObj(ROUTE_MAP_1);
             break;
 
         case 2:
-            mapList = loadObj(ROUTE_2);
+            mapList = loadObj(ROUTE_MAP_2);
             break;
 
         case 3:
-            mapList = loadObj(ROUTE_3);
+            mapList = loadObj(ROUTE_MAP_3);
             break;
 
         default: break;

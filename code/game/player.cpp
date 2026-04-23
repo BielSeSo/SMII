@@ -24,7 +24,7 @@ Player::Player(float x, float y, float z)
 
 void Player::calculateSize(void)
 {
-    getHitBox(ROUTE_HITBOX, &kartSize);
+    getHitBox(ROUTE_KART_HITBOX, &kartSize);
 }
 
 void Player::selectKart(int selectedKart)
@@ -37,15 +37,15 @@ GLuint Player::loadVehicle(void)
     switch (selectedKart)
     {
         case 1:
-            kartList = loadObj(ROUTE_1);
+            kartList = loadObj(ROUTE_KART_1);
             break;
 
         case 2:
-            kartList = loadObj(ROUTE_2);
+            kartList = loadObj(ROUTE_KART_2);
             break;
 
         case 3:
-            kartList = loadObj(ROUTE_3);
+            kartList = loadObj(ROUTE_KART_3);
             break;
     
         default: break;

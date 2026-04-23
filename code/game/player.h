@@ -5,11 +5,11 @@
 
 #include "../game_render.h"
 
-#define ROUTE_1 "sources/assets/models/Kart_1.obj"
-#define ROUTE_2 "sources/assets/models/Kart_2.obj"
-#define ROUTE_3 "sources/assets/models/Kart_3.obj"
+#define ROUTE_KART_1 "sources/assets/models/Kart_1.obj"
+#define ROUTE_KART_2 "sources/assets/models/Kart_2.obj"
+#define ROUTE_KART_3 "sources/assets/models/Kart_3.obj"
 
-#define ROUTE_HITBOX "sources/assets/models/Kart_Limit.obj"
+#define ROUTE_KART_HITBOX "sources/assets/models/Kart_Limit.obj"
 
 class Player
 {

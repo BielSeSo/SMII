@@ -5,11 +5,11 @@
 
 #include "../game_render.h"
 
-#define ROUTE_1 "sources/assets/maps/Track_1.obj"
-#define ROUTE_2 "sources/assets/maps/Track_2.obj"
-#define ROUTE_3 "sources/assets/maps/Track_3.obj"
+#define ROUTE_MAP_1 "sources/assets/maps/Track_1.obj"
+#define ROUTE_MAP_2 "sources/assets/maps/Track_2.obj"
+#define ROUTE_MAP_3 "sources/assets/maps/Track_3.obj"
 
-#define ROUTE_HITBOX "sources/assets/maps/Track_Limit.obj"
+#define ROUTE_MAP_HITBOX "sources/assets/maps/Track_Limit.obj"
 
 class Map
 {
