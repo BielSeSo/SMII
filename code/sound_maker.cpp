@@ -58,16 +58,16 @@ void initSoundsGame(void)
     {
         buffersGame[i] = alutCreateBufferFromFile(routesBuffersGame[i]);
     }
+    
+    alGenSources(NUM_SOUNDS_GAME, soucesGame);
 
     // Loop sound
-    alGenSources(NUM_SOUNDS_GAME, soucesGame);
-    for (int i=0; i<2; i++) {
-        alSourcei(soucesGame[i], AL_BUFFER, buffersGame[i]);
-        alSourcei(soucesGame[i], AL_LOOPING, AL_TRUE);
-    }
+    alSourcei(soucesGame[0], AL_BUFFER, buffersGame[0]);
+    alSourcei(soucesGame[0], AL_LOOPING, AL_TRUE);
+    
 
     // Not loop sound
-    for (int i=2; i<NUM_SOUNDS_GAME; i++) {
+    for (int i=1; i<NUM_SOUNDS_GAME; i++) {
         alSourcei(soucesGame[i], AL_BUFFER, buffersGame[i]);
     }
 }
@@ -108,4 +108,9 @@ void destroySoundsGame(void)
         alSourceStop(soucesGame[i]);
     }
     alDeleteSources(NUM_SOUNDS_GAME, soucesGame);
+}
+
+void playEngineSound() 
+{
+    playGameSound(0);
 }

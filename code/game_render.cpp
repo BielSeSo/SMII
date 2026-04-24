@@ -2,6 +2,7 @@
 #include <cmath>
 #include <string>
 #include <unistd.h>
+#include <thread>
 
 #include <GL/glut.h>
 #include <GL/glu.h>
@@ -66,6 +67,8 @@ int ventana          = 0,
 
 float ancho = 0.8f;
 
+float previousVelocity = 0.0f;
+
 Player player1(0.0f, 0.0f, 0.0f);
 Map map_render;
 
@@ -78,6 +81,9 @@ string textOptions[total] = {"START", "CREDITS", "EXIT",
 float coordinatesButtons [3][2] = {{0.0f, 0.5f}, 
                                    {0.0f, 0.1f}, 
                                    {0.0f, -0.3f}};
+
+// Creado hilo para mejorar sonido motor
+thread engineSound;
 
 // ================== CUSTOM FUNCS ====================/
 void init(void)
@@ -271,19 +277,24 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
         glTranslatef(p.x, p.y, 0.0f);
         glRotatef(player1.grados, 0, 0, 1);
         glCallList(kartList);
+        
+        engineSound.join();
 
         if(!startGame)
         {
+            if(previousVelocity > player1.velocidad)
+            {
+                playGameSound(2);
+            }
+            
             player1.move();
             
             if(player1.velocidad > 0.0f)
             {
-                playGameSound(0);
+                engineSound = thread(playEngineSound);
             }
-            if(player1.velocidad == 0.0f) 
-            {
-                stopGameSound(0);
-            }
+
+            previousVelocity = player1.velocidad;
         }
         else
         {
@@ -464,7 +475,6 @@ void keyS(void)
     if(ventana == 4)
     {
         player1.velocidad = min(player1.velocidad - 0.05f,  0.0f);
-        playGameSound(2);
     }
 }
 
