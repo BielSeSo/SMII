@@ -20,9 +20,11 @@ GLuint fondoTexture, fondoSemaphore, fondoWarning, fondo, videoTexture[NUM_BUTON
 
 float alto = 0.25f;
 
-VideoCapture outputVideo[NUM_BUTONS_MAP];
+VideoCapture outputVideo[NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE];
 Mat frame;
-bool videoReady[NUM_BUTONS_MAP];
+bool videoReady[NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE];
+
+float gradosKart = 0.0f;
 
 // --- FUNCIONES DE OPENCV (Lógica de img) ---
 int inicializarImgRGB(Mat *imgOrg, int option) 
@@ -126,7 +128,7 @@ void drawButton(float x, float y, float ancho, int id)
     float halfWidth = ancho / 2;
     float halfHeight = alto / 2;
 
-    buttonAreas[id] = {x - halfWidth, x + halfWidth, y-halfHeight, y + halfHeight};
+    buttonAreas[id] = {x - halfWidth, x + halfWidth, y - halfHeight, y + halfHeight};
    
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, buttonTextures[id]);
@@ -253,7 +255,6 @@ void showSemaphore(string ruta)
     if (img.empty()) {
         cerr << "Error: No se pudo cargar la img " << ruta << endl;
     }
-    cout << "Cargando img: " << ruta << endl;
 
     // IMPORTANTE: Para que no salga al revés y tenga colores correctos
     cvtColor(img, img, COLOR_BGRA2RGBA);
@@ -421,14 +422,24 @@ void showAnimationButton(int id)
         frame.data
     );
 
+    glColor3f(1.0f, 1.0f, 1.0f);  // Blanco
+    glLineWidth(5.0f);
+    glBegin(GL_LINE_LOOP);
+        glVertex2f(buttonAreas[id].x1, buttonAreas[id].y1);
+        glVertex2f(buttonAreas[id].x2, buttonAreas[id].y1);
+        glVertex2f(buttonAreas[id].x2, buttonAreas[id].y2);
+        glVertex2f(buttonAreas[id].x1, buttonAreas[id].y2);
+    glEnd();
+
+    float padding = 0.02f;
+
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, videoTexture[id]);
-
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(buttonAreas[id].x1, buttonAreas[id].y1);
-        glTexCoord2f(1, 0); glVertex2f(buttonAreas[id].x2, buttonAreas[id].y1);
-        glTexCoord2f(1, 1); glVertex2f(buttonAreas[id].x2, buttonAreas[id].y2);
-        glTexCoord2f(0, 1); glVertex2f(buttonAreas[id].x1, buttonAreas[id].y2);
+        glTexCoord2f(0, 0); glVertex2f(buttonAreas[id].x1 + padding, buttonAreas[id].y1 + padding);
+        glTexCoord2f(1, 0); glVertex2f(buttonAreas[id].x2 - padding, buttonAreas[id].y1 + padding);
+        glTexCoord2f(1, 1); glVertex2f(buttonAreas[id].x2 - padding, buttonAreas[id].y2 - padding);
+        glTexCoord2f(0, 1); glVertex2f(buttonAreas[id].x1 + padding, buttonAreas[id].y2 - padding);
     glEnd();
 
     glDisable(GL_TEXTURE_2D);

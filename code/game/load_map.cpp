@@ -7,9 +7,8 @@
 
 Map::Map()
 {
-    selectedMap = 0;
     mapList = 0;
-
+    
     calculateSize();
 }
 
@@ -18,10 +17,6 @@ void Map::calculateSize(void)
     getCoordinates(ROUTE_MAP_HITBOX, &mapSize);
 }
 
-void Map::selectMap(int selectedMap)
-{
-    this->selectedMap = selectedMap;
-}
 
 void Map::setupLights() 
 {
@@ -42,7 +37,7 @@ void Map::setupLights()
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 }
 
-GLuint Map::loadMap(void)
+GLuint Map::loadMap(int selectedMap)
 {   
     switch(selectedMap)
     {

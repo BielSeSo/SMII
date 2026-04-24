@@ -14,7 +14,6 @@
 class Map
 {
     private:
-        int selectedMap;
         GLuint mapList;
         Coordinates4f mapSize;
 
@@ -22,9 +21,8 @@ class Map
 
     public:
         Map();
-        void selectMap(int selectedMap);
         void setupLights(void);
-        GLuint loadMap(void);
+        GLuint loadMap(int selectedMap);
         void destroyLights(void);
         Coordinates4f getMapSize(void);
 };

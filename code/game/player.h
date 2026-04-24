@@ -14,7 +14,6 @@
 class Player
 {
     private:
-        int selectedKart;
         GLuint kartList;
         Vec3 pos;
         Hitbox kartSize;  
@@ -26,8 +25,7 @@ class Player
         float grados;
         
         Player(float x, float y, float z);
-        void selectKart(int selectedKart);
-        GLuint loadVehicle(void);
+        GLuint loadVehicle(int selectedKart);
         Vec3 getPos(void);
         void editPos(Vec3 pos);
         void move(void);

@@ -33,7 +33,7 @@ bin: $(OBJ_INTERFACE) $(OBJ_SOUND) $(OBJ_GAME) $(OBJ_MAIN_GAME) $(OBJ_CONTROL) $
 # Interface compilation
 $(OBJ_INTERFACE): $(SRC_INTERFACE)
 	mkdir -p exec
-	$(CC) $(CXXFLAGS) -c $(SRC_INTERFACE) -o $(OBJ_INTERFACE) $(OPENCV_FLAGS)
+	$(CC) $(CXXFLAGS) -c $(SRC_INTERFACE) -o $(OBJ_INTERFACE) $(OPENCV_FLAGS) $(OPENGL_FLAGS)
 
 # Sound maker compilation
 $(OBJ_SOUND): $(SRC_SOUND)

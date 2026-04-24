@@ -16,10 +16,9 @@ Player::Player(float x, float y, float z)
 
     velocidad = 0.0f; 
     grados = 0.0f;
+    kartList = 0;
     
     calculateSize();
-
-    kartList = 0;
 }
 
 void Player::calculateSize(void)
@@ -27,12 +26,7 @@ void Player::calculateSize(void)
     getHitBox(ROUTE_KART_HITBOX, &kartSize);
 }
 
-void Player::selectKart(int selectedKart)
-{
-    this->selectedKart = selectedKart;
-}
-
-GLuint Player::loadVehicle(void)
+GLuint Player::loadVehicle(int selectedKart)
 {
     switch (selectedKart)
     {
@@ -78,6 +72,5 @@ void Player::move(void)
 
 Hitbox Player::getHitbox(void)
 {
-    
     return kartSize;
 }

@@ -21,18 +21,23 @@ using namespace std;
 string routeFotoInicio  = "sources/images/Mario_kart.jpg",
        routeFotoCredits = "sources/images/Creditos.jpg";
 
-string ruteSemaphores[4] = {"sources/images/Semaforo_0.png",
-                            "sources/images/Semaforo_1.png",
-                            "sources/images/Semaforo_2.png",
-                            "sources/images/Semaforo_3.png"};
+string ruteSemaphores[4] = 
+        {"sources/images/Semaforo_0.png",
+        "sources/images/Semaforo_1.png",
+        "sources/images/Semaforo_2.png",
+        "sources/images/Semaforo_3.png"};
 
 string routeWarning = "sources/images/warningTourtle.png";
 
 string routeSky = "sources/images/Cielo.jpg";
 
-string routeVideos[NUM_BUTONS_MAP] = {"sources/videos/VideoMapa1.avi",
-                                      "sources/videos/VideoMapa2.avi",
-                                      "sources/videos/VideoMapa3.avi"};
+string routeVideosTrailer[NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE] = 
+            {"sources/videos/Map1.avi",
+            "sources/videos/Map2.avi",
+            "sources/videos/Map3.avi",
+            "sources/videos/Kart1.avi",
+            "sources/videos/Kart2.avi",
+            "sources/videos/Kart3.avi"};
 
 GLuint imgList  = 0,
        mapList,
@@ -70,8 +75,8 @@ Map map_render;
 const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE + 1;
 string textOptions[total] = {"START", "CREDITS", "EXIT",
                         "MAP 1", "MAP 2", "MAP 3",
-                        "Vehicle 1", "Vehicle 2", "Vehicle 3",
-                        "Back"};
+                        "VEHICLE 1", "VEHICLE 2", "VEHICLE 3",
+                        "BACK"};
 
 float coordinatesButtons [3][2] = {{0.0f, 0.5f}, 
                                    {0.0f, 0.1f}, 
@@ -91,11 +96,10 @@ void init(void)
         createButtonTexture(i, textOptions[i]);
     }
 
-    for(int i=0; i<NUM_BUTONS_MAP; i++)
+    for(int i=0; i<NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE; i++)
     {
-        initAnimation(i, routeVideos[i]);
+        initAnimation(i, routeVideosTrailer[i]);
     }
-    
 }
 
 void startWindow(void)
@@ -182,10 +186,24 @@ void drawMapMenu(void)
 }
 
 void drawKartMenu(void)
-{
-    for(int i=0; i<3; i++)
+{   
+    if(show_id != -1)
     {
-        drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+6);
+        showAnimationButton(show_id-3);
+        for(int i=0; i<3; i++)
+        {
+            if(i != show_id-6)
+            {
+                drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+6);
+            }    
+        }
+    }
+    else
+    {
+        for(int i=0; i<3; i++)
+        {
+            drawButton(coordinatesButtons[i][0], coordinatesButtons[i][1], ancho, i+6);
+        }
     }
 }
 
@@ -326,12 +344,10 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
 void loadGame(void)
 {
     // Load kart
-    player1.selectKart(vehicle_selected);
-    kartList = player1.loadVehicle();
+    kartList = player1.loadVehicle(vehicle_selected);
 
     // Load map
-    map_render.selectMap(map_selected);
-    mapList = map_render.loadMap();
+    mapList = map_render.loadMap(map_selected);
 
     // Prepare lights
     map_render.setupLights();
@@ -514,7 +530,7 @@ void leftClick(float glX, float glY)
 
 void mouseFunc(float glX, float glY)
 {
-    if(ventana == 2)
+    if(ventana == 2 || ventana == 3)
     {
         show_id = areaButtonId(glX, glY, ventana);
     }
