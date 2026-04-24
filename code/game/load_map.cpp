@@ -43,14 +43,17 @@ GLuint Map::loadMap(int selectedMap)
     {
         case 1:
             mapList = loadObj(ROUTE_MAP_1);
+            getCoordinates(ROUTE_LIMIT_MAP_1, &trackLimit);
             break;
 
         case 2:
             mapList = loadObj(ROUTE_MAP_2);
+            getCoordinates(ROUTE_LIMIT_MAP_2, &trackLimit);
             break;
 
         case 3:
             mapList = loadObj(ROUTE_MAP_3);
+            getCoordinates(ROUTE_LIMIT_MAP_3, &trackLimit);
             break;
 
         default: break;

@@ -5,44 +5,57 @@
 #include <algorithm>
 #include <vector>
 
-void girarDireccion(int angulo){
+using namespace std;
+using namespace cv;
+
+bool vistoID3, vistoID4;
+
+
+void girarDireccion(int angulo)
+{
+
 }
 
-void acelerar(){
+void acelerar()
+{
+
 }
 
-void frenar(){
+void frenar()
+{
+
 }
 
-void procesarControlMando(std::string url, std::string calibFile) {
+void procesarControlMando(string url, string calibFile) 
+{
     //La URL es en caso de usar cámara por IP
     //calibFile es de tipo YML
 
-    cv::VideoCapture cap(url);
+    VideoCapture cap(url);
     if (!cap.isOpened()) return;
 
-    cv::Mat camMatrix, distCoeffs;
-    cv::FileStorage fs(calibFile, cv::FileStorage::READ);
+    Mat camMatrix, distCoeffs;
+    FileStorage fs(calibFile, FileStorage::READ);
     if (!fs.isOpened()) return;
     fs["camera_matrix"] >> camMatrix;
     fs["distortion_coefficients"] >> distCoeffs;
 
-    cv::Ptr<cv::aruco::Dictionary> dict = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_ARUCO_ORIGINAL);
-    cv::Ptr<cv::aruco::DetectorParameters> params = cv::aruco::DetectorParameters::create();
+    Ptr<aruco::Dictionary> dict = aruco::getPredefinedDictionary(aruco::DICT_ARUCO_ORIGINAL);
+    Ptr<aruco::DetectorParameters> params = aruco::DetectorParameters::create();
 
     float markerLength = 0.05; 
-    cv::Mat frame;
+    Mat frame;
     static int ultimoAnguloFijo = -999;
 
     while (cap.read(frame)) {
-        std::vector<int> ids;
-        std::vector<std::vector<cv::Point2f>> corners;
-        std::vector<cv::Vec3d> rvecs, tvecs;
+        vector<int> ids;
+        vector<vector<Point2f>> corners;
+        vector<Vec3d> rvecs, tvecs;
 
-        cv::aruco::detectMarkers(frame, dict, corners, ids, params);
+        aruco::detectMarkers(frame, dict, corners, ids, params);
 
         if (ids.size() > 0) {
-            cv::aruco::estimatePoseSingleMarkers(corners, markerLength, camMatrix, distCoeffs, rvecs, tvecs);
+            aruco::estimatePoseSingleMarkers(corners, markerLength, camMatrix, distCoeffs, rvecs, tvecs);
 
             double sumaAngulosReales = 0;
             int contadorVolante = 0;
@@ -55,7 +68,7 @@ void procesarControlMando(std::string url, std::string calibFile) {
                     sumaAngulosReales += anguloGradosReal;
                     contadorVolante++;
 
-                    cv::drawFrameAxes(frame, camMatrix, distCoeffs, rvecs[i], tvecs[i], markerLength * 0.8f);
+                    drawFrameAxes(frame, camMatrix, distCoeffs, rvecs[i], tvecs[i], markerLength * 0.8f);
                 }
 
                 if (ids[i] == 3) vistoID3 = true;
@@ -65,12 +78,12 @@ void procesarControlMando(std::string url, std::string calibFile) {
             // ——— Lógica para control de aceleración/freno ———
 
             if (vistoID4 && !vistoID3) {
-                std::cout << "ACCION: ACELERANDO" << std::endl;
+                cout << "ACCION: ACELERANDO" << endl;
                 acelerar();
             } 
             // Mientras se vea la 3 y la 4 NO: Frena
             else if (vistoID3 && !vistoID4) {
-                std::cout << "ACCION: FRENANDO" << std::endl;
+                cout << "ACCION: FRENANDO" << endl;
                 frenar();
             }
             // Si se ven ambas o ninguna: No hace nada (punto muerto)
@@ -89,15 +102,15 @@ void procesarControlMando(std::string url, std::string calibFile) {
                 int anguloDiscreto = (int)(round(promedioReal / 5.0) * 5);
 
                 if (anguloDiscreto != ultimoAnguloFijo) {
-                    cv::cout << "ANGULO REAL: " << promedioReal << " -> MOSTRADO: " << anguloDiscreto << cv::endl;
+                    cout << "ANGULO REAL: " << promedioReal << " -> MOSTRADO: " << anguloDiscreto << endl;
                     ultimoAnguloFijo = anguloDiscreto;
 
                     girarDireccion(anguloDiscreto);
                 }
             }
         }
-        // cv::imshow("Volante", frame);
-        // if (cv::waitKey(1) == 'q') break;
+        // imshow("Volante", frame);
+        // if (waitKey(1) == 'q') break;
     }
 }
 

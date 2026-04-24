@@ -57,9 +57,6 @@ bool initGame = false,
 bool loadedImg1 = false,
      loadedImg2 = false;
 
-bool isRunning = false,
-     stopRunning = false;
-
 // Para ahorrrar tiempo empezamos en el juego
 int ventana          = 0,  
     id               = -1,
@@ -279,15 +276,13 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
         {
             player1.move();
             
-            if(isRunning)
+            if(player1.velocidad > 0.0f)
             {
                 playGameSound(0);
-                isRunning = false;
             }
-            if(stopRunning)
+            if(player1.velocidad == 0.0f) 
             {
                 stopGameSound(0);
-                stopRunning = false;
             }
         }
         else
@@ -461,7 +456,6 @@ void keyW(void)
     if(ventana == 4)
     {
         player1.velocidad = max(player1.velocidad + 0.05f, 0.0f);
-        if(player1.velocidad > 0.0f) isRunning = true;
     }
 }
 
@@ -471,7 +465,6 @@ void keyS(void)
     {
         player1.velocidad = min(player1.velocidad - 0.05f,  0.0f);
         playGameSound(2);
-        if(player1.velocidad == 0.0f) stopRunning = true;
     }
 }
 

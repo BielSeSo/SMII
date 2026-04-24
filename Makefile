@@ -43,6 +43,10 @@ $(OBJ_SOUND): $(SRC_SOUND)
 $(OBJ_MAIN_GAME): $(SRC_MAIN_GAME)
 	$(CC) $(CXXFLAGS) -c $(SRC_MAIN_GAME) -o $(OBJ_MAIN_GAME) $(OPENCV_FLAGS)
 
+# Control mando compilation
+$(OBJ_CONTROL): $(SRC_CONTROL)
+	$(CC) $(CXXFLAGS) -c $(SRC_CONTROL) -o $(OBJ_CONTROL) $(OPENCV_FLAGS)
+	
 # Game compilation
 exec/game/%.o: code/game/%.cpp
 	mkdir -p exec/game
