@@ -472,7 +472,7 @@ void keyA(void)
 {
     if(ventana == 4)
     {
-        player1.grados += 5.0f;
+       player1.grados += 5.0f;
     }
 }
 

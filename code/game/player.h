@@ -32,4 +32,6 @@ class Player
         Hitbox getHitbox(void);
 };
 
+extern Player player1;
+
 #endif

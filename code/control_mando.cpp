@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <vector>
 
+#include "game/player.h"
+
 using namespace std;
 using namespace cv;
 
@@ -13,7 +15,7 @@ bool vistoID3, vistoID4;
 
 void girarDireccion(int angulo)
 {
-
+    player1.grados += 5.0f;
 }
 
 void acelerar()
