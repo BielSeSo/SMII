@@ -22,13 +22,16 @@ void girarDireccion(int angulo)
 
 void acelerar()
 {
-    player1.velocidad += 0.005f;
+    if (player1.velocidad < 1.0f) player1.velocidad += 0.01f;
 }
 
 void frenar()
 {
-    player1.velocidad -= 0.005f;
-    playGameSound(2);
+    if (player1.velocidad > 0.0f)
+    {
+        player1.velocidad -= 0.01f;
+        playGameSound(2);
+    }
 }
 
 void procesarControlMando(string url, atomic<bool> &evento) 
@@ -82,7 +85,7 @@ void procesarControlMando(string url, atomic<bool> &evento)
                     
                     // FILTRO DE ÁREA: Ignora detecciones minúsculas (reflejos/fantasmas)
                     double area = cv::contourArea(corners[i]);
-                    if (area < 1000) continue; 
+                    if (area < 700) continue; 
 
                     // Lógica Volante (IDs 0, 1, 2)
                     if (ids[i] >= 0 && ids[i] <= 2) {
@@ -97,9 +100,17 @@ void procesarControlMando(string url, atomic<bool> &evento)
                 }
 
                 // --- ACCIÓN ACELERAR / FRENAR ---
-                if (vistoID4 && !vistoID3) acelerar();
-                else if (vistoID3 && !vistoID4) frenar();
+                if (vistoID4 && !vistoID3)
+                {
+                    cout << "ACCION: ACELERAR" << endl;
+                    acelerar();
+                } 
 
+                else if (vistoID3 && !vistoID4)
+                {
+                    cout << "ACCION: FRENAR" << endl;
+                    frenar();
+                }
                 // --- ACCIÓN GIRO CON SUAVIZADO ---
                 if (contadorVolante > 0) {
                     double promedioReal = sumaAngulosReales / contadorVolante;
