@@ -319,7 +319,6 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             if(previousVelocity > player1.velocidad)
             {
                 playGameSound(2);
-                
             }
             
             player1.move();
