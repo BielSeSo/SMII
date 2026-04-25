@@ -15,7 +15,7 @@ bool vistoID3, vistoID4;
 
 void girarDireccion(int angulo)
 {
-    player1.grados += 5.0f;
+    
 }
 
 void acelerar()

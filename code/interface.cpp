@@ -16,13 +16,14 @@ const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + \
 
 ButtonArea buttonAreas[total];
 GLuint buttonTextures[total];
-GLuint fondoTexture, fondoSemaphore, fondoWarning, fondo, videoTexture[NUM_BUTONS_MAP];
+GLuint fondoTexture, fondoSemaphore, fondoWarning, fondo;
 
 float alto = 0.25f;
 
 VideoCapture outputVideo[NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE];
 Mat frame;
 bool videoReady[NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE];
+GLuint videoTexture[NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE];
 
 float gradosKart = 0.0f;
 
@@ -270,6 +271,7 @@ void showSemaphore(string ruta)
     float x = -1.25f;
     float width = 0.5f;
     float height = 1.0f;
+    float z = -0.5f;
     
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -281,10 +283,10 @@ void showSemaphore(string ruta)
     {
         float padding = width * i;
         glBegin(GL_QUADS);
-            glTexCoord2f(0, 0); glVertex2f(x + padding, 0.0f);
-            glTexCoord2f(1, 0); glVertex2f(x + width + padding, 0.0f);
-            glTexCoord2f(1, 1); glVertex2f(x + width + padding, height);
-            glTexCoord2f(0, 1); glVertex2f(x + padding, height);
+            glTexCoord2f(0, 0); glVertex3f(x + padding, 0.0f, z);
+            glTexCoord2f(1, 0); glVertex3f(x + width + padding, 0.0f, z);
+            glTexCoord2f(1, 1); glVertex3f(x + width + padding, height, z);
+            glTexCoord2f(0, 1); glVertex3f(x + padding, height, z);
         glEnd();
     }
 
@@ -318,12 +320,13 @@ void showWarning(string ruta)
     
     float x = 0.5f;
     float y = 1.0f; 
+    float z = -0.2f;
 
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(-x, -0.3f);
-        glTexCoord2f(1, 0); glVertex2f(x, -0.3f);
-        glTexCoord2f(1, 1); glVertex2f(x, y);
-        glTexCoord2f(0, 1); glVertex2f(-x, y);
+        glTexCoord2f(0, 0); glVertex3f(-x, -0.3f, z);
+        glTexCoord2f(1, 0); glVertex3f(x, -0.3f, z);
+        glTexCoord2f(1, 1); glVertex3f(x, y, z);
+        glTexCoord2f(0, 1); glVertex3f(-x, y, z);
     glEnd();
 
     glDisable(GL_TEXTURE_2D);
@@ -403,7 +406,7 @@ void initAnimation(int id, string ruta)
 void showAnimationButton(int id) 
 {    
     if(!videoReady[id]) return;
-
+    
     if (!outputVideo[id].read(frame))
     {
         outputVideo[id].set(cv::CAP_PROP_POS_FRAMES, 0); // loop

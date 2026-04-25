@@ -28,7 +28,9 @@ float glX, glY;
 
 bool isGame = false;
 
+
 /* ============= MAIN FUNCS ============*/
+void openGLMain(int argc, char** argv);
 void display(void);
 void reshape(int w, int h);
 void keyboard(unsigned char key, int, int);
@@ -36,6 +38,14 @@ void mouse(int button, int state, int x, int y);
 void mouseMotion(int x, int y);
 
 int main(int argc, char** argv)
+{
+    openGLMain(argc, argv);
+   
+    cout << "Presiona ESC para salir" << endl;
+    return 0;
+}
+
+void openGLMain(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -50,12 +60,8 @@ int main(int argc, char** argv)
     glutMouseFunc(mouse);
     glutPassiveMotionFunc(mouseMotion);
 
-    cout << "Presiona ESC para salir" << endl;
     glutMainLoop();
-
-    return 0;
 }
-
 
 void display(void)
 {

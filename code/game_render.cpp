@@ -40,6 +40,8 @@ string routeVideosTrailer[NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE] =
         "sources/videos/Kart2.mp4",
         "sources/videos/Kart3.mp4"};
 
+string warningRoute = "sources/images/warningTourtle.png";
+
 GLuint imgList  = 0,
        mapList,
        kartList;
@@ -216,7 +218,6 @@ void enableShowImg(void)
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    glOrtho(-1, 1, -1, 1, -1, 1);
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -272,31 +273,24 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
 
         glCallList(mapList);
 
-        comprobateLimits();
-        comprobateTrackLimits();
-
         glTranslatef(p.x, p.y, 0.0f);
         glRotatef(player1.grados, 0, 0, 1);
         glCallList(kartList);
         
-
-        if(!startGame)
+        comprobateLimits();
+        if(comprobateTrackLimits())
         {
-            if(previousVelocity > player1.velocidad)
-            {
-                playGameSound(2);
-            }
-            
-            player1.move();
-            
-            if(player1.velocidad > 0.0f)
-            {
-                playGameSound(0);
-            }
+            enableShowImg();
 
-            previousVelocity = player1.velocidad;
+            showWarning(warningRoute);
+            playGameSound(6);
+            glutSwapBuffers();
+            glutPostRedisplay();
+
+            disableShowImg();
         }
-        else
+        
+        if(startGame)
         {
             enableShowImg();
             for(int i=0; i<NUM_LUCES_SEM; i++)
@@ -318,6 +312,22 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
 
             startGame = false;
             playGameSound(1);
+        }
+        else
+        {
+            if(previousVelocity > player1.velocidad)
+            {
+                playGameSound(2);
+            }
+            
+            player1.move();
+            
+            if(player1.velocidad > 0.0f)
+            {
+                playGameSound(0);
+            }
+
+            previousVelocity = player1.velocidad;
         }
 
         if(destroyGame)
