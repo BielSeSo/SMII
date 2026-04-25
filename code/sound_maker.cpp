@@ -21,8 +21,8 @@ const char *routesBuffersMenu[NUM_SOUNDS_MENU] =
              "sources/audios/Back.wav"};
 
 const char *routesBuffersGame[NUM_SOUNDS_GAME] = 
-            {"sources/audios/Engine.wav",
-             "sources/audios/musicaPista1.wav",
+            {"sources/audios/musicaPista1.wav",
+             "sources/audios/Engine.wav",
              "sources/audios/Frenar.wav",
              "sources/audios/Horn1.wav",
              "sources/audios/Horn2.wav",

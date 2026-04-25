@@ -283,7 +283,9 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             enableShowImg();
 
             showWarning(warningRoute);
+
             playGameSound(6);
+
             glutSwapBuffers();
             glutPostRedisplay();
 
@@ -311,7 +313,7 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             disableShowImg();
 
             startGame = false;
-            playGameSound(1);
+            playGameSound(0);
         }
         else
         {
@@ -324,7 +326,7 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             
             if(player1.velocidad > 0.0f)
             {
-                playGameSound(0);
+                playGameSound(1);
             }
 
             previousVelocity = player1.velocidad;
@@ -344,7 +346,7 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             kartList = 0;
 
             ventana = 3;
-            stopGameSound(1);
+            stopGameSound(0);
             playMenuSound(1);
 
             reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));

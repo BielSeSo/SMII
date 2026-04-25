@@ -60,8 +60,6 @@ Dentro del proyecto hay varias carpetas:
 
 # TO DO:
 
-Cosas posibles ha implementar:
-- Comprobación del kart en la pista
-- Animacón de botones de los karts y los mapas
-- Hacer un final (Opcional, por el momento)
 - Unificar el trabajo
+- Arreglar el sistema de audio
+- Acabar la memoria
