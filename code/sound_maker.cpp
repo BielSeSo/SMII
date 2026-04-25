@@ -44,9 +44,11 @@ void intSoundsMenu(void)
         alSourcei(sourcesMenu[i], AL_BUFFER, buffersMenu[i]);
         alSourcei(sourcesMenu[i], AL_LOOPING, AL_TRUE);
     }
+    alSourcei(sourcesMenu[NUM_SOUNDS_MENU - 1], AL_BUFFER, buffersMenu[NUM_SOUNDS_MENU - 1]);
+    alSourcei(sourcesMenu[NUM_SOUNDS_MENU - 1], AL_LOOPING, AL_TRUE);
 
     // Not loop sound
-    for (int i=2; i<NUM_SOUNDS_MENU; i++) {
+    for (int i=2; i<NUM_SOUNDS_MENU-1; i++) {
         alSourcei(sourcesMenu[i], AL_BUFFER, buffersMenu[i]);
     }
 }
@@ -62,12 +64,14 @@ void initSoundsGame(void)
     alGenSources(NUM_SOUNDS_GAME, soucesGame);
 
     // Loop sound
-    alSourcei(soucesGame[0], AL_BUFFER, buffersGame[0]);
-    alSourcei(soucesGame[0], AL_LOOPING, AL_TRUE);
-    
+    for(int i=0; i<2; i++)
+    {
+        alSourcei(soucesGame[i], AL_BUFFER, buffersGame[i]);
+        alSourcei(soucesGame[i], AL_LOOPING, AL_TRUE);
+    }
 
     // Not loop sound
-    for (int i=1; i<NUM_SOUNDS_GAME; i++) {
+    for (int i=2; i<NUM_SOUNDS_GAME; i++) {
         alSourcei(soucesGame[i], AL_BUFFER, buffersGame[i]);
     }
 }

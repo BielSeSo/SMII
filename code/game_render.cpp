@@ -261,9 +261,9 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
         float rad = player1.grados * M_PI / 180.0f;
 
         // Camara detras del kart
-        float camX = p.x - sin(rad) * 5.0f;
-        float camY = p.y + cos(rad) * 5.0f;
-        float camZ = p.z + 2.5f;
+        float camX = p.x - sin(rad) * 3.3f;
+        float camY = p.y + cos(rad) * 3.3f;
+        float camZ = p.z + 1.8f;
 
         gluLookAt(
             camX, camY, camZ,
@@ -283,7 +283,6 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             enableShowImg();
 
             showWarning(warningRoute);
-
             playGameSound(6);
 
             glutSwapBuffers();
@@ -320,14 +319,17 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             if(previousVelocity > player1.velocidad)
             {
                 playGameSound(2);
+                
             }
             
             player1.move();
             
-            if(player1.velocidad > 0.0f)
+            if(previousVelocity < player1.velocidad)
             {
                 playGameSound(1);
             }
+            
+            if(player1.velocidad == 0.0f) stopGameSound(1);
 
             previousVelocity = player1.velocidad;
         }
@@ -347,6 +349,7 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
 
             ventana = 3;
             stopGameSound(0);
+            stopGameSound(1);
             playMenuSound(1);
 
             reshape(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
