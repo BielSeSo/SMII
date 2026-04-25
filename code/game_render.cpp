@@ -33,12 +33,12 @@ string routeWarning = "sources/images/warningTourtle.png";
 string routeSky = "sources/images/Cielo.jpg";
 
 string routeVideosTrailer[NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE] = 
-            {"sources/videos/Map1.avi",
-            "sources/videos/Map2.avi",
-            "sources/videos/Map3.avi",
-            "sources/videos/Kart1.avi",
-            "sources/videos/Kart2.avi",
-            "sources/videos/Kart3.avi"};
+        {"sources/videos/Map1.mp4",
+        "sources/videos/Map2.mp4",
+        "sources/videos/Map3.mp4",
+        "sources/videos/Kart1.mp4",
+        "sources/videos/Kart2.mp4",
+        "sources/videos/Kart3.mp4"};
 
 GLuint imgList  = 0,
        mapList,
@@ -73,17 +73,17 @@ Player player1(0.0f, 0.0f, 0.0f);
 Map map_render;
 
 const int total = NUM_BUTONS_INIT + NUM_BUTONS_MAP + NUM_BUTONS_VEHICLE + 1;
-string textOptions[total] = {"START", "CREDITS", "EXIT",
-                        "MAP 1", "MAP 2", "MAP 3",
-                        "VEHICLE 1", "VEHICLE 2", "VEHICLE 3",
-                        "BACK"};
+string textOptions[total] = 
+        {"START", "CREDITS", "EXIT",
+        "MAP 1", "MAP 2", "MAP 3",
+        "VEHICLE 1", "VEHICLE 2", "VEHICLE 3",
+        "BACK"};
 
-float coordinatesButtons [3][2] = {{0.0f, 0.5f}, 
-                                   {0.0f, 0.1f}, 
-                                   {0.0f, -0.3f}};
+float coordinatesButtons [3][2] = 
+        {{0.0f, 0.5f}, 
+        {0.0f, 0.1f}, 
+        {0.0f, -0.3f}};
 
-// Creado hilo para mejorar sonido motor
-thread engineSound;
 
 // ================== CUSTOM FUNCS ====================/
 void init(void)
@@ -273,12 +273,12 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
         glCallList(mapList);
 
         comprobateLimits();
+        comprobateTrackLimits();
 
         glTranslatef(p.x, p.y, 0.0f);
         glRotatef(player1.grados, 0, 0, 1);
         glCallList(kartList);
         
-        engineSound.join();
 
         if(!startGame)
         {
@@ -291,7 +291,7 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
             
             if(player1.velocidad > 0.0f)
             {
-                engineSound = thread(playEngineSound);
+                playGameSound(0);
             }
 
             previousVelocity = player1.velocidad;
@@ -391,9 +391,9 @@ void selectButton(void)
     }
 }
 
-void comprobateLimits()
+void comprobateLimits(void)
 {
-    Coordinates4f mapSize = map_render.getMapSize();
+    Coordinates4f mapSize = map_render.getSize(true);
     Hitbox kartSize = player1.getHitbox();
     Vec3 p = player1.getPos();
     bool isTurning = false;
@@ -402,7 +402,7 @@ void comprobateLimits()
     float wide2 = p.x - kartSize.w/2;
 
     float heigth1 = p.y + kartSize.h/2;
-    float heigth2 = p.y + kartSize.h/2;
+    float heigth2 = p.y - kartSize.h/2;
 
     if((wide1 <= mapSize.x1) || (wide2 <= mapSize.x1))
     {
@@ -440,6 +440,23 @@ void comprobateLimits()
     if(isTurning) player1.grados += 180.0f;
 }
 
+bool comprobateTrackLimits(void)
+{
+    Coordinates4f mapSize = map_render.getSize(false);
+    Vec3 p = player1.getPos();
+
+    if((p.x <= mapSize.x1) || (p.x >= mapSize.x2))
+    {
+        return true;
+    }
+    else if((p.y <= mapSize.y1) || (p.y >= mapSize.y2)) 
+    {
+        return true;
+    }
+    
+    return false;
+}
+
 void closeGame(int &marioWin)
 {
     // Destroy 3D models
@@ -466,7 +483,7 @@ void keyW(void)
 {
     if(ventana == 4)
     {
-        player1.velocidad = max(player1.velocidad + 0.05f, 0.0f);
+        player1.velocidad += 0.05f;
     }
 }
 
@@ -474,7 +491,7 @@ void keyS(void)
 {
     if(ventana == 4)
     {
-        player1.velocidad = min(player1.velocidad - 0.05f,  0.0f);
+        player1.velocidad -= 0.05f;
     }
 }
 

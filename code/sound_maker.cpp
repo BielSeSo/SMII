@@ -109,8 +109,3 @@ void destroySoundsGame(void)
     }
     alDeleteSources(NUM_SOUNDS_GAME, soucesGame);
 }
-
-void playEngineSound() 
-{
-    playGameSound(0);
-}

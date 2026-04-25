@@ -24,6 +24,7 @@ void drawMapMenu(void);
 void drawKartMenu(void);
 void renderGame(void (*reshape)(int, int), bool *isGame);
 void comprobateLimits(void);
+bool comprobateTrackLimits(void);
 void loadGame(void);
 void selectButton(void);
 void closeGame(int &marioWin);

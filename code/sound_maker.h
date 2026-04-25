@@ -11,6 +11,5 @@ void playGameSound(int id);
 void stopGameSound(int id);
 void destroySoundsMenu(void);
 void destroySoundsGame(void);
-void playEngineSound();
 
 #endif

@@ -8,15 +8,7 @@
 Map::Map()
 {
     mapList = 0;
-    
-    calculateSize();
 }
-
-void Map::calculateSize(void)
-{
-    getCoordinates(ROUTE_MAP_HITBOX, &mapSize);
-}
-
 
 void Map::setupLights() 
 {
@@ -43,17 +35,20 @@ GLuint Map::loadMap(int selectedMap)
     {
         case 1:
             mapList = loadObj(ROUTE_MAP_1);
-            getCoordinates(ROUTE_LIMIT_MAP_1, &trackLimit);
+            getCoordinates(ROUTE_LIMIT_MAP_1, &mapSize);
+            getCoordinates(ROUTE_LIMIT_TRACK_1, &trackLimit);
             break;
 
         case 2:
             mapList = loadObj(ROUTE_MAP_2);
-            getCoordinates(ROUTE_LIMIT_MAP_2, &trackLimit);
+            getCoordinates(ROUTE_LIMIT_MAP_2, &mapSize);
+            getCoordinates(ROUTE_LIMIT_TRACK_2, &trackLimit);
             break;
 
         case 3:
             mapList = loadObj(ROUTE_MAP_3);
-            getCoordinates(ROUTE_LIMIT_MAP_3, &trackLimit);
+            getCoordinates(ROUTE_LIMIT_MAP_3, &mapSize);
+            getCoordinates(ROUTE_LIMIT_TRACK_3, &trackLimit);
             break;
 
         default: break;
@@ -67,7 +62,8 @@ void Map::destroyLights(void)
     glDisable(GL_LIGHT1);
 }
 
-Coordinates4f Map::getMapSize(void)
+Coordinates4f Map::getSize(bool isMapLimit)
 {
-    return mapSize;
+    if(isMapLimit) return mapSize;
+    else return trackLimit;
 }
