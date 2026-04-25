@@ -43,4 +43,9 @@ void rightClick(void);
 void leftClick(float glX, float glY);
 void mouseFunc(float glX, float glY);
 
+// VISION CONTROL FUNCS
+void controlMando();
+void createThreadVisionControl();
+void stopThreads();
+
 #endif

@@ -61,6 +61,8 @@ void openGLMain(int argc, char** argv)
     glutMouseFunc(mouse);
     glutPassiveMotionFunc(mouseMotion);
 
+    createThreadVisionControl();
+
     glutMainLoop();
 }
 
@@ -104,6 +106,7 @@ void keyboard(unsigned char key, int, int)
     switch (key)
     {
         case 27:
+            stopThreads();
             closeGame(marioWin);
             break;
 

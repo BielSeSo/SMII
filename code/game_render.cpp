@@ -2,7 +2,10 @@
 #include <cmath>
 #include <string>
 #include <unistd.h>
+
 #include <thread>
+#include <atomic>
+#include <chrono>
 
 #include <GL/glut.h>
 #include <GL/glu.h>
@@ -12,9 +15,10 @@
 #include "game/load_map.h"
 #include "interface.h"
 #include "sound_maker.h"
+#include "control_mando.h"
 
 #define NUM_LUCES_SEM 4
-
+#define IP "http://192.168.1.40:4747/video"
 using namespace std;
 
 /* ============== GLOBAL VARIABLES =============== */
@@ -59,6 +63,10 @@ bool initGame = false,
 
 bool loadedImg1 = false,
      loadedImg2 = false;
+
+// Boleano para terminar los hilos y cerrar de forma segura
+atomic<bool> killThreads(false);
+thread mandoControlThread;
 
 // Para ahorrrar tiempo empezamos en el juego
 int ventana          = 0,  
@@ -473,6 +481,8 @@ bool comprobateTrackLimits(void)
 
 void closeGame(int &marioWin)
 {
+    killThreads = true;
+    cout << "Cerrando detección por visión..." << endl;
     // Destroy 3D models
     imgList  = 0;
     mapList = 0;
@@ -568,4 +578,25 @@ void mouseFunc(float glX, float glY)
     {
         show_id = areaButtonId(glX, glY, ventana);
     }
+}
+
+void controlMando()
+{
+    while(!killThreads){
+        if (ventana == 4) procesarControlMando(IP, ref(killThreads));
+        else this_thread::sleep_for(chrono::milliseconds(100));
+    }
+
+    cout << "Hilo de control por visión finalizado correctamente." << endl;
+}
+
+void createThreadVisionControl()
+{
+    mandoControlThread = thread(controlMando);
+}
+
+void stopThreads()
+{
+    killThreads = true;
+    if (mandoControlThread.joinable()) mandoControlThread.join();
 }
