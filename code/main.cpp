@@ -39,9 +39,10 @@ void mouseMotion(int x, int y);
 
 int main(int argc, char** argv)
 {
+    cout << "Presiona ESC para salir" << endl;
+
     openGLMain(argc, argv);
    
-    cout << "Presiona ESC para salir" << endl;
     return 0;
 }
 
