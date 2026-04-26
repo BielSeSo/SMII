@@ -17,12 +17,12 @@ bool vistoID3 = false, vistoID4 = false;
 
 void girarDireccion(int angulo)
 {
-    player1.grados += angulo;
+    player1.grados = angulo;
 }
 
 void acelerar()
 {
-    if (player1.velocidad < 1.0f) player1.velocidad += 0.01f;
+    if (player1.velocidad < 0.5f) player1.velocidad += 0.01f;
 }
 
 void frenar()
@@ -48,7 +48,7 @@ void procesarControlMando(string url, atomic<bool> &evento)
     Ptr<aruco::DetectorParameters> params = aruco::DetectorParameters::create();
     params->adaptiveThreshWinSizeMin = 5;
     params->adaptiveThreshWinSizeMax = 21;
-    Ptr<aruco::Dictionary> dict = aruco::getPredefinedDictionary(aruco::DICT_ARUCO_ORIGINAL);
+    Ptr<aruco::Dictionary> dict = aruco::getPredefinedDictionary(aruco::DICT_4X4_50);
 
     // --- VARIABLES DE FILTRADO ---
     float factorSuavizado = 0.15f; 
@@ -116,8 +116,8 @@ void procesarControlMando(string url, atomic<bool> &evento)
                     double promedioReal = sumaAngulosReales / contadorVolante;
                     
                     // Limitamos el ángulo
-                    if (promedioReal > 90) promedioReal = 90;
-                    if (promedioReal < -90) promedioReal = -90;
+                    if (promedioReal > 180) promedioReal = 180;
+                    if (promedioReal < -180) promedioReal = -180;
 
                     // FILTRO DE SUAVIZADO (Interpolación lineal)
                     // En lugar de saltar al ángulo nuevo, nos acercamos un 15% (factorSuavizado)
