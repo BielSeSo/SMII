@@ -26,7 +26,8 @@ int isFullscreen = 0;
 int marioWin;
 float glX, glY;
 
-bool isGame = false;
+bool isGame = false,
+    cameraThreadactive = false;
 
 
 /* ============= MAIN FUNCS ============*/
@@ -39,11 +40,29 @@ void mouseMotion(int x, int y);
 
 int main(int argc, char** argv)
 {
-    cout << "Presiona ESC para salir" << endl;
+    if(argc < 2)
+    {
+        cout << "Faltan argumentos:" << endl;
+        cout << "./bin/proyecto <FLAG>" << endl << endl;
+        cout << "FLAGS:" << endl;
+        cout << "0 - No camera" << endl;
+        cout << "1 - With camera" << endl;
+        return -1;
+    }
+    else
+    {
+        cout << "Presiona ESC para salir" << endl;
 
-    openGLMain(argc, argv);
-   
-    return 0;
+        if(string(argv[1]) == "1")
+        {
+            cameraThreadactive = true;
+            createThreadVisionControl();
+        }
+
+        openGLMain(argc, argv);
+    
+        return 0;
+    }
 }
 
 void openGLMain(int argc, char** argv)
@@ -60,8 +79,6 @@ void openGLMain(int argc, char** argv)
     glutKeyboardFunc(keyboard);
     glutMouseFunc(mouse);
     glutPassiveMotionFunc(mouseMotion);
-
-    createThreadVisionControl();
 
     glutMainLoop();
 }
@@ -106,7 +123,7 @@ void keyboard(unsigned char key, int, int)
     switch (key)
     {
         case 27:
-            stopThreads();
+            if(cameraThreadactive) stopThreads();
             closeGame(marioWin);
             break;
 

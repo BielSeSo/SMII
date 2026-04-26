@@ -33,6 +33,11 @@ Por el momento, el juego cuenta con una interfaz funcional que se puede interact
     - **Botón izquierdo**: Sirve para seleccionar los botones de la interfaz, el el juego por el momento no tiene ninguna.
     - **Botón dercho**: Sirve para volver al menú de atrás, por le momento para volver solo está implementado en el ratón.
 
+- Funcionalidad del mando:
+    - **Volante**: Hace girar al jugador en la dirección que gire el mando.
+    - **Gatillo derecho**: Acelera el kart.
+    - **Gatillo izquierdo**: Disminuye la velocidad del kart.
+
 ### Programas
 
 Dentro del proyecto hay varias carpetas:
@@ -55,11 +60,14 @@ Dentro del proyecto hay varias carpetas:
     - `assets/`:
         - `models/`: Modelos de kart utilizados por el usuario dentro del juego.
         - `maps/`: Contiene todos los mapas del juego.
+            - **Nota**: Los modelos se han construido y texturizado en Blender.
     - `images/`: Imágenes utilizadas en el proyecto.
     - `audios/`: Audios utilizados en el proyecto.
+    - `videos/`: Videos utilizados en la animación de los botones. Obtenidas a partir de la renderización por Blender.
 
-# TO DO:
+### Posibles mejoras a futuro
 
-- Unificar el trabajo
-- Arreglar el sistema de audio
-- Acabar la memoria
+- Mejorar el sistema de detección del coche en la pista.
+- Mejorar sistema de warning, de manera que se ejecute en paralelo y el usuario lo pueda escuchar.
+- Se puede implementar la visualización de los modelos 3D (mapas y karts) en marcas aruco.
+- Mejorar el diseño del mando de cartón a una pieza imprimible 3D para mejor acabado.

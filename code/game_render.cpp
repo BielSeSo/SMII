@@ -292,6 +292,7 @@ void renderGame(void (*reshape)(int, int), bool *isGame)
 
             showWarning(warningRoute);
             playGameSound(6);
+            player1.velocidad = min(0.05f, player1.velocidad);   // Limitacion de velocidad para el jugador
 
             glutSwapBuffers();
             glutPostRedisplay();

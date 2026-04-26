@@ -141,10 +141,3 @@ void procesarControlMando(string url, atomic<bool> &evento)
         // imshow("Volante", frame); // Descomenta para ver la cámara y los ejes
     }
 }
-
-/*
-int main() {
-    procesarControlMando("IP", "calibracion_camara.yml");
-    return 0;
-}
-*/

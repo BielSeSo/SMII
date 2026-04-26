@@ -318,8 +318,8 @@ void showWarning(string ruta)
     glBindTexture(GL_TEXTURE_2D, fondoWarning);
     glColor3f(1.0f, 1.0f, 1.0f); // Blanco
     
-    float x = 0.5f;
-    float y = 1.0f; 
+    float x = 0.4f;
+    float y = 1.2f; 
     float z = -0.2f;
 
     glBegin(GL_QUADS);
