@@ -18,7 +18,7 @@
 #include "control_mando.h"
 
 #define NUM_LUCES_SEM 4
-#define IP "0"
+#define IP "http://192.168.1.40:4747/video"
 using namespace std;
 
 /* ============== GLOBAL VARIABLES =============== */

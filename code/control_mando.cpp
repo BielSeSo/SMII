@@ -15,14 +15,10 @@ using namespace cv;
 
 bool vistoID3 = false, vistoID4 = false;
 
-void girarDireccion(int angulo)
-{
-    player1.grados = angulo;
-}
 
 void acelerar()
 {
-    if (player1.velocidad < 0.5f) player1.velocidad += 0.01f;
+    if (player1.velocidad < 0.25f) player1.velocidad += 0.01f;
 }
 
 void frenar()
@@ -115,6 +111,17 @@ void procesarControlMando(string url, atomic<bool> &evento)
                 if (contadorVolante > 0) {
                     double promedioReal = sumaAngulosReales / contadorVolante;
                     
+                    if (abs(promedioReal) > 5.0) {
+                        float velocidadGiro = promedioReal * 0.1f;
+
+                        player1.grados += velocidadGiro;
+
+                        if (player1.grados > 360.0f) player1.grados -=360.0f;
+                        if (player1.grados < 0.0f) player1.grados += 360.0f;
+                    }
+                }
+
+                    /*
                     // Limitamos el ángulo
                     if (promedioReal > 180) promedioReal = 180;
                     if (promedioReal < -180) promedioReal = -180;
@@ -125,18 +132,18 @@ void procesarControlMando(string url, atomic<bool> &evento)
                     
                     // Solo imprimimos si el cambio es notable (para no saturar la consola)
                     if (abs(promedioReal - ultimoAnguloFijo) > 2) {
-                        cout << "GIRO SUAVE: " << player1.grados << endl;
+                        cout << "GIRO: " << player1.grados << endl;
                         ultimoAnguloFijo = promedioReal;
                     }
+                }  else {
+                    // Si no se ve nada, la confianza vuelve a cero inmediatamente
+                    framesVisto = 0;
+                    // Opcional: Enderezar el volante poco a poco si se pierde la marca
+                    player1.grados *= 0.92f; 
                 }
+                    */
             }
-        } else {
-            // Si no se ve nada, la confianza vuelve a cero inmediatamente
-            framesVisto = 0;
-            // Opcional: Enderezar el volante poco a poco si se pierde la marca
-            player1.grados *= 0.95f; 
         }
-
         waitKey(1);
         // imshow("Volante", frame); // Descomenta para ver la cámara y los ejes
     }

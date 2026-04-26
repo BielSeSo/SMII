@@ -7,7 +7,6 @@
 
 using namespace std;
 
-void girarDireccion(int angulo);
 void acelerar();
 void frenar();
 
