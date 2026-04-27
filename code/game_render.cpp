@@ -482,8 +482,6 @@ bool comprobateTrackLimits(void)
 
 void closeGame(int &marioWin)
 {
-    killThreads = true;
-    cout << "Cerrando detección por visión..." << endl;
     // Destroy 3D models
     imgList  = 0;
     mapList = 0;
@@ -598,6 +596,7 @@ void createThreadVisionControl()
 
 void stopThreads()
 {
+    cout << "Cerrando detección por visión..." << endl;
     killThreads = true;
     if (mandoControlThread.joinable()) mandoControlThread.join();
 }

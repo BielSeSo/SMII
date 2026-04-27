@@ -37,6 +37,7 @@ void reshape(int w, int h);
 void keyboard(unsigned char key, int, int);
 void mouse(int button, int state, int x, int y);
 void mouseMotion(int x, int y);
+void displayHelp(void);
 
 int main(int argc, char** argv)
 {
@@ -51,7 +52,8 @@ int main(int argc, char** argv)
     }
     else
     {
-        cout << "Presiona ESC para salir" << endl;
+        displayHelp();
+        cout << "Presiona ESC para salir" << endl << endl;
 
         if(string(argv[1]) == "1")
         {
@@ -71,6 +73,7 @@ void openGLMain(int argc, char** argv)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(400, 300);
     marioWin = glutCreateWindow("Mario Kart Interface");
+    glutFullScreen();
 
     init();
 
@@ -225,4 +228,18 @@ void mouseMotion(int x, int y)
     glY = 1.0f - ( (float)y / h ) * 2.0f;
     
     mouseFunc(glX, glY);
+}
+
+void displayHelp(void)
+{
+    cout << "Para navegar por los menús se puede usar el teclado (1, 2 y 3) y el ratón: " << endl;
+    cout << endl << "Funciones del teclado:" << endl;
+    cout << "1-Primera opción de todos los menús" << endl;
+    cout << "2-Segunda opción de todos los menús" << endl;
+    cout << "3-Tercera opción de todos los menús" << endl;
+    cout << "F-Pantalla completa" << endl;
+    cout << "WASD - Controlar el jugador" << endl;
+    cout << endl << "Funciones del ratón:" << endl;
+    cout << "Botón izquierdo-Seleccion de la opción sobre la que esté" << endl;
+    cout << "Boton derecho-Volver al menú anterior" << endl << endl; 
 }
