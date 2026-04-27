@@ -36,7 +36,7 @@ echo "         Construyendo directorios"
 echo "============================================"
 echo ""
 
-mkdir -p sources
+unzip "sources.zip"
 
 echo ""
 echo "============================================"
